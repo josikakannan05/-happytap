@@ -509,12 +509,12 @@ export default function ExecutiveCollectionPage() {
                       </div>
 
                       {/* View Details Button */}
-                      <button
-                        className="ec-view-details-btn"
-                        onClick={() => handleAddToCart(product.title)}
-                      >
-                        View Details
-                      </button>
+                      <Link href={`/cards/executive-collection/${product.id}`} style={{ textDecoration: "none", width: "100%" }}>
+                        <button className="ec-view-details-btn">
+                          View Details
+                        </button>
+                      </Link>
+
                     </div>
                   </motion.div>
                 ))}

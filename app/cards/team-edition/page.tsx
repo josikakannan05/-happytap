@@ -555,12 +555,12 @@ export default function TeamEditionPage() {
                       </div>
 
                       {/* View Details Button */}
-                      <button
-                        className="te-view-details-btn"
-                        onClick={() => handleAddToCart(product.title)}
-                      >
-                        View Details
-                      </button>
+                      <Link href={`/cards/team-edition/${product.id}`} style={{ textDecoration: "none", width: "100%" }}>
+                        <button className="te-view-details-btn">
+                          View Details
+                        </button>
+                      </Link>
+
                     </div>
                   </motion.div>
                 ))}
