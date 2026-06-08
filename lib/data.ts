@@ -37,7 +37,7 @@ export const heroStats = [
 ];
 
 export const navLinks = [
-  { href: "#products", label: "Products" },
+  { href: "/cards", label: "Products" },
   { href: "#ecosystem", label: "Features" },
   { href: "#how-it-works", label: "How it works" },
   { href: "#cta", label: "Contact" },

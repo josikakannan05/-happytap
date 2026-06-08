@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Layers } from "lucide-react";
 import { products } from "@/lib/data";
 import { Reveal } from "./Reveal";
@@ -52,6 +53,18 @@ export function Products() {
             </Reveal>
           ))}
         </div>
+
+        <Reveal delay={60 + products.length * 60}>
+          <div className="products-footer">
+            <Link href="/cards" className="view-all-btn">
+              View All Designs
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon">
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
