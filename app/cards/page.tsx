@@ -74,7 +74,7 @@ const productsData: ProductCard[] = [
     description: "Bold ocean blue finish that represents trust and confidence.",
     link: "/cards/team-edition/team-pro",
     cardStyle: {
-      background: "linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%)",
+      background: "linear-gradient(145deg, #0a1628 0%, #0d2856 35%, #1a4a9e 100%)",
       logoStyle: "white",
       wavesStyle: "rgba(255, 255, 255, 0.8)",
     }
@@ -261,7 +261,7 @@ export default function CardsPage() {
                             isLight ? "light-text" : ""
                           }`}
                         >
-                          H<span>t</span>
+                          Ht
                         </div>
 
                         <div

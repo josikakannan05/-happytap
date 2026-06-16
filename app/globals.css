@@ -10872,8 +10872,8 @@ footer {
    Premium Cards Catalog Redesign
    ========================================================================== */
 .cards-page-new {
-  background-color: #faf9fd; /* Clean, modern light background */
-  padding: 80px 0 120px 0;
+  background-color: #f5f5f7; /* Clean, modern light background matching reference */
+  padding: 48px 0 100px 0;
   min-height: 100vh;
 }
 
@@ -10936,15 +10936,15 @@ footer {
 .cards-grid-new {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
+  gap: 28px;
 }
 
 .card-item-new {
   background: #ffffff;
-  border-radius: 24px;
-  padding: 24px;
-  border: 1px solid rgba(12, 12, 15, 0.05);
-  box-shadow: 0 4px 20px rgba(12, 12, 15, 0.02), 0 12px 40px rgba(12, 12, 15, 0.03);
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid rgba(12, 12, 15, 0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 28px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -10960,15 +10960,15 @@ footer {
 
 .card-mockup-container {
   width: 100%;
-  aspect-ratio: 1.58 / 1;
-  border-radius: 16px;
+  aspect-ratio: 1.6 / 1;
+  border-radius: 14px;
   position: relative;
   overflow: hidden;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
 /* Realistic mockup styles */
@@ -11029,10 +11029,11 @@ footer {
 
 .mockup-logo-new {
   font-family: Georgia, Cambria, "Times New Roman", Times, serif;
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: 700;
+  font-style: italic;
   color: #ffffff;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   z-index: 2;
 }
 
@@ -11066,11 +11067,15 @@ footer {
 }
 
 .mockup-logo-new.logo-rose {
-  color: #ffffff;
+  color: #5a2a20;
 }
 
 .mockup-logo-new.logo-silver {
-  color: #ffffff;
+  color: #1a1a1a;
+}
+
+.mockup-logo-new.logo-silver.light-text {
+  color: #1a1a1a;
 }
 
 .mockup-logo-new.logo-white {
@@ -11094,14 +11099,18 @@ footer {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.65);
   z-index: 2;
 }
 
+.mockup-details-new.light-text {
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
 .mockup-brand-new {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.2em;
 }
 
 .mockup-chip-new {
