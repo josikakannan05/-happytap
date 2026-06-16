@@ -25,7 +25,7 @@ import { Reveal } from "@/components/Reveal";
 interface Product {
   id: string;
   title: string;
-  category: string;
+  category: "Standard" | "Premium" | "Luxury" | "Signature";
   price: number;
   description: string;
   colorName: string;
@@ -41,7 +41,7 @@ const productsData: Product[] = [
   {
     id: "metal-bronze",
     title: "Metal Bronze",
-    category: "Metal Edition",
+    category: "Standard",
     price: 1999,
     description: "Raw brushed bronze surface with warm rustic copper undertones.",
     colorName: "Bronze Finish",
@@ -53,7 +53,7 @@ const productsData: Product[] = [
   {
     id: "metal-copper",
     title: "Metal Copper",
-    category: "Metal Edition",
+    category: "Standard",
     price: 2199,
     description: "Satin metallic copper finish emitting a brilliant rose-amber glow.",
     colorName: "Copper Glow",
@@ -65,7 +65,7 @@ const productsData: Product[] = [
   {
     id: "metal-titanium",
     title: "Metal Titanium",
-    category: "Metal Edition",
+    category: "Premium",
     price: 2499,
     description: "Space-grade brushed titanium silver with a sleek industrial appearance.",
     colorName: "Titanium Silver",
@@ -78,7 +78,7 @@ const productsData: Product[] = [
   {
     id: "metal-graphite",
     title: "Metal Graphite",
-    category: "Metal Edition",
+    category: "Premium",
     price: 2699,
     description: "Deep gunmetal charcoal brushed finish with subtle dark engravings.",
     colorName: "Graphite Charcoal",
@@ -90,7 +90,7 @@ const productsData: Product[] = [
   {
     id: "metal-rose-gold",
     title: "Metal Rose Gold",
-    category: "Metal Edition",
+    category: "Premium",
     price: 2999,
     description: "Luxurious brushed rose-gold plating reflecting a warm satin luster.",
     colorName: "Rose Gold",
@@ -103,7 +103,7 @@ const productsData: Product[] = [
   {
     id: "metal-silver",
     title: "Metal Silver",
-    category: "Metal Edition",
+    category: "Luxury",
     price: 3299,
     description: "Brilliant brushed silver with high-reflectivity chrome highlights.",
     colorName: "Sliver Chrome",
@@ -116,7 +116,7 @@ const productsData: Product[] = [
   {
     id: "metal-platinum",
     title: "Metal Platinum",
-    category: "Metal Edition",
+    category: "Luxury",
     price: 3499,
     description: "Deep luster platinum chrome reflecting high wealth and prestige.",
     colorName: "Platinum Mirror",
@@ -129,7 +129,7 @@ const productsData: Product[] = [
   {
     id: "metal-executive",
     title: "Metal Executive",
-    category: "Metal Edition",
+    category: "Luxury",
     price: 3999,
     description: "Velvet midnight black body with executive 24k polished gold trim.",
     colorName: "Obsidian Gold Trim",
@@ -142,7 +142,7 @@ const productsData: Product[] = [
   {
     id: "metal-signature",
     title: "Metal Signature",
-    category: "Metal Edition",
+    category: "Signature",
     price: 4499,
     description: "Mirror-finish gold plating engraved with exclusive initials patterns.",
     colorName: "24K Gold Plated",
@@ -155,7 +155,7 @@ const productsData: Product[] = [
   {
     id: "metal-black-luxury",
     title: "Metal Black Luxury",
-    category: "Metal Edition",
+    category: "Signature",
     price: 4999,
     description: "Deep obsidian matte black finish with double-anodized laser engraving.",
     colorName: "Matte Black",
@@ -199,7 +199,7 @@ export default function MetalEditionPage() {
   const [authTab, setAuthTab] = useState<"login" | "signup">("login");
   const [user, setUser] = useState<string | null>(null);
 
-  const filters = ["All", "Metal Edition"];
+  const filters = ["All", "Standard", "Premium", "Luxury", "Signature"];
 
   const openAuth = (tab: "login" | "signup") => {
     setAuthTab(tab);
@@ -405,27 +405,24 @@ export default function MetalEditionPage() {
                           }}
                         >
                           <div className="metal-card-mockup-glare"></div>
-                          
+
                           <div
-                            className={`metal-mock-logo ${
-                              product.cardStyle.isLight ? "light-card-text" : ""
-                            }`}
+                            className={`metal-mock-logo ${product.cardStyle.isLight ? "light-card-text" : ""
+                              }`}
                           >
                             H<span className={`metal-mock-logo-mark ${product.cardStyle.logoStyle === "gold" ? "gold-logo" : ""}`}>t</span>
                           </div>
 
                           <div className="metal-mock-details">
                             <div
-                              className={`metal-mock-brand ${
-                                product.cardStyle.isLight ? "light-card-text" : ""
-                              }`}
+                              className={`metal-mock-brand ${product.cardStyle.isLight ? "light-card-text" : ""
+                                }`}
                             >
                               HAPPYTAP
                             </div>
                             <div
-                              className={`metal-mock-chip ${
-                                product.cardStyle.isLight ? "light-card-text" : ""
-                              }`}
+                              className={`metal-mock-chip ${product.cardStyle.isLight ? "light-card-text" : ""
+                                }`}
                             >
                               <Wifi className="icon icon-sm" style={{ transform: "rotate(90deg)" }} />
                             </div>
@@ -513,7 +510,7 @@ export default function MetalEditionPage() {
                   <div className="me-split-card-glow"></div>
                   <h2>Stay Updated</h2>
                   <p>Get the latest updates on new designs and offers.</p>
-                  
+
                   <form onSubmit={handleNewsletterSubmit} className="me-input-wrap">
                     <input
                       type="email"

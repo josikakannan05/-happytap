@@ -24,7 +24,7 @@ import { Reveal } from "@/components/Reveal";
 interface Product {
   id: string;
   title: string;
-  category: string;
+  category: "Standard" | "Premium" | "Luxury" | "Signature";
   price: number;
   description: string;
   colorName: string;
@@ -40,7 +40,7 @@ const productsData: Product[] = [
   {
     id: "minimal-midnight",
     title: "Minimal Midnight",
-    category: "Minimal Series",
+    category: "Standard",
     price: 799,
     description: "Deep charcoal matte finish with reflective silver foil detailing.",
     colorName: "Midnight Black",
@@ -52,7 +52,7 @@ const productsData: Product[] = [
   {
     id: "minimal-graphite",
     title: "Minimal Graphite",
-    category: "Minimal Series",
+    category: "Standard",
     price: 899,
     description: "Industrial dark grey brushed texture with polished metal engraving look.",
     colorName: "Graphite Grey",
@@ -64,7 +64,7 @@ const productsData: Product[] = [
   {
     id: "minimal-carbon",
     title: "Minimal Carbon",
-    category: "Minimal Series",
+    category: "Standard",
     price: 999,
     description: "Raw carbon fiber weaving aesthetic for high-tech professionals.",
     colorName: "Carbon Weave",
@@ -76,7 +76,7 @@ const productsData: Product[] = [
   {
     id: "minimal-titanium",
     title: "Minimal Titanium",
-    category: "Minimal Series",
+    category: "Premium",
     price: 1199,
     description: "Space-grade titanium silver hue with a satin metallic luster.",
     colorName: "Satin Titanium",
@@ -89,7 +89,7 @@ const productsData: Product[] = [
   {
     id: "minimal-eclipse",
     title: "Minimal Eclipse",
-    category: "Minimal Series",
+    category: "Premium",
     price: 1299,
     description: "Mystical deep purple gradient representing the celestial twilight shadow.",
     colorName: "Eclipse Purple",
@@ -101,7 +101,7 @@ const productsData: Product[] = [
   {
     id: "minimal-aurora",
     title: "Minimal Aurora",
-    category: "Minimal Series",
+    category: "Premium",
     price: 1399,
     description: "Vibrant iridescent gradient reflecting the natural northern lights.",
     colorName: "Aurora Green/Blue",
@@ -113,7 +113,7 @@ const productsData: Product[] = [
   {
     id: "minimal-rose-gold",
     title: "Minimal Rose Gold",
-    category: "Minimal Series",
+    category: "Luxury",
     price: 1499,
     description: "Warm pink-gold satin finish with reflective copper-rose highlights.",
     colorName: "Rose Gold",
@@ -126,7 +126,7 @@ const productsData: Product[] = [
   {
     id: "minimal-platinum",
     title: "Minimal Platinum",
-    category: "Minimal Series",
+    category: "Luxury",
     price: 1699,
     description: "Radiant high-polished platinum silver with chrome logo emblem.",
     colorName: "Platinum Chrome",
@@ -139,7 +139,7 @@ const productsData: Product[] = [
   {
     id: "minimal-executive",
     title: "Minimal Executive",
-    category: "Minimal Series",
+    category: "Luxury",
     price: 1999,
     description: "Deep navy blue casing highlighted by a 24k polished gold accent.",
     colorName: "Executive Navy & Gold",
@@ -151,7 +151,7 @@ const productsData: Product[] = [
   {
     id: "minimal-signature",
     title: "Minimal Signature",
-    category: "Minimal Series",
+    category: "Signature",
     price: 2499,
     description: "Matte obsidian casing with gold trim border and signature monogram.",
     colorName: "Velvet Obsidian & Gold",
@@ -195,7 +195,7 @@ export default function MinimalSeriesPage() {
   const [authTab, setAuthTab] = useState<"login" | "signup">("login");
   const [user, setUser] = useState<string | null>(null);
 
-  const filters = ["All", "Minimal Series"];
+  const filters = ["All", "Standard", "Premium", "Luxury", "Signature"];
 
   const openAuth = (tab: "login" | "signup") => {
     setAuthTab(tab);
@@ -277,7 +277,7 @@ export default function MinimalSeriesPage() {
                 </Reveal>
                 <Reveal delay={200}>
                   <p className="ms-hero-subtitle">
-                    Elegant simplicity engineered for the modern professional. 
+                    Elegant simplicity engineered for the modern professional.
                     Instantly share your contact details, social links, and portfolio with a single, contactless tap.
                   </p>
                 </Reveal>
@@ -357,27 +357,24 @@ export default function MinimalSeriesPage() {
                           }}
                         >
                           <div className="nfc-card-mockup-glare"></div>
-                          
+
                           <div
-                            className={`nfc-mock-logo ${
-                              product.cardStyle.isLight ? "light-card-text" : ""
-                            }`}
+                            className={`nfc-mock-logo ${product.cardStyle.isLight ? "light-card-text" : ""
+                              }`}
                           >
                             H<span className={`nfc-mock-logo-mark ${product.cardStyle.logoStyle === "gold" ? "gold-logo" : ""}`}>t</span>
                           </div>
 
                           <div className="nfc-mock-details">
                             <div
-                              className={`nfc-mock-brand ${
-                                product.cardStyle.isLight ? "light-card-text" : ""
-                              }`}
+                              className={`nfc-mock-brand ${product.cardStyle.isLight ? "light-card-text" : ""
+                                }`}
                             >
                               HAPPYTAP
                             </div>
                             <div
-                              className={`nfc-mock-chip ${
-                                product.cardStyle.isLight ? "light-card-text" : ""
-                              }`}
+                              className={`nfc-mock-chip ${product.cardStyle.isLight ? "light-card-text" : ""
+                                }`}
                             >
                               <Wifi className="icon icon-sm" style={{ transform: "rotate(90deg)" }} />
                             </div>

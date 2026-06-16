@@ -1,15 +1,157 @@
 "use client";
 
 import { useState } from "react";
-import { Layers, ArrowLeft } from "lucide-react";
+import { SlidersHorizontal, ChevronDown, Heart, Wifi, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { products } from "@/lib/data";
 import { Navbar } from "@/components/Navbar";
-import { Reveal } from "@/components/Reveal";
-import { SectionLabel } from "@/components/SectionLabel";
+import { Footer } from "@/components/Footer";
 import { AuthModal } from "@/components/AuthModal";
+import { Reveal } from "@/components/Reveal";
+
+interface ProductCard {
+  id: string;
+  title: string;
+  category: "Metal Edition" | "Minimal Series" | "Executive Collection" | "Team Edition";
+  price: number;
+  description: string;
+  link: string;
+  cardStyle: {
+    background: string;
+    logoStyle: "gold" | "silver" | "white" | "rose";
+    isLight?: boolean;
+    border?: string;
+    hasGoldLine?: boolean;
+    wavesStyle: string;
+  };
+}
+
+const productsData: ProductCard[] = [
+  {
+    id: "midnight-metal",
+    title: "Midnight Metal",
+    category: "Metal Edition",
+    price: 999,
+    description: "Premium black metal finish with subtle shine and durability.",
+    link: "/cards/metal-edition/metal-black-luxury",
+    cardStyle: {
+      background: "linear-gradient(135deg, #121212 0%, #1a1a1a 100%)",
+      logoStyle: "white",
+      wavesStyle: "rgba(255, 255, 255, 0.8)",
+    }
+  },
+  {
+    id: "graphite-minimal",
+    title: "Graphite Minimal",
+    category: "Minimal Series",
+    price: 899,
+    description: "Sleek graphite finish with a clean and modern look.",
+    link: "/cards/minimal-series/minimal-graphite",
+    cardStyle: {
+      background: "linear-gradient(135deg, #2c2d30 0%, #1e1f21 100%)",
+      logoStyle: "silver",
+      wavesStyle: "rgba(255, 255, 255, 0.7)",
+    }
+  },
+  {
+    id: "platinum-white",
+    title: "Platinum White",
+    category: "Executive Collection",
+    price: 1199,
+    description: "Premium platinum white for a luxurious and elegant presence.",
+    link: "/cards/minimal-series/minimal-platinum",
+    cardStyle: {
+      background: "linear-gradient(135deg, #e5e5e9 0%, #ffffff 50%, #d1d1d6 100%)",
+      logoStyle: "silver",
+      isLight: true,
+      wavesStyle: "rgba(12, 12, 15, 0.7)",
+    }
+  },
+  {
+    id: "ocean-blue",
+    title: "Ocean Blue",
+    category: "Team Edition",
+    price: 1099,
+    description: "Bold ocean blue finish that represents trust and confidence.",
+    link: "/cards/team-edition/team-pro",
+    cardStyle: {
+      background: "linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%)",
+      logoStyle: "white",
+      wavesStyle: "rgba(255, 255, 255, 0.8)",
+    }
+  },
+  {
+    id: "rose-gold",
+    title: "Rose Gold",
+    category: "Metal Edition",
+    price: 1299,
+    description: "Elegant rose gold metal with premium polished finish.",
+    link: "/cards/metal-edition/metal-rose-gold",
+    cardStyle: {
+      background: "linear-gradient(135deg, #e5b2a5 0%, #f7dcd5 50%, #d89687 100%)",
+      logoStyle: "rose",
+      isLight: true,
+      wavesStyle: "rgba(12, 12, 15, 0.6)",
+    }
+  },
+  {
+    id: "black-gold",
+    title: "Black Gold",
+    category: "Executive Collection",
+    price: 1499,
+    description: "Iconic black and gold combination for a powerful impression.",
+    link: "/cards/executive-collection/executive-classic",
+    cardStyle: {
+      background: "radial-gradient(circle at 100% 100%, rgba(212, 175, 55, 0.25) 0%, transparent 60%), #141417",
+      logoStyle: "gold",
+      border: "1px solid #ffd700",
+      hasGoldLine: true,
+      wavesStyle: "rgba(255, 255, 255, 0.8)",
+    }
+  },
+  {
+    id: "aurora-green",
+    title: "Aurora Green",
+    category: "Minimal Series",
+    price: 1299,
+    description: "Vibrant iridescent gradient reflecting the natural northern lights.",
+    link: "/cards/minimal-series/minimal-aurora",
+    cardStyle: {
+      background: "linear-gradient(135deg, #0575e6 0%, #00f260 100%)",
+      logoStyle: "white",
+      wavesStyle: "rgba(255, 255, 255, 0.8)",
+    }
+  },
+  {
+    id: "titanium-silver",
+    title: "Titanium Silver",
+    category: "Metal Edition",
+    price: 2499,
+    description: "Space-grade titanium silver with a satin metallic luster.",
+    link: "/cards/metal-edition/metal-titanium",
+    cardStyle: {
+      background: "linear-gradient(135deg, #8e8e93 0%, #d1d1d6 50%, #8e8e93 100%)",
+      logoStyle: "white",
+      isLight: true,
+      wavesStyle: "rgba(12, 12, 15, 0.7)",
+    }
+  },
+  {
+    id: "carbon-weave",
+    title: "Carbon Weave",
+    category: "Minimal Series",
+    price: 999,
+    description: "Raw carbon fiber weaving aesthetic for high-tech professionals.",
+    link: "/cards/minimal-series/minimal-carbon",
+    cardStyle: {
+      background: "linear-gradient(135deg, #151515 0%, #252525 100%)",
+      logoStyle: "white",
+      wavesStyle: "rgba(255, 255, 255, 0.8)",
+    }
+  }
+];
 
 export default function CardsPage() {
+  const [favorites, setFavorites] = useState<Record<string, boolean>>({});
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState<"login" | "signup">("login");
   const [user, setUser] = useState<string | null>(null);
@@ -27,6 +169,13 @@ export default function CardsPage() {
     setUser(null);
   };
 
+  const toggleFavorite = (id: string) => {
+    setFavorites((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
   return (
     <>
       <Navbar
@@ -34,134 +183,126 @@ export default function CardsPage() {
         user={user}
         onLogout={handleLogout}
       />
-      <div className="cards-page">
+      
+      <div className="cards-page-new">
         {/* Back Button */}
-        <div className="cards-header-top">
-        <Link href="/" className="back-button">
-          <ArrowLeft className="icon" />
-          <span>Back</span>
-        </Link>
-      </div>
-
-      {/* Page Header */}
-      <section className="cards-hero">
-        <div className="container">
-          <Reveal>
-            <div className="section-header">
-              <SectionLabel icon={Layers}>All Cards</SectionLabel>
-              <h1 className="cards-title">Crafted for modern professionals.</h1>
-              <p className="cards-subtitle">
-                Explore our complete collection of premium NFC card designs tailored for every professional need.
-              </p>
-            </div>
-          </Reveal>
+        <div className="cards-container-new" style={{ marginBottom: "16px" }}>
+          <Link href="/" className="back-button" style={{ display: "inline-flex", alignItems: "center", gap: "8px", textDecoration: "none", color: "#64647a", fontSize: "0.9rem", fontWeight: "600" }}>
+            <ArrowLeft size={16} />
+            <span>Back to Home</span>
+          </Link>
         </div>
-      </section>
 
-      {/* Products Grid */}
-      <section className="cards-collection">
-        <div className="container">
-          <div className="cards-grid">
-            {products.map((product, index) => (
-              <Reveal key={product.title} delay={60 + index * 60}>
-                <div className="card-item">
-                  <div className="card-overlay" />
-                  
-                  <div className="card-img-wrap">
-                    <img
-                      src={product.image}
-                      alt={product.title}
-                      className="card-img"
-                      draggable={false}
-                    />
-                  </div>
+        {/* Page Header */}
+        <header className="cards-container-new cards-header-new">
+          <div className="cards-header-left">
+            <Reveal>
+              <h1>All Cards</h1>
+              <p>Choose a design that matches your style and make every tap count.</p>
+            </Reveal>
+          </div>
+          
+          <div className="cards-header-right">
+            <Reveal delay={100}>
+              <button className="btn-filter-new" suppressHydrationWarning>
+                <SlidersHorizontal size={15} />
+                <span>Filters</span>
+              </button>
+              <button className="btn-sort-new" suppressHydrationWarning>
+                <span>Sort by: <strong>Popular</strong></span>
+                <ChevronDown size={15} />
+              </button>
+            </Reveal>
+          </div>
+        </header>
 
-                  <span className="card-tag">
-                    <product.icon className="icon" aria-hidden />
-                    {product.tag}
-                  </span>
+        {/* Products Grid */}
+        <main className="cards-container-new">
+          <div className="cards-grid-new">
+            {productsData.map((product, index) => {
+              const isLight = product.cardStyle.isLight;
+              const logoStyle = product.cardStyle.logoStyle;
+              return (
+                <Reveal key={product.id} delay={120 + index * 60}>
+                  <div className="card-item-new">
+                    
+                    {/* Favorite Heart Button */}
+                    <button
+                      className={`card-fav-btn ${favorites[product.id] ? "active" : ""}`}
+                      onClick={() => toggleFavorite(product.id)}
+                      aria-label="Add to favorites"
+                    >
+                      <Heart
+                        size={18}
+                        style={{
+                          fill: favorites[product.id] ? "#ff4757" : "none",
+                          stroke: favorites[product.id] ? "#ff4757" : "currentColor"
+                        }}
+                      />
+                    </button>
 
-                  <div className="card-content">
-                    <div className="card-text">
-                      <h3>{product.title}</h3>
-                      <p>{product.description}</p>
+                    {/* Card Preview Graphic Area */}
+                    <div className="card-mockup-container">
+                      <div
+                        className={`nfc-mockup-new ${isLight ? "mockup-light" : ""}`}
+                        style={{
+                          background: product.cardStyle.background,
+                          border: product.cardStyle.border || "1px solid rgba(255, 255, 255, 0.08)",
+                        }}
+                      >
+                        <div className="nfc-mockup-new-glare"></div>
+                        
+                        {product.cardStyle.hasGoldLine && (
+                          <div className="mockup-gold-line"></div>
+                        )}
+
+                        <div
+                          className={`mockup-logo-new logo-${logoStyle} ${
+                            isLight ? "light-text" : ""
+                          }`}
+                        >
+                          H<span>t</span>
+                        </div>
+
+                        <div
+                          className={`mockup-details-new ${
+                            isLight ? "light-text" : ""
+                          }`}
+                        >
+                          <div className="mockup-brand-new">
+                            HAPPYTAP
+                          </div>
+                          <div className="mockup-chip-new" style={{ color: product.cardStyle.wavesStyle }}>
+                            <Wifi size={20} style={{ transform: "rotate(90deg)" }} />
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="card-cta">
-                      <Link href={`/cards/${product.title.toLowerCase().replace(/\s+/g, "-")}`} className="explore-btn">
-                        <span>Explore</span>
-                        <svg viewBox="0  24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon">
-                          <path d="M5 12h14" />
-                          <path d="m12 5 7 7-7 7" />
-                        </svg>
+
+                    {/* Card Details Area */}
+                    <div className="card-info-area">
+                      <span className="card-category-new">{product.category}</span>
+                      <h2 className="card-title-new">{product.title}</h2>
+                      <p className="card-desc-new">{product.description}</p>
+                    </div>
+
+                    {/* Footer / Price Row */}
+                    <div className="card-footer-new">
+                      <span className="card-price-new">₹{product.price.toLocaleString("en-IN")}</span>
+                      <Link href={product.link} className="card-btn-new">
+                        View Details
                       </Link>
                     </div>
+
                   </div>
-                </div>
-              </Reveal>
-            ))}
+                </Reveal>
+              );
+            })}
           </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="cards-features">
-        <div className="container">
-          <Reveal>
-            <div className="features-header">
-              <h2 className="features-title">Why Choose Our Cards</h2>
-            </div>
-          </Reveal>
-
-          <div className="features-grid">
-            {[
-              {
-                icon: "✨",
-                title: "Premium Design",
-                description: "Beautifully crafted with attention to every detail."
-              },
-              {
-                icon: "📱",
-                title: "NFC Technology",
-                description: "Instantly share your profile with a single tap."
-              },
-              {
-                icon: "🎨",
-                title: "Customizable",
-                description: "Personalize your card to match your brand identity."
-              },
-              {
-                icon: "📊",
-                title: "Analytics",
-                description: "Track interactions and optimize your networking strategy."
-              },
-            ].map((feature, index) => (
-              <Reveal key={feature.title} delay={60 + index * 60}>
-                <div className="feature-card">
-                  <div className="feature-icon">{feature.icon}</div>
-                  <h3>{feature.title}</h3>
-                  <p>{feature.description}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="cards-cta">
-        <div className="container">
-          <Reveal>
-            <div className="cta-content">
-              <h2>Ready to make your first impression?</h2>
-              <p>Choose your card design and start networking smarter today.</p>
-              <Link href="#" className="cta-button">
-                Get Started Now
-              </Link>
-            </div>
-          </Reveal>
-        </div>
-      </section>
+        </main>
       </div>
+
+      <Footer />
 
       <AuthModal
         isOpen={isAuthOpen}

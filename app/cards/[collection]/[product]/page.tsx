@@ -73,7 +73,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-midnight",
         title: "Minimal Midnight",
-        category: "Minimal Series",
+        category: "Standard",
         price: 799,
         description: "Deep charcoal matte finish with reflective silver foil detailing. The perfect blend of minimalism and professionalism.",
         colorName: "Midnight Black",
@@ -86,7 +86,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-graphite",
         title: "Minimal Graphite",
-        category: "Minimal Series",
+        category: "Standard",
         price: 899,
         description: "Industrial dark grey brushed texture with polished metal engraving look. Designed for builders and innovators.",
         colorName: "Graphite Grey",
@@ -99,7 +99,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-carbon",
         title: "Minimal Carbon",
-        category: "Minimal Series",
+        category: "Standard",
         price: 999,
         description: "Raw carbon fiber weaving aesthetic for high-tech professionals. Lightweight feel with heavy-weight performance.",
         colorName: "Carbon Weave",
@@ -112,7 +112,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-titanium",
         title: "Minimal Titanium",
-        category: "Minimal Series",
+        category: "Premium",
         price: 1199,
         description: "Space-grade titanium silver hue with a satin metallic luster. Clean, raw, and exceptionally modern.",
         colorName: "Satin Titanium",
@@ -126,7 +126,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-eclipse",
         title: "Minimal Eclipse",
-        category: "Minimal Series",
+        category: "Premium",
         price: 1299,
         description: "Mystical deep purple gradient representing the celestial twilight shadow. For visionaries working in the shadows.",
         colorName: "Eclipse Purple",
@@ -139,7 +139,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-aurora",
         title: "Minimal Aurora",
-        category: "Minimal Series",
+        category: "Premium",
         price: 1299,
         description: "Vibrant iridescent gradient reflecting the natural northern lights. Stand out with natural color flow.",
         colorName: "Aurora Green/Blue",
@@ -152,7 +152,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-rose-gold",
         title: "Minimal Rose Gold",
-        category: "Minimal Series",
+        category: "Luxury",
         price: 1499,
         description: "Warm pink-gold satin finish with reflective copper-rose highlights. Elegance defined in every hand-off.",
         colorName: "Rose Gold",
@@ -166,7 +166,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-platinum",
         title: "Minimal Platinum",
-        category: "Minimal Series",
+        category: "Luxury",
         price: 1699,
         description: "Radiant high-polished platinum silver with chrome logo emblem. The peak of premium minimalist luxury.",
         colorName: "Platinum Chrome",
@@ -180,7 +180,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-executive",
         title: "Minimal Executive",
-        category: "Minimal Series",
+        category: "Luxury",
         price: 1999,
         description: "Deep navy blue casing highlighted by a 24k polished gold accent. Built for the boardroom and executive suite.",
         colorName: "Executive Navy & Gold",
@@ -193,7 +193,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-signature",
         title: "Minimal Signature",
-        category: "Minimal Series",
+        category: "Signature",
         price: 2499,
         description: "Matte obsidian casing with gold trim border and signature monogram. Your professional signature, tangible.",
         colorName: "Velvet Obsidian & Gold",
@@ -214,7 +214,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-bronze",
         title: "Metal Bronze",
-        category: "Metal Edition",
+        category: "Standard",
         price: 1999,
         description: "Raw brushed bronze surface with warm rustic copper undertones. A timeless weight of pure rustic metal.",
         colorName: "Bronze Finish",
@@ -227,7 +227,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-copper",
         title: "Metal Copper",
-        category: "Metal Edition",
+        category: "Standard",
         price: 2199,
         description: "Satin metallic copper finish emitting a brilliant rose-amber glow. Warm luxury and bold style.",
         colorName: "Copper Glow",
@@ -240,7 +240,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-titanium",
         title: "Metal Titanium",
-        category: "Metal Edition",
+        category: "Premium",
         price: 2499,
         description: "Space-grade brushed titanium silver with a sleek industrial appearance. Ultra durable, ultra professional.",
         colorName: "Titanium Silver",
@@ -254,7 +254,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-graphite",
         title: "Metal Graphite",
-        category: "Metal Edition",
+        category: "Premium",
         price: 2699,
         description: "Deep gunmetal charcoal brushed finish with subtle dark engravings. Raw structural power in your pocket.",
         colorName: "Graphite Charcoal",
@@ -267,7 +267,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-rose-gold",
         title: "Metal Rose Gold",
-        category: "Metal Edition",
+        category: "Premium",
         price: 2999,
         description: "Luxurious brushed rose-gold plating reflecting a warm satin luster. Classic elegance meets modern NFC technology.",
         colorName: "Rose Gold",
@@ -281,7 +281,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-silver",
         title: "Metal Silver",
-        category: "Metal Edition",
+        category: "Luxury",
         price: 3299,
         description: "Brilliant brushed silver with high-reflectivity chrome highlights. Clean metallic details.",
         colorName: "Sliver Chrome",
@@ -295,7 +295,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-platinum",
         title: "Metal Platinum",
-        category: "Metal Edition",
+        category: "Luxury",
         price: 3499,
         description: "Deep luster platinum chrome reflecting high wealth and prestige. The ultimate calling card for captains of industry.",
         colorName: "Platinum Mirror",
@@ -309,7 +309,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-executive",
         title: "Metal Executive",
-        category: "Metal Edition",
+        category: "Luxury",
         price: 3999,
         description: "Velvet midnight black body with executive 24k polished gold trim. A royal presence in any network connection.",
         colorName: "Obsidian Gold Trim",
@@ -323,7 +323,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-signature",
         title: "Metal Signature",
-        category: "Metal Edition",
+        category: "Signature",
         price: 4499,
         description: "Mirror-finish gold plating engraved with exclusive initials patterns. An unforgettable gold standard.",
         colorName: "24K Gold Plated",
@@ -337,7 +337,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-black-luxury",
         title: "Metal Black Luxury",
-        category: "Metal Edition",
+        category: "Signature",
         price: 4999,
         description: "Deep obsidian matte black finish with double-anodized laser engraving. Stealth corporate prestige.",
         colorName: "Matte Black",
@@ -357,7 +357,7 @@ const collectionsData: Record<string, {
       {
         id: "executive-classic",
         title: "Executive Classic",
-        category: "Executive Collection",
+        category: "Standard",
         price: 3999,
         description: "Midnight black body enhanced by a premium radial gold wave pattern. The classic hallmark of executive quality.",
         colorName: "Gold Wave Accent",
@@ -371,7 +371,7 @@ const collectionsData: Record<string, {
       {
         id: "executive-graphite",
         title: "Executive Graphite",
-        category: "Executive Collection",
+        category: "Standard",
         price: 4499,
         description: "Geometric matte texture design on a deep graphite background. Modern structural design for contemporary leaders.",
         colorName: "Graphite Charcoal",
@@ -386,7 +386,7 @@ const collectionsData: Record<string, {
       {
         id: "executive-rose-gold",
         title: "Executive Rose Gold",
-        category: "Executive Collection",
+        category: "Premium",
         price: 4999,
         description: "Brushed metal finish reflecting a warm rose-gold metallic luster. Timeless warmth and luxury design.",
         colorName: "Rose Gold Finish",
@@ -401,7 +401,7 @@ const collectionsData: Record<string, {
       {
         id: "executive-prestige",
         title: "Executive Prestige",
-        category: "Executive Collection",
+        category: "Premium",
         price: 5499,
         description: "Elegant diamond quilt pattern engraved into a premium executive body. Satin texture feels premium in hand.",
         colorName: "Midnight Prestige",
@@ -416,7 +416,7 @@ const collectionsData: Record<string, {
       {
         id: "executive-titanium",
         title: "Executive Titanium",
-        category: "Executive Collection",
+        category: "Luxury",
         price: 5999,
         description: "Modern hexagon metal texture design with a satin titanium silver coat. High-tech executive look.",
         colorName: "Titanium Hexagon",
@@ -432,9 +432,9 @@ const collectionsData: Record<string, {
       {
         id: "executive-elite",
         title: "Executive Elite",
-        category: "Executive Collection",
+        category: "Luxury",
         price: 6999,
-        description: "Stunning diagonal gold lines across an elite deep charcoal surface. Sleek diagonal gold lines across an elite deep charcoal surface.",
+        description: "Stunning diagonal gold lines across an elite deep charcoal surface. Sleek linear art highlighting executive class.",
         colorName: "Elite Diagonal Gold",
         cssClass: "ec-card-elite",
         cardStyle: {
@@ -446,7 +446,7 @@ const collectionsData: Record<string, {
       {
         id: "executive-chairman",
         title: "Executive Chairman",
-        category: "Executive Collection",
+        category: "Executive",
         price: 7499,
         description: "Exquisite combination of rich mahogany wood veneer and rose-gold finish. Real wood aesthetic representing solid leadership.",
         colorName: "Mahogany & Gold",
@@ -461,7 +461,7 @@ const collectionsData: Record<string, {
       {
         id: "executive-black-label",
         title: "Executive Black Label",
-        category: "Executive Collection",
+        category: "Executive",
         price: 7999,
         description: "Deep obsidian matte background with premium horizontal micro-textures. Silent, powerful, and absolutely elite.",
         colorName: "Obsidian Black",
@@ -475,7 +475,7 @@ const collectionsData: Record<string, {
       {
         id: "executive-signature",
         title: "Executive Signature",
-        category: "Executive Collection",
+        category: "Signature",
         price: 8999,
         description: "Minimalist executive card defined by double 24k polished gold borders. A refined gold frame around your identity.",
         colorName: "Double Gold Border",
@@ -489,7 +489,7 @@ const collectionsData: Record<string, {
       {
         id: "executive-legacy",
         title: "Executive Legacy",
-        category: "Executive Collection",
+        category: "Signature",
         price: 9999,
         description: "Flagship royal emblem and crest design reflecting heritage and prestige. The ultimate family legacy card.",
         colorName: "Royal Emblem",
@@ -526,7 +526,7 @@ const collectionsData: Record<string, {
       {
         id: "team-pro",
         title: "Team Pro",
-        category: "Team Edition",
+        category: "Premium",
         price: 1999,
         description: "Deep blue premium finish designed for high-performance professional corporate teams.",
         colorName: "Deep Blue Premium",
@@ -541,7 +541,7 @@ const collectionsData: Record<string, {
       {
         id: "developers-pack",
         title: "Developers Pack",
-        category: "Team Edition",
+        category: "Role Based",
         price: 2499,
         description: "Sleek dark graphite layout featuring a custom integrated code developer icon. Ideal for engineering squads.",
         colorName: "Dark Graphite",
@@ -556,7 +556,7 @@ const collectionsData: Record<string, {
       {
         id: "design-team",
         title: "Design Team",
-        category: "Team Edition",
+        category: "Department",
         price: 2499,
         description: "Vibrant emerald green creative style highlighting artistic profiles and creative agency teams.",
         colorName: "Emerald Creative",
@@ -571,7 +571,7 @@ const collectionsData: Record<string, {
       {
         id: "marketing-team",
         title: "Marketing Team",
-        category: "Team Edition",
+        category: "Department",
         price: 2999,
         description: "Rich purple branding layout tailored for creative marketers, PR specialists, and social media squads.",
         colorName: "Purple Branding",
@@ -586,7 +586,7 @@ const collectionsData: Record<string, {
       {
         id: "sales-team",
         title: "Sales Team",
-        category: "Team Edition",
+        category: "Role Based",
         price: 2999,
         description: "Luxury metallic copper finish customized with a growth bar chart symbol. Perfect for high-velocity closers.",
         colorName: "Copper Finish",
@@ -601,7 +601,7 @@ const collectionsData: Record<string, {
       {
         id: "support-team",
         title: "Support Team",
-        category: "Team Edition",
+        category: "Department",
         price: 2499,
         description: "Classic navy blue layout custom-engraved with a dedicated headset support symbol. For customer success champions.",
         colorName: "Navy Support",
@@ -616,7 +616,7 @@ const collectionsData: Record<string, {
       {
         id: "hr-team",
         title: "HR Team",
-        category: "Team Edition",
+        category: "Premium",
         price: 2499,
         description: "Stunning gold-plated pattern with integrated security shield icon representing HR care and talent aquisition.",
         colorName: "Gold Premium HR",
@@ -632,7 +632,7 @@ const collectionsData: Record<string, {
       {
         id: "finance-team",
         title: "Finance Team",
-        category: "Team Edition",
+        category: "Department",
         price: 2999,
         description: "Dark blue corporate layout customized with a clean asset briefcase icon. For financial controllers and CFOs.",
         colorName: "Dark Corporate",
@@ -647,7 +647,7 @@ const collectionsData: Record<string, {
       {
         id: "enterprise-team",
         title: "Enterprise Team",
-        category: "Team Edition",
+        category: "Enterprise",
         price: 3499,
         description: "Gunmetal grey enterprise finish crafted for large-scale corporate organizations and company-wide rollouts.",
         colorName: "Gunmetal Enterprise",
@@ -754,7 +754,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
     const isTeamLayout = activeProduct.isTeamLayout;
     const isLight = activeProduct.cardStyle.isLight;
     const logoStyle = activeProduct.cardStyle.logoStyle;
-    
+
     // Team Edition styling
     if (isTeamLayout) {
       const Icon = activeProduct.icon || Users;
@@ -780,9 +780,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
     // Metal or Executive or Minimal styling
     const specificClass = activeProduct.cssClass || "";
     const hasExtraLines = activeProduct.hasExtraLines;
-    
+
     return (
-      <div 
+      <div
         className={`ec-card-mockup ${specificClass}`}
         style={{
           width: "100%",
@@ -804,7 +804,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
 
         <div className={`ec-mock-logo ${isLight ? "light-card-text" : ""}`} style={{ padding: isThumb ? "6px 8px" : "14px" }}>
           H
-          <span 
+          <span
             className={`ec-mock-logo-mark ${logoStyle === "gold" ? "gold-logo" : ""}`}
             style={getLogoMarkStyle(logoStyle)}
           >
@@ -828,7 +828,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
     const isLight = activeProduct.cardStyle.isLight;
     const logoStyle = activeProduct.cardStyle.logoStyle;
     return (
-      <div 
+      <div
         className="ec-card-back"
         style={{
           background: activeProduct.cardStyle.background,
@@ -917,16 +917,16 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
             <div className="pd-gallery-section">
               <div className="pd-preview-box">
                 {/* Navigation Arrows */}
-                <button 
-                  className="pd-preview-arrow pd-preview-arrow-left" 
+                <button
+                  className="pd-preview-arrow pd-preview-arrow-left"
                   onClick={() => handleArrowNav("left")}
                   aria-label="Previous view"
                 >
                   <ChevronLeft style={{ width: "20px", height: "20px" }} />
                 </button>
 
-                <div 
-                  className="ec-card-preview-area" 
+                <div
+                  className="ec-card-preview-area"
                   style={{ width: "100%", maxWidth: "360px", padding: 0, margin: 0, display: "flex", justifyContent: "center" }}
                 >
                   <AnimatePresence mode="wait">
@@ -945,8 +945,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                   </AnimatePresence>
                 </div>
 
-                <button 
-                  className="pd-preview-arrow pd-preview-arrow-right" 
+                <button
+                  className="pd-preview-arrow pd-preview-arrow-right"
                   onClick={() => handleArrowNav("right")}
                   aria-label="Next view"
                 >
@@ -956,7 +956,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
 
               {/* Thumbnails Row */}
               <div className="pd-thumbnails-row">
-                <div 
+                <div
                   className={`pd-thumbnail-box ${activeView === "front" ? "active" : ""}`}
                   onClick={() => setActiveView("front")}
                 >
@@ -966,7 +966,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                   <span className="pd-thumbnail-label">Front Design</span>
                 </div>
 
-                <div 
+                <div
                   className={`pd-thumbnail-box ${activeView === "back" ? "active" : ""}`}
                   onClick={() => setActiveView("back")}
                 >
@@ -976,7 +976,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                   <span className="pd-thumbnail-label">Back Design</span>
                 </div>
 
-                <div 
+                <div
                   className={`pd-thumbnail-box ${activeView === "side" ? "active" : ""}`}
                   onClick={() => setActiveView("side")}
                 >
@@ -996,9 +996,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
               </span>
               <h1 className="pd-product-name">{activeProduct.title}</h1>
               <p className="pd-product-description">{activeProduct.description}</p>
-              
+
               <div className="pd-product-price">₹{activeProduct.price.toLocaleString()}</div>
-              
+
               {/* Ratings */}
               <div className="pd-rating-row">
                 <div className="pd-stars">
@@ -1043,7 +1043,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                   Add to Cart
                 </button>
 
-                <button 
+                <button
                   className={`pd-wishlist-btn ${favorites[activeProduct.id] ? "active" : ""}`}
                   onClick={() => toggleFavorite(activeProduct.id, activeProduct.title)}
                   aria-label="Add to wishlist"
@@ -1164,7 +1164,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                   {/* Related card preview */}
                   <div className="ec-card-preview-area" style={{ margin: "10px 0 20px" }}>
                     {rel.isTeamLayout ? (
-                      <div 
+                      <div
                         className={`te-card-mockup ${rel.cssClass || ""}`}
                         style={{
                           width: "100%",
@@ -1195,7 +1195,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                         </div>
                       </div>
                     ) : (
-                      <div 
+                      <div
                         className={`ec-card-mockup`}
                         style={{
                           width: "100%",
@@ -1307,7 +1307,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                         <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "#86868b" }}>Special pricing for large enterprise teams.</p>
                       </div>
                     </div>
-                    
+
                     <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                       <div className="te-benefits-icon-wrap" style={{ width: "40px", height: "40px" }}>
                         <Palette className="icon" style={{ width: "18px", height: "18px" }} />
@@ -1317,7 +1317,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                         <p style={{ margin: "2px 0 0 0", fontSize: "0.8rem", color: "#86868b" }}>Add your custom logo and corporate brand identity.</p>
                       </div>
                     </div>
-                    
+
                     <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                       <div className="te-benefits-icon-wrap" style={{ width: "40px", height: "40px" }}>
                         <Headset className="icon" style={{ width: "18px", height: "18px" }} />

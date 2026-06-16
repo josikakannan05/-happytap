@@ -37,7 +37,7 @@ import { Reveal } from "@/components/Reveal";
 interface Product {
   id: string;
   title: string;
-  category: string;
+  category: "Department" | "Role Based" | "Premium" | "Enterprise" | "Team Edition";
   price: number;
   description: string;
   colorName: string;
@@ -67,7 +67,7 @@ const productsData: Product[] = [
   {
     id: "team-pro",
     title: "Team Pro",
-    category: "Team Edition",
+    category: "Premium",
     price: 1999,
     description: "Deep blue premium finish designed for high-performance professional teams.",
     colorName: "Deep Blue Premium",
@@ -80,7 +80,7 @@ const productsData: Product[] = [
   {
     id: "developers-pack",
     title: "Developers Pack",
-    category: "Team Edition",
+    category: "Role Based",
     price: 2499,
     description: "Sleek dark graphite layout featuring a custom integrated code developer icon.",
     colorName: "Dark Graphite",
@@ -93,7 +93,7 @@ const productsData: Product[] = [
   {
     id: "design-team",
     title: "Design Team",
-    category: "Team Edition",
+    category: "Department",
     price: 2499,
     description: "Vibrant emerald green creative style highlighting artistic and design profiles.",
     colorName: "Emerald Creative",
@@ -106,7 +106,7 @@ const productsData: Product[] = [
   {
     id: "marketing-team",
     title: "Marketing Team",
-    category: "Team Edition",
+    category: "Department",
     price: 2999,
     description: "Rich purple branding layout tailored for creative marketers and social teams.",
     colorName: "Purple Branding",
@@ -119,7 +119,7 @@ const productsData: Product[] = [
   {
     id: "sales-team",
     title: "Sales Team",
-    category: "Team Edition",
+    category: "Role Based",
     price: 2999,
     description: "Luxury metallic copper finish customized with a growth bar chart symbol.",
     colorName: "Copper Finish",
@@ -132,7 +132,7 @@ const productsData: Product[] = [
   {
     id: "support-team",
     title: "Support Team",
-    category: "Team Edition",
+    category: "Department",
     price: 2499,
     description: "Classic navy blue layout custom-engraved with a dedicated headset support symbol.",
     colorName: "Navy Support",
@@ -145,7 +145,7 @@ const productsData: Product[] = [
   {
     id: "hr-team",
     title: "HR Team",
-    category: "Team Edition",
+    category: "Premium",
     price: 2499,
     description: "Stunning gold-plated pattern with integrated security shield icon representing HR care.",
     colorName: "Gold Premium HR",
@@ -159,7 +159,7 @@ const productsData: Product[] = [
   {
     id: "finance-team",
     title: "Finance Team",
-    category: "Team Edition",
+    category: "Department",
     price: 2999,
     description: "Dark blue corporate layout customized with a clean asset briefcase icon.",
     colorName: "Dark Corporate",
@@ -172,7 +172,7 @@ const productsData: Product[] = [
   {
     id: "enterprise-team",
     title: "Enterprise Team",
-    category: "Team Edition",
+    category: "Enterprise",
     price: 3499,
     description: "Gunmetal grey enterprise finish crafted for large-scale organizations.",
     colorName: "Gunmetal Enterprise",
@@ -217,7 +217,7 @@ export default function TeamEditionPage() {
   const [authTab, setAuthTab] = useState<"login" | "signup">("login");
   const [user, setUser] = useState<string | null>(null);
 
-  const filters = ["All", "Team Edition"];
+  const filters = ["All", "Department", "Role Based", "Premium", "Enterprise", "Team Edition"];
 
   const openAuth = (tab: "login" | "signup") => {
     setAuthTab(tab);
@@ -497,24 +497,21 @@ export default function TeamEditionPage() {
                           {/* Left Half: Logo & Name */}
                           <div className="te-card-left">
                             <div
-                              className={`te-mock-logo ${
-                                product.cardStyle.isLight ? "light-card-text" : ""
-                              }`}
+                              className={`te-mock-logo ${product.cardStyle.isLight ? "light-card-text" : ""
+                                }`}
                             >
                               H
                               <span
-                                className={`te-mock-logo-mark ${
-                                  product.cardStyle.logoStyle === "gold" ? "gold-logo" : ""
-                                }`}
+                                className={`te-mock-logo-mark ${product.cardStyle.logoStyle === "gold" ? "gold-logo" : ""
+                                  }`}
                               >
                                 t
                               </span>
                             </div>
 
                             <div
-                              className={`te-card-name ${
-                                product.cardStyle.isLight ? "light-card-text" : ""
-                              }`}
+                              className={`te-card-name ${product.cardStyle.isLight ? "light-card-text" : ""
+                                }`}
                             >
                               {product.title}
                             </div>
@@ -523,9 +520,8 @@ export default function TeamEditionPage() {
                           {/* Right Half: Icon */}
                           <div className="te-card-right">
                             <div
-                              className={`te-card-icon-wrap ${
-                                product.cardStyle.isLight ? "light-card-text" : ""
-                              }`}
+                              className={`te-card-icon-wrap ${product.cardStyle.isLight ? "light-card-text" : ""
+                                }`}
                             >
                               <product.icon
                                 className="icon"
