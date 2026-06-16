@@ -25,7 +25,7 @@ import { Reveal } from "@/components/Reveal";
 interface Product {
   id: string;
   title: string;
-  category: "Standard" | "Premium" | "Luxury" | "Signature";
+  category: string;
   price: number;
   description: string;
   colorName: string;
@@ -41,7 +41,7 @@ const productsData: Product[] = [
   {
     id: "metal-bronze",
     title: "Metal Bronze",
-    category: "Standard",
+    category: "Metal Edition",
     price: 1999,
     description: "Raw brushed bronze surface with warm rustic copper undertones.",
     colorName: "Bronze Finish",
@@ -53,7 +53,7 @@ const productsData: Product[] = [
   {
     id: "metal-copper",
     title: "Metal Copper",
-    category: "Standard",
+    category: "Metal Edition",
     price: 2199,
     description: "Satin metallic copper finish emitting a brilliant rose-amber glow.",
     colorName: "Copper Glow",
@@ -65,7 +65,7 @@ const productsData: Product[] = [
   {
     id: "metal-titanium",
     title: "Metal Titanium",
-    category: "Premium",
+    category: "Metal Edition",
     price: 2499,
     description: "Space-grade brushed titanium silver with a sleek industrial appearance.",
     colorName: "Titanium Silver",
@@ -78,7 +78,7 @@ const productsData: Product[] = [
   {
     id: "metal-graphite",
     title: "Metal Graphite",
-    category: "Premium",
+    category: "Metal Edition",
     price: 2699,
     description: "Deep gunmetal charcoal brushed finish with subtle dark engravings.",
     colorName: "Graphite Charcoal",
@@ -90,7 +90,7 @@ const productsData: Product[] = [
   {
     id: "metal-rose-gold",
     title: "Metal Rose Gold",
-    category: "Premium",
+    category: "Metal Edition",
     price: 2999,
     description: "Luxurious brushed rose-gold plating reflecting a warm satin luster.",
     colorName: "Rose Gold",
@@ -103,7 +103,7 @@ const productsData: Product[] = [
   {
     id: "metal-silver",
     title: "Metal Silver",
-    category: "Luxury",
+    category: "Metal Edition",
     price: 3299,
     description: "Brilliant brushed silver with high-reflectivity chrome highlights.",
     colorName: "Sliver Chrome",
@@ -116,7 +116,7 @@ const productsData: Product[] = [
   {
     id: "metal-platinum",
     title: "Metal Platinum",
-    category: "Luxury",
+    category: "Metal Edition",
     price: 3499,
     description: "Deep luster platinum chrome reflecting high wealth and prestige.",
     colorName: "Platinum Mirror",
@@ -129,7 +129,7 @@ const productsData: Product[] = [
   {
     id: "metal-executive",
     title: "Metal Executive",
-    category: "Luxury",
+    category: "Metal Edition",
     price: 3999,
     description: "Velvet midnight black body with executive 24k polished gold trim.",
     colorName: "Obsidian Gold Trim",
@@ -142,7 +142,7 @@ const productsData: Product[] = [
   {
     id: "metal-signature",
     title: "Metal Signature",
-    category: "Signature",
+    category: "Metal Edition",
     price: 4499,
     description: "Mirror-finish gold plating engraved with exclusive initials patterns.",
     colorName: "24K Gold Plated",
@@ -155,7 +155,7 @@ const productsData: Product[] = [
   {
     id: "metal-black-luxury",
     title: "Metal Black Luxury",
-    category: "Signature",
+    category: "Metal Edition",
     price: 4999,
     description: "Deep obsidian matte black finish with double-anodized laser engraving.",
     colorName: "Matte Black",
@@ -199,7 +199,7 @@ export default function MetalEditionPage() {
   const [authTab, setAuthTab] = useState<"login" | "signup">("login");
   const [user, setUser] = useState<string | null>(null);
 
-  const filters = ["All", "Standard", "Premium", "Luxury", "Signature"];
+  const filters = ["All", "Metal Edition"];
 
   const openAuth = (tab: "login" | "signup") => {
     setAuthTab(tab);

@@ -73,7 +73,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-midnight",
         title: "Minimal Midnight",
-        category: "Standard",
+        category: "Minimal Series",
         price: 799,
         description: "Deep charcoal matte finish with reflective silver foil detailing. The perfect blend of minimalism and professionalism.",
         colorName: "Midnight Black",
@@ -86,7 +86,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-graphite",
         title: "Minimal Graphite",
-        category: "Standard",
+        category: "Minimal Series",
         price: 899,
         description: "Industrial dark grey brushed texture with polished metal engraving look. Designed for builders and innovators.",
         colorName: "Graphite Grey",
@@ -99,7 +99,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-carbon",
         title: "Minimal Carbon",
-        category: "Standard",
+        category: "Minimal Series",
         price: 999,
         description: "Raw carbon fiber weaving aesthetic for high-tech professionals. Lightweight feel with heavy-weight performance.",
         colorName: "Carbon Weave",
@@ -112,7 +112,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-titanium",
         title: "Minimal Titanium",
-        category: "Premium",
+        category: "Minimal Series",
         price: 1199,
         description: "Space-grade titanium silver hue with a satin metallic luster. Clean, raw, and exceptionally modern.",
         colorName: "Satin Titanium",
@@ -126,7 +126,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-eclipse",
         title: "Minimal Eclipse",
-        category: "Premium",
+        category: "Minimal Series",
         price: 1299,
         description: "Mystical deep purple gradient representing the celestial twilight shadow. For visionaries working in the shadows.",
         colorName: "Eclipse Purple",
@@ -139,7 +139,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-aurora",
         title: "Minimal Aurora",
-        category: "Premium",
+        category: "Minimal Series",
         price: 1299,
         description: "Vibrant iridescent gradient reflecting the natural northern lights. Stand out with natural color flow.",
         colorName: "Aurora Green/Blue",
@@ -152,7 +152,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-rose-gold",
         title: "Minimal Rose Gold",
-        category: "Luxury",
+        category: "Minimal Series",
         price: 1499,
         description: "Warm pink-gold satin finish with reflective copper-rose highlights. Elegance defined in every hand-off.",
         colorName: "Rose Gold",
@@ -166,7 +166,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-platinum",
         title: "Minimal Platinum",
-        category: "Luxury",
+        category: "Minimal Series",
         price: 1699,
         description: "Radiant high-polished platinum silver with chrome logo emblem. The peak of premium minimalist luxury.",
         colorName: "Platinum Chrome",
@@ -180,7 +180,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-executive",
         title: "Minimal Executive",
-        category: "Luxury",
+        category: "Minimal Series",
         price: 1999,
         description: "Deep navy blue casing highlighted by a 24k polished gold accent. Built for the boardroom and executive suite.",
         colorName: "Executive Navy & Gold",
@@ -193,7 +193,7 @@ const collectionsData: Record<string, {
       {
         id: "minimal-signature",
         title: "Minimal Signature",
-        category: "Signature",
+        category: "Minimal Series",
         price: 2499,
         description: "Matte obsidian casing with gold trim border and signature monogram. Your professional signature, tangible.",
         colorName: "Velvet Obsidian & Gold",
@@ -214,7 +214,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-bronze",
         title: "Metal Bronze",
-        category: "Standard",
+        category: "Metal Edition",
         price: 1999,
         description: "Raw brushed bronze surface with warm rustic copper undertones. A timeless weight of pure rustic metal.",
         colorName: "Bronze Finish",
@@ -227,7 +227,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-copper",
         title: "Metal Copper",
-        category: "Standard",
+        category: "Metal Edition",
         price: 2199,
         description: "Satin metallic copper finish emitting a brilliant rose-amber glow. Warm luxury and bold style.",
         colorName: "Copper Glow",
@@ -240,7 +240,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-titanium",
         title: "Metal Titanium",
-        category: "Premium",
+        category: "Metal Edition",
         price: 2499,
         description: "Space-grade brushed titanium silver with a sleek industrial appearance. Ultra durable, ultra professional.",
         colorName: "Titanium Silver",
@@ -254,7 +254,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-graphite",
         title: "Metal Graphite",
-        category: "Premium",
+        category: "Metal Edition",
         price: 2699,
         description: "Deep gunmetal charcoal brushed finish with subtle dark engravings. Raw structural power in your pocket.",
         colorName: "Graphite Charcoal",
@@ -267,7 +267,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-rose-gold",
         title: "Metal Rose Gold",
-        category: "Premium",
+        category: "Metal Edition",
         price: 2999,
         description: "Luxurious brushed rose-gold plating reflecting a warm satin luster. Classic elegance meets modern NFC technology.",
         colorName: "Rose Gold",
@@ -281,7 +281,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-silver",
         title: "Metal Silver",
-        category: "Luxury",
+        category: "Metal Edition",
         price: 3299,
         description: "Brilliant brushed silver with high-reflectivity chrome highlights. Clean metallic details.",
         colorName: "Sliver Chrome",
@@ -295,7 +295,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-platinum",
         title: "Metal Platinum",
-        category: "Luxury",
+        category: "Metal Edition",
         price: 3499,
         description: "Deep luster platinum chrome reflecting high wealth and prestige. The ultimate calling card for captains of industry.",
         colorName: "Platinum Mirror",
@@ -309,7 +309,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-executive",
         title: "Metal Executive",
-        category: "Luxury",
+        category: "Metal Edition",
         price: 3999,
         description: "Velvet midnight black body with executive 24k polished gold trim. A royal presence in any network connection.",
         colorName: "Obsidian Gold Trim",
@@ -323,7 +323,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-signature",
         title: "Metal Signature",
-        category: "Signature",
+        category: "Metal Edition",
         price: 4499,
         description: "Mirror-finish gold plating engraved with exclusive initials patterns. An unforgettable gold standard.",
         colorName: "24K Gold Plated",
@@ -337,7 +337,7 @@ const collectionsData: Record<string, {
       {
         id: "metal-black-luxury",
         title: "Metal Black Luxury",
-        category: "Signature",
+        category: "Metal Edition",
         price: 4999,
         description: "Deep obsidian matte black finish with double-anodized laser engraving. Stealth corporate prestige.",
         colorName: "Matte Black",
@@ -357,7 +357,7 @@ const collectionsData: Record<string, {
       {
         id: "executive-classic",
         title: "Executive Classic",
-        category: "Standard",
+        category: "Executive Collection",
         price: 3999,
         description: "Midnight black body enhanced by a premium radial gold wave pattern. The classic hallmark of executive quality.",
         colorName: "Gold Wave Accent",
@@ -371,7 +371,7 @@ const collectionsData: Record<string, {
       {
         id: "executive-graphite",
         title: "Executive Graphite",
-        category: "Standard",
+        category: "Executive Collection",
         price: 4499,
         description: "Geometric matte texture design on a deep graphite background. Modern structural design for contemporary leaders.",
         colorName: "Graphite Charcoal",
@@ -386,7 +386,7 @@ const collectionsData: Record<string, {
       {
         id: "executive-rose-gold",
         title: "Executive Rose Gold",
-        category: "Premium",
+        category: "Executive Collection",
         price: 4999,
         description: "Brushed metal finish reflecting a warm rose-gold metallic luster. Timeless warmth and luxury design.",
         colorName: "Rose Gold Finish",
@@ -401,7 +401,7 @@ const collectionsData: Record<string, {
       {
         id: "executive-prestige",
         title: "Executive Prestige",
-        category: "Premium",
+        category: "Executive Collection",
         price: 5499,
         description: "Elegant diamond quilt pattern engraved into a premium executive body. Satin texture feels premium in hand.",
         colorName: "Midnight Prestige",
@@ -416,7 +416,7 @@ const collectionsData: Record<string, {
       {
         id: "executive-titanium",
         title: "Executive Titanium",
-        category: "Luxury",
+        category: "Executive Collection",
         price: 5999,
         description: "Modern hexagon metal texture design with a satin titanium silver coat. High-tech executive look.",
         colorName: "Titanium Hexagon",
@@ -432,9 +432,9 @@ const collectionsData: Record<string, {
       {
         id: "executive-elite",
         title: "Executive Elite",
-        category: "Luxury",
+        category: "Executive Collection",
         price: 6999,
-        description: "Stunning diagonal gold lines across an elite deep charcoal surface. Sleek linear art highlighting executive class.",
+        description: "Stunning diagonal gold lines across an elite deep charcoal surface. Sleek diagonal gold lines across an elite deep charcoal surface.",
         colorName: "Elite Diagonal Gold",
         cssClass: "ec-card-elite",
         cardStyle: {
@@ -446,7 +446,7 @@ const collectionsData: Record<string, {
       {
         id: "executive-chairman",
         title: "Executive Chairman",
-        category: "Executive",
+        category: "Executive Collection",
         price: 7499,
         description: "Exquisite combination of rich mahogany wood veneer and rose-gold finish. Real wood aesthetic representing solid leadership.",
         colorName: "Mahogany & Gold",
@@ -461,7 +461,7 @@ const collectionsData: Record<string, {
       {
         id: "executive-black-label",
         title: "Executive Black Label",
-        category: "Executive",
+        category: "Executive Collection",
         price: 7999,
         description: "Deep obsidian matte background with premium horizontal micro-textures. Silent, powerful, and absolutely elite.",
         colorName: "Obsidian Black",
@@ -475,7 +475,7 @@ const collectionsData: Record<string, {
       {
         id: "executive-signature",
         title: "Executive Signature",
-        category: "Signature",
+        category: "Executive Collection",
         price: 8999,
         description: "Minimalist executive card defined by double 24k polished gold borders. A refined gold frame around your identity.",
         colorName: "Double Gold Border",
@@ -489,7 +489,7 @@ const collectionsData: Record<string, {
       {
         id: "executive-legacy",
         title: "Executive Legacy",
-        category: "Signature",
+        category: "Executive Collection",
         price: 9999,
         description: "Flagship royal emblem and crest design reflecting heritage and prestige. The ultimate family legacy card.",
         colorName: "Royal Emblem",
@@ -526,7 +526,7 @@ const collectionsData: Record<string, {
       {
         id: "team-pro",
         title: "Team Pro",
-        category: "Premium",
+        category: "Team Edition",
         price: 1999,
         description: "Deep blue premium finish designed for high-performance professional corporate teams.",
         colorName: "Deep Blue Premium",
@@ -541,7 +541,7 @@ const collectionsData: Record<string, {
       {
         id: "developers-pack",
         title: "Developers Pack",
-        category: "Role Based",
+        category: "Team Edition",
         price: 2499,
         description: "Sleek dark graphite layout featuring a custom integrated code developer icon. Ideal for engineering squads.",
         colorName: "Dark Graphite",
@@ -556,7 +556,7 @@ const collectionsData: Record<string, {
       {
         id: "design-team",
         title: "Design Team",
-        category: "Department",
+        category: "Team Edition",
         price: 2499,
         description: "Vibrant emerald green creative style highlighting artistic profiles and creative agency teams.",
         colorName: "Emerald Creative",
@@ -571,7 +571,7 @@ const collectionsData: Record<string, {
       {
         id: "marketing-team",
         title: "Marketing Team",
-        category: "Department",
+        category: "Team Edition",
         price: 2999,
         description: "Rich purple branding layout tailored for creative marketers, PR specialists, and social media squads.",
         colorName: "Purple Branding",
@@ -586,7 +586,7 @@ const collectionsData: Record<string, {
       {
         id: "sales-team",
         title: "Sales Team",
-        category: "Role Based",
+        category: "Team Edition",
         price: 2999,
         description: "Luxury metallic copper finish customized with a growth bar chart symbol. Perfect for high-velocity closers.",
         colorName: "Copper Finish",
@@ -601,7 +601,7 @@ const collectionsData: Record<string, {
       {
         id: "support-team",
         title: "Support Team",
-        category: "Department",
+        category: "Team Edition",
         price: 2499,
         description: "Classic navy blue layout custom-engraved with a dedicated headset support symbol. For customer success champions.",
         colorName: "Navy Support",
@@ -616,7 +616,7 @@ const collectionsData: Record<string, {
       {
         id: "hr-team",
         title: "HR Team",
-        category: "Premium",
+        category: "Team Edition",
         price: 2499,
         description: "Stunning gold-plated pattern with integrated security shield icon representing HR care and talent aquisition.",
         colorName: "Gold Premium HR",
@@ -632,7 +632,7 @@ const collectionsData: Record<string, {
       {
         id: "finance-team",
         title: "Finance Team",
-        category: "Department",
+        category: "Team Edition",
         price: 2999,
         description: "Dark blue corporate layout customized with a clean asset briefcase icon. For financial controllers and CFOs.",
         colorName: "Dark Corporate",
@@ -647,7 +647,7 @@ const collectionsData: Record<string, {
       {
         id: "enterprise-team",
         title: "Enterprise Team",
-        category: "Enterprise",
+        category: "Team Edition",
         price: 3499,
         description: "Gunmetal grey enterprise finish crafted for large-scale corporate organizations and company-wide rollouts.",
         colorName: "Gunmetal Enterprise",

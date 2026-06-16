@@ -25,7 +25,7 @@ import { Reveal } from "@/components/Reveal";
 interface Product {
   id: string;
   title: string;
-  category: "Standard" | "Premium" | "Luxury" | "Signature" | "Executive";
+  category: string;
   price: number;
   description: string;
   colorName: string;
@@ -42,7 +42,7 @@ const productsData: Product[] = [
   {
     id: "executive-classic",
     title: "Executive Classic",
-    category: "Standard",
+    category: "Executive Collection",
     price: 3999,
     description: "Midnight black body enhanced by a premium radial gold wave pattern.",
     colorName: "Gold Wave Accent",
@@ -54,7 +54,7 @@ const productsData: Product[] = [
   {
     id: "executive-graphite",
     title: "Executive Graphite",
-    category: "Standard",
+    category: "Executive Collection",
     price: 4499,
     description: "Geometric matte texture design on a deep graphite background.",
     colorName: "Graphite Charcoal",
@@ -67,7 +67,7 @@ const productsData: Product[] = [
   {
     id: "executive-rose-gold",
     title: "Executive Rose Gold",
-    category: "Premium",
+    category: "Executive Collection",
     price: 4999,
     description: "Brushed metal finish reflecting a warm rose-gold metallic luster.",
     colorName: "Rose Gold Finish",
@@ -80,7 +80,7 @@ const productsData: Product[] = [
   {
     id: "executive-prestige",
     title: "Executive Prestige",
-    category: "Premium",
+    category: "Executive Collection",
     price: 5499,
     description: "Elegant diamond quilt pattern engraved into a premium executive body.",
     colorName: "Midnight Prestige",
@@ -93,7 +93,7 @@ const productsData: Product[] = [
   {
     id: "executive-titanium",
     title: "Executive Titanium",
-    category: "Luxury",
+    category: "Executive Collection",
     price: 5999,
     description: "Modern hexagon metal texture design with a satin titanium silver coat.",
     colorName: "Titanium Hexagon",
@@ -107,7 +107,7 @@ const productsData: Product[] = [
   {
     id: "executive-elite",
     title: "Executive Elite",
-    category: "Luxury",
+    category: "Executive Collection",
     price: 6999,
     description: "Stunning diagonal gold lines across an elite deep charcoal surface.",
     colorName: "Elite Diagonal Gold",
@@ -119,7 +119,7 @@ const productsData: Product[] = [
   {
     id: "executive-chairman",
     title: "Executive Chairman",
-    category: "Executive",
+    category: "Executive Collection",
     price: 7499,
     description: "Exquisite combination of rich mahogany wood veneer and rose-gold finish.",
     colorName: "Mahogany & Gold",
@@ -132,7 +132,7 @@ const productsData: Product[] = [
   {
     id: "executive-black-label",
     title: "Executive Black Label",
-    category: "Executive",
+    category: "Executive Collection",
     price: 7999,
     description: "Deep obsidian matte background with premium horizontal micro-textures.",
     colorName: "Obsidian Black",
@@ -144,7 +144,7 @@ const productsData: Product[] = [
   {
     id: "executive-signature",
     title: "Executive Signature",
-    category: "Signature",
+    category: "Executive Collection",
     price: 8999,
     description: "Minimalist executive card defined by double 24k polished gold borders.",
     colorName: "Double Gold Border",
@@ -156,7 +156,7 @@ const productsData: Product[] = [
   {
     id: "executive-legacy",
     title: "Executive Legacy",
-    category: "Signature",
+    category: "Executive Collection",
     price: 9999,
     description: "Flagship royal emblem and crest design reflecting heritage and prestige.",
     colorName: "Royal Emblem",
@@ -201,7 +201,7 @@ export default function ExecutiveCollectionPage() {
   const [authTab, setAuthTab] = useState<"login" | "signup">("login");
   const [user, setUser] = useState<string | null>(null);
 
-  const filters = ["All", "Standard", "Premium", "Luxury", "Signature", "Executive"];
+  const filters = ["All", "Executive Collection"];
 
   const openAuth = (tab: "login" | "signup") => {
     setAuthTab(tab);

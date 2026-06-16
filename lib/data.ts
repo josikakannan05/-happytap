@@ -86,28 +86,28 @@ export const steps = [
 export const products = [
   {
     icon: Minimize2,
-    tag: "Minimal",
+    tag: "Minimal Series",
     title: "Minimal Series",
     description: "Elegant simplicity for modern professionals.",
     image: "/image/product-minimal.png",
   },
   {
     icon: Gem,
-    tag: "Premium",
+    tag: "Metal Edition",
     title: "Metal Edition",
     description: "Luxury-crafted networking identity.",
     image: "/image/product-metal.png",
   },
   {
     icon: Crown,
-    tag: "Executive",
+    tag: "Executive Collection",
     title: "Executive Collection",
     description: "Premium identity for leadership presence.",
     image: "/image/product-executive.png",
   },
   {
     icon: Users,
-    tag: "Teams",
+    tag: "Team Edition",
     title: "Team Edition",
     description: "Unified digital identity for organizations.",
     image: "/image/product-team.png",
