@@ -45,7 +45,7 @@ export function Hero({ onGetCardClick }: HeroProps) {
 
           <Reveal delay={240}>
             <div className="hero-actions">
-              <button onClick={onGetCardClick} className="btn">
+              <button onClick={onGetCardClick} className="btn" suppressHydrationWarning>
                 Get Your Card
                 <ArrowRight className="icon" aria-hidden />
               </button>

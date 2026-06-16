@@ -47,7 +47,7 @@ export function CTA({ onGetCardClick }: CTAProps) {
                 Create unforgettable first impressions with HappyTap's
                 <br className="hide-mobile" /> next-generation digital networking experience.
               </p>
-              <button onClick={onGetCardClick} className="btn cta-btn-primary">
+              <button onClick={onGetCardClick} className="btn cta-btn-primary" suppressHydrationWarning>
                 <BarChart2 className="icon" />
                 Get Your Card
                 <ArrowRight className="icon" />
