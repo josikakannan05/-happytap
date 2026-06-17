@@ -237,8 +237,8 @@ export default function ProfilePage() {
             </div>
           </header>
 
-          {/* Top Profile Summary Card */}
-          <div className="profile-summary-card">
+          {/* Top Profile Summary Card — Dashboard only */}
+          {activeTab === "Dashboard" && <div className="profile-summary-card">
             <div className="summary-card-left">
               <div className="summary-avatar-wrap">
                 <div className="summary-avatar-ring">
@@ -301,7 +301,7 @@ export default function ProfilePage() {
                 </div>
               </div>
             </div>
-          </div>
+          </div>}
 
           {activeTab === "Dashboard" && (
             <div className="profile-settings-grid-wrapper">
