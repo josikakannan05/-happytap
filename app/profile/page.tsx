@@ -37,9 +37,9 @@ import {
 import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
 import { ThemeCustomizer, ThemeCustomizerHandle } from "@/components/ThemeCustomizer";
 
-/* ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+/* ─────────────────────────────────────────────────
    Sidebar navigation items
-   ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
+   ───────────────────────────────────────────────── */
 const sidebarLinks = [
   { icon: LayoutDashboard, label: "Dashboard", href: "#" },
   { icon: CreditCard,      label: "My Cards",  href: "#" },
@@ -47,9 +47,9 @@ const sidebarLinks = [
   { icon: Palette,         label: "Theme",     href: "#" },
 ];
 
-/* ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+/* ─────────────────────────────────────────────────
    Profile page
-   ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
+   ───────────────────────────────────────────────── */
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<string>("Dashboard");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -92,12 +92,12 @@ export default function ProfilePage() {
 
   return (
     <div className="profile-shell">
-      {/* ΓöÇΓöÇ Sidebar overlay for mobile ΓöÇΓöÇ */}
+      {/* ── Sidebar overlay for mobile ── */}
       {sidebarOpen && (
         <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
       )}
 
-      {/* ΓöÇΓöÇ Sidebar ΓöÇΓöÇ */}
+      {/* ── Sidebar ── */}
       <aside className={`profile-sidebar${sidebarOpen ? " open" : ""}`}>
         <div className="profile-sidebar-header">
           <Link href="/" className="profile-sidebar-logo">
@@ -168,7 +168,7 @@ export default function ProfilePage() {
         </div>
       </aside>
 
-      {/* ΓöÇΓöÇ Main content ΓöÇΓöÇ */}
+      {/* ── Main content ── */}
       <main className="profile-main">
         <div className="profile-container">
 
@@ -378,7 +378,7 @@ export default function ProfilePage() {
                       className="btn pf-btn-save"
                       onClick={() => handleSave()}
                     >
-                      {saved ? "Γ£ô Saved!" : "Save Changes"}
+                      {saved ? "✓ Saved!" : "Save Changes"}
                     </button>
                   </div>
                 </section>
@@ -545,7 +545,7 @@ export default function ProfilePage() {
 
           {saved && (
             <div className="pf-toast" role="status" aria-live="polite">
-              {activeTab === "Theme" ? "Γ£ô Theme settings saved successfully!" : "Γ£ô Profile saved successfully!"}
+              {activeTab === "Theme" ? "✓ Theme settings saved successfully!" : "✓ Profile saved successfully!"}
             </div>
           )}
         </div>
