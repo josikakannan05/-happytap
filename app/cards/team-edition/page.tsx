@@ -27,6 +27,8 @@ import {
   Building2,
   Lock,
   Bell,
+  Settings,
+  Scale,
 } from "lucide-react";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
@@ -56,7 +58,7 @@ const productsData: Product[] = [
     title: "Team Basic",
     category: "Team Edition",
     price: 1499,
-    description: "Elegant black and gold executive design, perfect for small team setups.",
+    description: "Black and gold team card designed specifically for small business organization setups.",
     colorName: "Black & Gold",
     cssClass: "te-card-basic",
     icon: Users,
@@ -69,7 +71,7 @@ const productsData: Product[] = [
     title: "Team Pro",
     category: "Premium",
     price: 1999,
-    description: "Deep blue premium finish designed for high-performance professional teams.",
+    description: "Deep blue premium team card crafted for high-performance corporate operations groups.",
     colorName: "Deep Blue Premium",
     cssClass: "te-card-pro",
     icon: Zap,
@@ -82,7 +84,7 @@ const productsData: Product[] = [
     title: "Developers Pack",
     category: "Role Based",
     price: 2499,
-    description: "Sleek dark graphite layout featuring a custom integrated code developer icon.",
+    description: "Dark graphite team card featuring a custom integrated code developer icon engraving.",
     colorName: "Dark Graphite",
     cssClass: "te-card-dev",
     icon: Code,
@@ -95,7 +97,7 @@ const productsData: Product[] = [
     title: "Design Team",
     category: "Department",
     price: 2499,
-    description: "Vibrant emerald green creative style highlighting artistic and design profiles.",
+    description: "Vibrant emerald green team card created specifically for creative agency design teams.",
     colorName: "Emerald Creative",
     cssClass: "te-card-design",
     icon: Palette,
@@ -108,7 +110,7 @@ const productsData: Product[] = [
     title: "Marketing Team",
     category: "Department",
     price: 2999,
-    description: "Rich purple branding layout tailored for creative marketers and social teams.",
+    description: "Purple branding team card designed for creative marketers and social media teams.",
     colorName: "Purple Branding",
     cssClass: "te-card-marketing",
     icon: Megaphone,
@@ -121,7 +123,7 @@ const productsData: Product[] = [
     title: "Sales Team",
     category: "Role Based",
     price: 2999,
-    description: "Luxury metallic copper finish customized with a growth bar chart symbol.",
+    description: "Metallic copper team card customized with a growth chart sales icon engraving.",
     colorName: "Copper Finish",
     cssClass: "te-card-sales",
     icon: BarChart3,
@@ -134,7 +136,7 @@ const productsData: Product[] = [
     title: "Support Team",
     category: "Department",
     price: 2499,
-    description: "Classic navy blue layout custom-engraved with a dedicated headset support symbol.",
+    description: "Navy support team card custom-engraved with a dedicated headset symbol for teams.",
     colorName: "Navy Support",
     cssClass: "te-card-support",
     icon: Headset,
@@ -147,7 +149,7 @@ const productsData: Product[] = [
     title: "HR Team",
     category: "Premium",
     price: 2499,
-    description: "Stunning gold-plated pattern with integrated security shield icon representing HR care.",
+    description: "Gold-plated pattern team card with an integrated security shield human resources icon.",
     colorName: "Gold Premium HR",
     cssClass: "te-card-hr",
     icon: Shield,
@@ -161,7 +163,7 @@ const productsData: Product[] = [
     title: "Finance Team",
     category: "Department",
     price: 2999,
-    description: "Dark blue corporate layout customized with a clean asset briefcase icon.",
+    description: "Dark blue corporate team card customized with an asset briefcase icon engraving.",
     colorName: "Dark Corporate",
     cssClass: "te-card-finance",
     icon: Briefcase,
@@ -174,10 +176,36 @@ const productsData: Product[] = [
     title: "Enterprise Team",
     category: "Enterprise",
     price: 3499,
-    description: "Gunmetal grey enterprise finish crafted for large-scale organizations.",
+    description: "Gunmetal grey enterprise team card crafted specifically for large-scale corporate organizations.",
     colorName: "Gunmetal Enterprise",
     cssClass: "te-card-enterprise",
     icon: Building2,
+    cardStyle: {
+      logoStyle: "silver",
+    },
+  },
+  {
+    id: "operations-team",
+    title: "Operations Team",
+    category: "Department",
+    price: 2799,
+    description: "Teal operations team card custom-engraved with a modern gears icon design style.",
+    colorName: "Teal Operations",
+    cssClass: "te-card-ops",
+    icon: Settings,
+    cardStyle: {
+      logoStyle: "silver",
+    },
+  },
+  {
+    id: "legal-team",
+    title: "Legal Team",
+    category: "Department",
+    price: 2999,
+    description: "Burgundy legal team card customized with a traditional scales of justice icon.",
+    colorName: "Burgundy Legal",
+    cssClass: "te-card-legal",
+    icon: Scale,
     cardStyle: {
       logoStyle: "silver",
     },
@@ -404,7 +432,7 @@ export default function TeamEditionPage() {
                 </Reveal>
                 <Reveal delay={400}>
                   <div className="te-count-label">
-                    <span className="te-count-num">10</span> Exclusive Team Cards
+                    <span className="te-count-num">12</span> Exclusive Team Cards
                   </div>
                 </Reveal>
               </div>
@@ -547,6 +575,7 @@ export default function TeamEditionPage() {
                           {product.category}
                         </span>
                         <h3>{product.title}</h3>
+                        <p>{product.description}</p>
                         <span className="te-product-price">₹{product.price.toLocaleString()}</span>
                       </div>
 

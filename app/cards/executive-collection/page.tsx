@@ -44,7 +44,7 @@ const productsData: Product[] = [
     title: "Executive Classic",
     category: "Standard",
     price: 3999,
-    description: "Midnight black body enhanced by a premium radial gold wave pattern.",
+    description: "Midnight black executive card decorated with a premium radial gold wave accent pattern.",
     colorName: "Gold Wave Accent",
     cssClass: "ec-card-classic",
     cardStyle: {
@@ -56,7 +56,7 @@ const productsData: Product[] = [
     title: "Executive Graphite",
     category: "Standard",
     price: 4499,
-    description: "Geometric matte texture design on a deep graphite background.",
+    description: "Geometric matte textured executive card built on a deep charcoal graphite background.",
     colorName: "Graphite Charcoal",
     cssClass: "ec-card-graphite",
     cardStyle: {
@@ -69,7 +69,7 @@ const productsData: Product[] = [
     title: "Executive Rose Gold",
     category: "Premium",
     price: 4999,
-    description: "Brushed metal finish reflecting a warm rose-gold metallic luster.",
+    description: "Brushed metal finish executive card reflecting a warm rose-gold premium metallic luster.",
     colorName: "Rose Gold Finish",
     cssClass: "ec-card-rosegold",
     cardStyle: {
@@ -82,7 +82,7 @@ const productsData: Product[] = [
     title: "Executive Prestige",
     category: "Premium",
     price: 5499,
-    description: "Elegant diamond quilt pattern engraved into a premium executive body.",
+    description: "Elegant diamond quilt patterned executive card engraved into a premium matte black body.",
     colorName: "Midnight Prestige",
     cssClass: "ec-card-prestige",
     cardStyle: {
@@ -95,7 +95,7 @@ const productsData: Product[] = [
     title: "Executive Titanium",
     category: "Luxury",
     price: 5999,
-    description: "Modern hexagon metal texture design with a satin titanium silver coat.",
+    description: "Hexagon textured executive card finished with a satin titanium silver metal coat.",
     colorName: "Titanium Hexagon",
     cssClass: "ec-card-titanium",
     cardStyle: {
@@ -109,7 +109,7 @@ const productsData: Product[] = [
     title: "Executive Elite",
     category: "Luxury",
     price: 6999,
-    description: "Stunning diagonal gold lines across an elite deep charcoal surface.",
+    description: "Elite deep charcoal executive card detailed with stunning diagonal gold accent lines.",
     colorName: "Elite Diagonal Gold",
     cssClass: "ec-card-elite",
     cardStyle: {
@@ -121,7 +121,7 @@ const productsData: Product[] = [
     title: "Executive Chairman",
     category: "Executive",
     price: 7499,
-    description: "Exquisite combination of rich mahogany wood veneer and rose-gold finish.",
+    description: "Mahogany wood veneer executive card combined with a sleek rose-gold accent border.",
     colorName: "Mahogany & Gold",
     cssClass: "ec-card-chairman",
     cardStyle: {
@@ -134,7 +134,7 @@ const productsData: Product[] = [
     title: "Executive Black Label",
     category: "Executive",
     price: 7999,
-    description: "Deep obsidian matte background with premium horizontal micro-textures.",
+    description: "Obsidian matte executive card featuring premium horizontal micro-textures for boardroom presence.",
     colorName: "Obsidian Black",
     cssClass: "ec-card-blacklabel",
     cardStyle: {
@@ -146,7 +146,7 @@ const productsData: Product[] = [
     title: "Executive Signature",
     category: "Signature",
     price: 8999,
-    description: "Minimalist executive card defined by double 24k polished gold borders.",
+    description: "Minimalist executive card defined by double 24k polished gold borders and logo.",
     colorName: "Double Gold Border",
     cssClass: "ec-card-signature",
     cardStyle: {
@@ -158,13 +158,37 @@ const productsData: Product[] = [
     title: "Executive Legacy",
     category: "Signature",
     price: 9999,
-    description: "Flagship royal emblem and crest design reflecting heritage and prestige.",
+    description: "Flagship royal emblem executive card designed to reflect heritage and prestigious authority.",
     colorName: "Royal Emblem",
     cssClass: "ec-card-legacy",
     cardStyle: {
       logoStyle: "gold",
     },
     hasExtraLines: "legacy",
+  },
+  {
+    id: "executive-royal",
+    title: "Executive Royal",
+    category: "Premium",
+    price: 5299,
+    description: "Royal blue leatherette textured executive card styled with a luxury gold monogram.",
+    colorName: "Royal Blue & Gold",
+    cssClass: "ec-card-royal",
+    cardStyle: {
+      logoStyle: "gold",
+    },
+  },
+  {
+    id: "executive-monarch",
+    title: "Executive Monarch",
+    category: "Signature",
+    price: 9499,
+    description: "Imperial purple matte executive card accented by high-reflection gold curves and details.",
+    colorName: "Imperial Purple & Gold",
+    cssClass: "ec-card-monarch",
+    cardStyle: {
+      logoStyle: "gold",
+    },
   },
 ];
 
@@ -341,7 +365,7 @@ export default function ExecutiveCollectionPage() {
                 </Reveal>
                 <Reveal delay={400}>
                   <div className="ec-count-label">
-                    <span className="ec-count-num">10</span> Exclusive Designs
+                    <span className="ec-count-num">12</span> Exclusive Designs
                   </div>
                 </Reveal>
               </div>
@@ -501,6 +525,7 @@ export default function ExecutiveCollectionPage() {
                           {product.category}
                         </span>
                         <h3>{product.title}</h3>
+                        <p>{product.description}</p>
                         <span className="ec-product-price">₹{product.price.toLocaleString()}</span>
                       </div>
 

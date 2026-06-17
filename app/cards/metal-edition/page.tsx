@@ -43,7 +43,7 @@ const productsData: Product[] = [
     title: "Metal Bronze",
     category: "Standard",
     price: 1999,
-    description: "Raw brushed bronze surface with warm rustic copper undertones.",
+    description: "Raw brushed bronze metal card featuring warm rustic copper undertones for networking.",
     colorName: "Bronze Finish",
     cardStyle: {
       background: "linear-gradient(135deg, #a76b43 0%, #834f2b 100%)",
@@ -55,7 +55,7 @@ const productsData: Product[] = [
     title: "Metal Copper",
     category: "Standard",
     price: 2199,
-    description: "Satin metallic copper finish emitting a brilliant rose-amber glow.",
+    description: "Satin metallic copper metal card emitting a brilliant and warm rose-amber luxury glow.",
     colorName: "Copper Glow",
     cardStyle: {
       background: "linear-gradient(135deg, #c5796d 0%, #eebd89 100%)",
@@ -67,7 +67,7 @@ const productsData: Product[] = [
     title: "Metal Titanium",
     category: "Premium",
     price: 2499,
-    description: "Space-grade brushed titanium silver with a sleek industrial appearance.",
+    description: "Space-grade brushed titanium silver metal card displaying a modern and sleek industrial look.",
     colorName: "Titanium Silver",
     cardStyle: {
       background: "linear-gradient(135deg, #8e8e93 0%, #c7c7cc 50%, #8e8e93 100%)",
@@ -80,7 +80,7 @@ const productsData: Product[] = [
     title: "Metal Graphite",
     category: "Premium",
     price: 2699,
-    description: "Deep gunmetal charcoal brushed finish with subtle dark engravings.",
+    description: "Deep gunmetal charcoal brushed metal card enhanced with subtle premium laser engraved lines.",
     colorName: "Graphite Charcoal",
     cardStyle: {
       background: "linear-gradient(135deg, #2a2a2e 0%, #151517 100%)",
@@ -92,7 +92,7 @@ const productsData: Product[] = [
     title: "Metal Rose Gold",
     category: "Premium",
     price: 2999,
-    description: "Luxurious brushed rose-gold plating reflecting a warm satin luster.",
+    description: "Luxurious brushed rose-gold metal card reflecting a warm satin luster and elegant finish.",
     colorName: "Rose Gold",
     cardStyle: {
       background: "linear-gradient(135deg, #d49a89 0%, #f3d4cc 50%, #b87b6a 100%)",
@@ -105,7 +105,7 @@ const productsData: Product[] = [
     title: "Metal Silver",
     category: "Luxury",
     price: 3299,
-    description: "Brilliant brushed silver with high-reflectivity chrome highlights.",
+    description: "Brilliant brushed silver metal card showcasing high-reflectivity chrome highlights for business leaders.",
     colorName: "Sliver Chrome",
     cardStyle: {
       background: "linear-gradient(135deg, #d1d1d6 0%, #f2f2f7 50%, #c7c7cc 100%)",
@@ -118,7 +118,7 @@ const productsData: Product[] = [
     title: "Metal Platinum",
     category: "Luxury",
     price: 3499,
-    description: "Deep luster platinum chrome reflecting high wealth and prestige.",
+    description: "Deep luster platinum chrome metal card reflecting high luxury wealth and prestige status.",
     colorName: "Platinum Mirror",
     cardStyle: {
       background: "linear-gradient(135deg, #e5e5ea 0%, #ffffff 50%, #aeaeB2 100%)",
@@ -131,7 +131,7 @@ const productsData: Product[] = [
     title: "Metal Executive",
     category: "Luxury",
     price: 3999,
-    description: "Velvet midnight black body with executive 24k polished gold trim.",
+    description: "Midnight black metal card trimmed with a polished executive 24k gold border.",
     colorName: "Obsidian Gold Trim",
     cardStyle: {
       background: "linear-gradient(135deg, #121212 0%, #222222 100%)",
@@ -144,7 +144,7 @@ const productsData: Product[] = [
     title: "Metal Signature",
     category: "Signature",
     price: 4499,
-    description: "Mirror-finish gold plating engraved with exclusive initials patterns.",
+    description: "Mirror-finish gold plated metal card engraved with an exclusive signature initials pattern.",
     colorName: "24K Gold Plated",
     cardStyle: {
       background: "linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%)",
@@ -157,11 +157,37 @@ const productsData: Product[] = [
     title: "Metal Black Luxury",
     category: "Signature",
     price: 4999,
-    description: "Deep obsidian matte black finish with double-anodized laser engraving.",
+    description: "Obsidian matte black metal card detailed with double-anodized laser engraving lines.",
     colorName: "Matte Black",
     cardStyle: {
       background: "linear-gradient(135deg, #050505 0%, #1a1a1a 100%)",
       logoStyle: "white",
+    },
+  },
+  {
+    id: "metal-brass",
+    title: "Metal Brass",
+    category: "Standard",
+    price: 2099,
+    description: "Brushed brass yellow metal card representing classic longevity and premium digital connectivity.",
+    colorName: "Brushed Brass",
+    cardStyle: {
+      background: "linear-gradient(135deg, #b58d3d 0%, #e5c060 50%, #a0782a 100%)",
+      logoStyle: "gold",
+      isLight: true,
+    },
+  },
+  {
+    id: "metal-obsidian",
+    title: "Metal Obsidian",
+    category: "Signature",
+    price: 4799,
+    description: "Mirror polished high-gloss obsidian black metal card styled with a gold monogram emblem.",
+    colorName: "Obsidian Mirror",
+    cardStyle: {
+      background: "linear-gradient(135deg, #101010 0%, #000000 100%)",
+      logoStyle: "gold",
+      border: "1px solid rgba(255, 215, 0, 0.3)",
     },
   },
 ];
@@ -316,7 +342,7 @@ export default function MetalEditionPage() {
                 </Reveal>
                 <Reveal delay={400}>
                   <div className="me-count-label">
-                    <span className="me-count-num">10</span> Exclusive Designs
+                    <span className="me-count-num">12</span> Exclusive Designs
                   </div>
                 </Reveal>
               </div>
@@ -434,6 +460,7 @@ export default function MetalEditionPage() {
                       <div className="me-product-details">
                         <span className="ms-product-tag" style={{ color: "#86868b" }}>{product.category}</span>
                         <h3>{product.title}</h3>
+                        <p>{product.description}</p>
                         <span className="me-product-price">₹{product.price.toLocaleString()}</span>
                       </div>
 

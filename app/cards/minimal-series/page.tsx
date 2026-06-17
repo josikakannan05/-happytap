@@ -42,7 +42,7 @@ const productsData: Product[] = [
     title: "Minimal Midnight",
     category: "Standard",
     price: 799,
-    description: "Deep charcoal matte finish with reflective silver foil detailing.",
+    description: "Deep charcoal matte finish business card featuring refined reflective silver foil styling details.",
     colorName: "Midnight Black",
     cardStyle: {
       background: "linear-gradient(135deg, #0f0f13 0%, #1a1a24 100%)",
@@ -54,7 +54,7 @@ const productsData: Product[] = [
     title: "Minimal Graphite",
     category: "Standard",
     price: 899,
-    description: "Industrial dark grey brushed texture with polished metal engraving look.",
+    description: "Industrial dark grey brushed texture card accented with a polished silver metallic engraving.",
     colorName: "Graphite Grey",
     cardStyle: {
       background: "linear-gradient(135deg, #2c2d30 0%, #1e1f21 100%)",
@@ -66,7 +66,7 @@ const productsData: Product[] = [
     title: "Minimal Carbon",
     category: "Standard",
     price: 999,
-    description: "Raw carbon fiber weaving aesthetic for high-tech professionals.",
+    description: "Raw carbon fiber weaving aesthetic card crafted specifically for modern tech industry professionals.",
     colorName: "Carbon Weave",
     cardStyle: {
       background: "linear-gradient(135deg, #151515 0%, #252525 100%)",
@@ -78,7 +78,7 @@ const productsData: Product[] = [
     title: "Minimal Titanium",
     category: "Premium",
     price: 1199,
-    description: "Space-grade titanium silver hue with a satin metallic luster.",
+    description: "Space-grade titanium silver satin card reflecting a beautiful and clean metallic luster.",
     colorName: "Satin Titanium",
     cardStyle: {
       background: "linear-gradient(135deg, #8e8e93 0%, #d1d1d6 50%, #8e8e93 100%)",
@@ -91,7 +91,7 @@ const productsData: Product[] = [
     title: "Minimal Eclipse",
     category: "Premium",
     price: 1299,
-    description: "Mystical deep purple gradient representing the celestial twilight shadow.",
+    description: "Mystical deep purple gradient card reflecting the subtle hues of celestial twilight shadows.",
     colorName: "Eclipse Purple",
     cardStyle: {
       background: "linear-gradient(135deg, #1d0f39 0%, #0d061a 100%)",
@@ -103,7 +103,7 @@ const productsData: Product[] = [
     title: "Minimal Aurora",
     category: "Premium",
     price: 1399,
-    description: "Vibrant iridescent gradient reflecting the natural northern lights.",
+    description: "Vibrant iridescent green and blue color gradient card depicting the natural northern lights.",
     colorName: "Aurora Green/Blue",
     cardStyle: {
       background: "linear-gradient(135deg, #0575e6 0%, #00f260 100%)",
@@ -115,7 +115,7 @@ const productsData: Product[] = [
     title: "Minimal Rose Gold",
     category: "Luxury",
     price: 1499,
-    description: "Warm pink-gold satin finish with reflective copper-rose highlights.",
+    description: "Warm pink-gold satin finish card featuring beautiful reflective copper-rose highlights and accents.",
     colorName: "Rose Gold",
     cardStyle: {
       background: "linear-gradient(135deg, #e5b2a5 0%, #f7dcd5 50%, #d89687 100%)",
@@ -128,7 +128,7 @@ const productsData: Product[] = [
     title: "Minimal Platinum",
     category: "Luxury",
     price: 1699,
-    description: "Radiant high-polished platinum silver with chrome logo emblem.",
+    description: "Radiant high-polished platinum silver card detailed with a matching chrome logo emblem.",
     colorName: "Platinum Chrome",
     cardStyle: {
       background: "linear-gradient(135deg, #e5e5e9 0%, #ffffff 50%, #d1d1d6 100%)",
@@ -141,7 +141,7 @@ const productsData: Product[] = [
     title: "Minimal Executive",
     category: "Luxury",
     price: 1999,
-    description: "Deep navy blue casing highlighted by a 24k polished gold accent.",
+    description: "Deep navy blue executive card beautifully highlighted with a 24k polished gold accent.",
     colorName: "Executive Navy & Gold",
     cardStyle: {
       background: "linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%)",
@@ -153,12 +153,36 @@ const productsData: Product[] = [
     title: "Minimal Signature",
     category: "Signature",
     price: 2499,
-    description: "Matte obsidian casing with gold trim border and signature monogram.",
+    description: "Matte obsidian card styled with a premium gold trim border and monogram.",
     colorName: "Velvet Obsidian & Gold",
     cardStyle: {
       background: "linear-gradient(135deg, #141414 0%, #2a2a2a 100%)",
       logoStyle: "gold",
       border: "1px solid #ffd700",
+    },
+  },
+  {
+    id: "minimal-forest",
+    title: "Minimal Forest",
+    category: "Standard",
+    price: 899,
+    description: "Sleek deep forest green matte shell card featuring a clean minimalist professional layout.",
+    colorName: "Forest Green",
+    cardStyle: {
+      background: "linear-gradient(135deg, #13221b 0%, #08120d 100%)",
+      logoStyle: "silver",
+    },
+  },
+  {
+    id: "minimal-horizon",
+    title: "Minimal Horizon",
+    category: "Premium",
+    price: 1299,
+    description: "Sleek dark twilight sunset gradient card capturing the smooth hues of the horizon.",
+    colorName: "Horizon Sunset",
+    cardStyle: {
+      background: "linear-gradient(135deg, #1f1c2c 0%, #928dab 100%)",
+      logoStyle: "white",
     },
   },
 ];

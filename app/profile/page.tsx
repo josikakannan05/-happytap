@@ -6,13 +6,8 @@ import {
   Contact,
   LayoutDashboard,
   CreditCard,
-  Users,
   BarChart3,
-  CalendarDays,
-  Wrench,
-  ShoppingBag,
-  LayoutTemplate,
-  Settings,
+  Palette,
   HelpCircle,
   Zap,
   Camera,
@@ -35,14 +30,8 @@ import {
 const sidebarLinks = [
   { icon: LayoutDashboard, label: "Dashboard", href: "#" },
   { icon: CreditCard,      label: "My Cards",  href: "#" },
-  { icon: Users,           label: "Contacts",  href: "#" },
   { icon: BarChart3,       label: "Analytics", href: "#" },
-  { icon: Users,           label: "Leads",     href: "#" },
-  { icon: CalendarDays,    label: "Events",    href: "#" },
-  { icon: Wrench,          label: "Services",  href: "#" },
-  { icon: ShoppingBag,     label: "Products",  href: "#" },
-  { icon: LayoutTemplate, label: "Templates", href: "#" },
-  { icon: Settings, label: "Settings", href: "#" },
+  { icon: Palette,         label: "Theme",     href: "#" },
 ];
 
 /* ─────────────────────────────────────────────────
