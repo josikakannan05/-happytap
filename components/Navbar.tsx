@@ -66,7 +66,11 @@ export function Navbar({ onLoginClick, user, onLogout }: NavbarProps) {
   const dropdownItems = [
     { icon: <User className="icon" aria-hidden />, label: "My Profile", href: "/profile" },
     { icon: <CreditCard className="icon" aria-hidden />, label: "My Card", href: "#" },
-    { icon: <LayoutDashboard className="icon" aria-hidden />, label: "Dashboard", href: "#" },
+    ...(user?.toLowerCase().includes("admin") ? [
+      { icon: <LayoutDashboard className="icon" aria-hidden />, label: "Admin Panel", href: "/admin" }
+    ] : [
+      { icon: <LayoutDashboard className="icon" aria-hidden />, label: "Dashboard", href: "#" }
+    ]),
     { icon: <Settings className="icon" aria-hidden />, label: "Settings", href: "#" },
   ];
 
@@ -192,9 +196,15 @@ export function Navbar({ onLoginClick, user, onLogout }: NavbarProps) {
             <a href="#" className="mobile-menu-profile-item" onClick={() => setMenuOpen(false)}>
               <CreditCard className="icon" aria-hidden /> My Card
             </a>
-            <a href="#" className="mobile-menu-profile-item" onClick={() => setMenuOpen(false)}>
-              <LayoutDashboard className="icon" aria-hidden /> Dashboard
-            </a>
+            {user?.toLowerCase().includes("admin") ? (
+              <Link href="/admin" className="mobile-menu-profile-item" onClick={() => setMenuOpen(false)}>
+                <LayoutDashboard className="icon" aria-hidden /> Admin Panel
+              </Link>
+            ) : (
+              <a href="#" className="mobile-menu-profile-item" onClick={() => setMenuOpen(false)}>
+                <LayoutDashboard className="icon" aria-hidden /> Dashboard
+              </a>
+            )}
             <a href="#" className="mobile-menu-profile-item" onClick={() => setMenuOpen(false)}>
               <Settings className="icon" aria-hidden /> Settings
             </a>

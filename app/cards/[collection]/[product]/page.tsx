@@ -34,6 +34,15 @@ import {
   Layers,
   Settings,
   Scale,
+  Eye,
+  X,
+  Phone,
+  UserPlus,
+  Globe,
+  Linkedin,
+  Twitter,
+  Github,
+  Instagram,
 } from "lucide-react";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
@@ -781,7 +790,31 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
   const resolvedParams = use(params);
   const { collection, product } = resolvedParams;
 
-  const currentCollection = collectionsData[collection];
+  const [isMounted, setIsMounted] = useState(false);
+  const [dynamicCollections, setDynamicCollections] = useState(collectionsData);
+
+  useEffect(() => {
+    setIsMounted(true);
+    try {
+      const stored = localStorage.getItem("happytap_custom_cards");
+      if (stored) {
+        const customCards = JSON.parse(stored);
+        const updated = JSON.parse(JSON.stringify(collectionsData));
+        customCards.forEach((card: any) => {
+          const slug = card.colorName.toLowerCase().replace(/\s+/g, "-");
+          if (updated[slug]) {
+            updated[slug].products = updated[slug].products.filter((p: any) => p.id !== card.id);
+            updated[slug].products.push(card);
+          }
+        });
+        setDynamicCollections(updated);
+      }
+    } catch (e) {
+      console.error("Error loading custom cards", e);
+    }
+  }, []);
+
+  const currentCollection = dynamicCollections[collection];
   const activeProduct = currentCollection?.products.find((p) => p.id === product);
 
   const [activeView, setActiveView] = useState<"front" | "back" | "side">("front");
@@ -791,6 +824,19 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState<"login" | "signup">("login");
   const [user, setUser] = useState<string | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+  if (!isMounted) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", backgroundColor: "#f4f3f8" }}>
+        <div style={{ display: "flex", gap: "6px" }}>
+          <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "var(--purple)", animation: "bounce 0.6s infinite alternate" }}></div>
+          <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "var(--purple)", animation: "bounce 0.6s infinite alternate 0.2s" }}></div>
+          <div style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "var(--purple)", animation: "bounce 0.6s infinite alternate 0.4s" }}></div>
+        </div>
+      </div>
+    );
+  }
 
   // If page doesn't match a collection or product, render a simple error view
   if (!currentCollection || !activeProduct) {
@@ -865,6 +911,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
   };
 
   const renderFrontCard = (isThumb = false) => {
+    const customImages = (activeProduct as any).images;
+    if (customImages?.front) {
+      return (
+        <div style={{ width: "100%", height: "100%", position: "relative", borderRadius: isThumb ? "8px" : "20px", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <img src={customImages.front} alt="Front Design" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        </div>
+      );
+    }
+
     const isTeamLayout = activeProduct.isTeamLayout;
     const isLight = activeProduct.cardStyle.isLight;
     const logoStyle = activeProduct.cardStyle.logoStyle;
@@ -939,6 +994,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
   };
 
   const renderBackCard = (isThumb = false) => {
+    const customImages = (activeProduct as any).images;
+    if (customImages?.back) {
+      return (
+        <div style={{ width: "100%", height: "100%", position: "relative", borderRadius: isThumb ? "8px" : "20px", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <img src={customImages.back} alt="Back Design" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        </div>
+      );
+    }
+
     const isLight = activeProduct.cardStyle.isLight;
     const logoStyle = activeProduct.cardStyle.logoStyle;
     return (
@@ -986,6 +1050,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
   };
 
   const renderSideCard = (isThumb = false) => {
+    const customImages = (activeProduct as any).images;
+    if (customImages?.side) {
+      return (
+        <div style={{ width: "100%", height: "100%", position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <img src={customImages.side} alt="Side View" style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
+        </div>
+      );
+    }
+
     const coreClass = activeProduct.cardStyle.sideCoreClass || "side-core-silver";
     return (
       <div className={`ec-card-side ${coreClass}`} style={{ width: isThumb ? "90%" : "85%", height: isThumb ? "3px" : "6px" }}>
@@ -1120,28 +1193,36 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                     <Star key={i} className="icon icon-sm" fill="#ffb300" stroke="#ffb300" style={{ width: "16px", height: "16px" }} />
                   ))}
                 </div>
-                <span className="pd-rating-text">4.9</span>
-                <span>(128 reviews)</span>
+                <span className="pd-rating-text">{(activeProduct as any).rating || "4.9"}</span>
+                <span>({(activeProduct as any).reviewsCount || "128"} reviews)</span>
               </div>
 
               {/* Badges Row */}
               <div className="pd-badges-row">
-                <span className="pd-feature-badge">
-                  <Wifi className="icon icon-sm" style={{ transform: "rotate(90deg)" }} />
-                  NFC Enabled
-                </span>
-                <span className="pd-feature-badge">
-                  <Sparkles className="icon icon-sm" />
-                  Instant Sharing
-                </span>
-                <span className="pd-feature-badge">
-                  <ShieldCheck className="icon icon-sm" />
-                  No App Required
-                </span>
-                <span className="pd-feature-badge">
-                  <Award className="icon icon-sm" />
-                  Works Everywhere
-                </span>
+                {((activeProduct as any).features?.nfcEnabled !== false) && (
+                  <span className="pd-feature-badge">
+                    <Wifi className="icon icon-sm" style={{ transform: "rotate(90deg)" }} />
+                    NFC Enabled
+                  </span>
+                )}
+                {((activeProduct as any).features?.instantSharing !== false) && (
+                  <span className="pd-feature-badge">
+                    <Sparkles className="icon icon-sm" />
+                    Instant Sharing
+                  </span>
+                )}
+                {((activeProduct as any).features?.noAppRequired !== false) && (
+                  <span className="pd-feature-badge">
+                    <ShieldCheck className="icon icon-sm" />
+                    No App Required
+                  </span>
+                )}
+                {((activeProduct as any).features?.worksEverywhere !== false) && (
+                  <span className="pd-feature-badge">
+                    <Award className="icon icon-sm" />
+                    Works Everywhere
+                  </span>
+                )}
               </div>
 
               {/* Purchase Controls */}
@@ -1155,6 +1236,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                 <button className="pd-add-to-cart-btn" onClick={() => handleAddToCart(activeProduct.title)}>
                   <ShoppingCart className="icon icon-sm" />
                   Add to Cart
+                </button>
+
+                <button type="button" className="pd-preview-profile-btn" onClick={() => setIsPreviewOpen(true)}>
+                  <Eye className="icon icon-sm" />
+                  Preview Profile
                 </button>
 
                 <button
@@ -1487,6 +1573,129 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
         initialTab={authTab}
         onSuccess={handleAuthSuccess}
       />
+
+      {/* Profile Preview Modal */}
+      <AnimatePresence>
+        {isPreviewOpen && (
+          <div className="profile-preview-overlay" onClick={() => setIsPreviewOpen(false)}>
+            <motion.div
+              className="profile-preview-modal"
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Close Button */}
+              <button className="profile-preview-close" onClick={() => setIsPreviewOpen(false)} aria-label="Close preview">
+                <X size={18} />
+              </button>
+
+              {/* Mobile Phone Mockup Frame */}
+              <div className="phone-mockup">
+                {/* Status Bar */}
+                <div className="phone-status-bar">
+                  <span>9:41</span>
+                  <div className="phone-status-icons">
+                    <Wifi size={12} style={{ transform: "rotate(90deg)" }} />
+                    <div className="phone-battery" />
+                  </div>
+                </div>
+
+                {/* Profile Content Container */}
+                <div className="phone-content">
+                  {/* Cover Banner using the card gradient/background */}
+                  <div 
+                    className="phone-cover-banner" 
+                    style={{ 
+                      background: activeProduct.cardStyle.background || "linear-gradient(135deg, #7c5dfa 0%, #5c3beb 100%)",
+                      borderBottom: activeProduct.cardStyle.border || "none"
+                    }} 
+                  />
+
+                  {/* Profile Info Header */}
+                  <div className="phone-profile-header">
+                    <div className="phone-avatar-wrap">
+                      <img
+                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
+                        alt="Profile Avatar"
+                        className="phone-avatar-img"
+                      />
+                      <div className="phone-online-indicator" />
+                    </div>
+                    <h3 className="phone-profile-name">Alex Bennett</h3>
+                    <p className="phone-profile-title">CEO & Founder</p>
+                    <p className="phone-profile-company">Horizon Technologies</p>
+                  </div>
+
+                  {/* Contact Action Buttons */}
+                  <div className="phone-contact-actions">
+                    <a href="tel:+919876543210" className="phone-action-btn phone-action-call">
+                      <Phone size={14} />
+                      <span>Call</span>
+                    </a>
+                    <a href="mailto:alex@horizon.com" className="phone-action-btn phone-action-email">
+                      <Mail size={14} />
+                      <span>Email</span>
+                    </a>
+                    <button onClick={() => showToast("Contact saved successfully!")} className="phone-action-btn phone-action-save">
+                      <UserPlus size={14} />
+                      <span>Save</span>
+                    </button>
+                  </div>
+
+                  {/* Direct Link Cards */}
+                  <h4 className="phone-section-title">Direct Links</h4>
+                  <div className="phone-profile-links">
+                    <a href="https://horizontech.io" target="_blank" rel="noopener noreferrer" className="phone-link-card">
+                      <Globe size={18} className="phone-link-icon" />
+                      <div className="phone-link-text">
+                        <span className="phone-link-title">Official Website</span>
+                        <span className="phone-link-url">horizontech.io</span>
+                      </div>
+                      <ArrowRight size={14} className="phone-link-arrow" />
+                    </a>
+
+                    <a href="https://alexbennett.dev" target="_blank" rel="noopener noreferrer" className="phone-link-card">
+                      <Briefcase size={18} className="phone-link-icon" />
+                      <div className="phone-link-text">
+                        <span className="phone-link-title">Personal Portfolio</span>
+                        <span className="phone-link-url">alexbennett.dev</span>
+                      </div>
+                      <ArrowRight size={14} className="phone-link-arrow" />
+                    </a>
+                  </div>
+
+                  {/* Social Networks grid */}
+                  <h4 className="phone-section-title">Social Networks</h4>
+                  <div className="phone-profile-socials">
+                    <div className="phone-socials-grid">
+                      <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn">
+                        <Linkedin size={18} />
+                      </a>
+                      <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn">
+                        <Twitter size={18} />
+                      </a>
+                      <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn">
+                        <Github size={18} />
+                      </a>
+                      <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn">
+                        <Instagram size={18} />
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* HappyTap Brand footer */}
+                  <div className="phone-footer-brand">
+                    <span>Powered by</span>
+                    <span className="phone-footer-brand-logo">HappyTap</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

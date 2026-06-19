@@ -59,6 +59,10 @@ export default function ProfilePage() {
   const [avatarSrc, setAvatarSrc] = useState<string | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
+  /* Cover image */
+  const [coverSrc, setCoverSrc] = useState<string | null>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+
   /* Form fields */
   const [firstName, setFirstName] = useState("John");
   const [lastName, setLastName] = useState("Doe");
@@ -237,71 +241,115 @@ export default function ProfilePage() {
             </div>
           </header>
 
-          {/* Top Profile Summary Card — Dashboard only */}
-          {activeTab === "Dashboard" && <div className="profile-summary-card">
-            <div className="summary-card-left">
-              <div className="summary-avatar-wrap">
-                <div className="summary-avatar-ring">
-                  {avatarSrc ? (
-                    <img src={avatarSrc} alt="Profile photo" className="summary-avatar-img" />
-                  ) : (
-                    <span className="summary-avatar-initials">JO</span>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  className="summary-avatar-edit-btn"
-                  onClick={() => avatarInputRef.current?.click()}
-                  aria-label="Edit profile photo"
+          {activeTab === "Dashboard" && (
+            <>
+              {/* Cover Banner Card */}
+              <div className="profile-cover-card">
+                {/* Cover Area */}
+                <div
+                  className="profile-cover-bg"
+                  style={coverSrc ? { backgroundImage: `url(${coverSrc})` } : undefined}
+                  aria-label="Cover photo area"
                 >
-                  <Pencil size={12} aria-hidden />
-                </button>
-                <input
-                  ref={avatarInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="sr-only"
-                  onChange={(e) => handleFileChange(e, setAvatarSrc)}
-                  aria-label="Upload profile photo"
-                />
-              </div>
-              <div className="summary-user-info">
-                <h2>{firstName} {lastName}</h2>
-                <p>{email}</p>
-                <span className="summary-plan-badge">Pro Plan</span>
-              </div>
-            </div>
+                  {!coverSrc && (
+                    <svg className="cover-wave" viewBox="0 0 900 160" preserveAspectRatio="none" aria-hidden>
+                      <path d="M0,80 C150,140 300,20 450,80 C600,140 750,20 900,80 L900,160 L0,160 Z" fill="rgba(255,255,255,0.18)" />
+                      <path d="M0,100 C180,60 360,140 540,100 C720,60 810,120 900,90 L900,160 L0,160 Z" fill="rgba(255,255,255,0.1)" />
+                    </svg>
+                  )}
+                  <button
+                    type="button"
+                    className="profile-cover-change-btn"
+                    onClick={() => coverInputRef.current?.click()}
+                    aria-label="Change cover photo"
+                  >
+                    <Camera size={14} aria-hidden />
+                    Change Cover
+                  </button>
+                  <input
+                    ref={coverInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="sr-only"
+                    onChange={(e) => handleFileChange(e, setCoverSrc)}
+                    aria-label="Upload cover photo"
+                  />
+                </div>
 
-            <div className="summary-card-right">
-              <div className="summary-stat-box flex-purple">
-                <div className="stat-icon-wrap stat-purple">
-                  <CreditCard size={18} />
-                </div>
-                <div className="stat-text-wrap">
-                  <h3>12</h3>
-                  <p>Total Cards</p>
+                {/* Circular overlapping Avatar */}
+                <div className="profile-avatar-wrap">
+                  <div className="profile-avatar-ring">
+                    {avatarSrc ? (
+                      <img src={avatarSrc} alt="Profile photo" className="profile-avatar-img" />
+                    ) : (
+                      <span className="profile-avatar-initials">
+                        {firstName && lastName ? (firstName[0] + lastName[0]).toUpperCase() : "JO"}
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    className="profile-avatar-edit-btn"
+                    onClick={() => avatarInputRef.current?.click()}
+                    aria-label="Edit profile photo"
+                  >
+                    <Camera size={12} aria-hidden />
+                  </button>
+                  <input
+                    ref={avatarInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="sr-only"
+                    onChange={(e) => handleFileChange(e, setAvatarSrc)}
+                    aria-label="Upload profile photo"
+                  />
                 </div>
               </div>
-              <div className="summary-stat-box flex-blue">
-                <div className="stat-icon-wrap stat-blue">
-                  <BarChart3 size={18} />
-                </div>
-                <div className="stat-text-wrap">
-                  <h3>2,847</h3>
-                  <p>Profile Views</p>
-                </div>
-              </div>
-              <div className="summary-stat-box flex-green">
-                <div className="stat-icon-wrap stat-green">
-                  <Users size={18} />
-                </div>
-                <div className="stat-text-wrap">
-                  <h3>38</h3>
-                  <p>Contacts Saved</p>
+
+              {/* Profile Information Block below Cover/Avatar */}
+              <div className="profile-header-info-container">
+                <h2 className="profile-header-fullname">{firstName} {lastName}</h2>
+                <p className="profile-header-email">{email}</p>
+                <div className="profile-header-badge-row">
+                  <span className="profile-header-plan-badge">
+                    <Crown size={12} className="plan-badge-icon" aria-hidden />
+                    Pro Plan
+                  </span>
                 </div>
               </div>
-            </div>
-          </div>}
+
+              {/* Stats Cards Row */}
+              <div className="profile-stats-row">
+                <div className="summary-stat-box flex-purple">
+                  <div className="stat-icon-wrap stat-purple">
+                    <CreditCard size={18} />
+                  </div>
+                  <div className="stat-text-wrap">
+                    <h3>12</h3>
+                    <p>Total Cards</p>
+                  </div>
+                </div>
+                <div className="summary-stat-box flex-blue">
+                  <div className="stat-icon-wrap stat-blue">
+                    <BarChart3 size={18} />
+                  </div>
+                  <div className="stat-text-wrap">
+                    <h3>2,847</h3>
+                    <p>Profile Views</p>
+                  </div>
+                </div>
+                <div className="summary-stat-box flex-green">
+                  <div className="stat-icon-wrap stat-green">
+                    <Users size={18} />
+                  </div>
+                  <div className="stat-text-wrap">
+                    <h3>38</h3>
+                    <p>Contacts Saved</p>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
 
           {activeTab === "Dashboard" && (
             <div className="profile-settings-grid-wrapper">
