@@ -43,6 +43,11 @@ import {
   Twitter,
   Github,
   Instagram,
+  Facebook,
+  Youtube,
+  MapPin,
+  Map,
+  MessageSquare,
 } from "lucide-react";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
@@ -826,6 +831,43 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
   const [user, setUser] = useState<string | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
+  /* Dynamic User Profile State */
+  const [profileData, setProfileData] = useState({
+    fullName: "Alex Bennett",
+    designation: "CEO & Founder",
+    companyName: "Horizon Technologies",
+    companyDescription: "Connecting people. Building relationships.",
+    avatarSrc: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+    coverSrc: "",
+    mobileNumber: "+91 98765 43210",
+    emailAddress: "alex@horizon.com",
+    whatsAppNumber: "+91 98765 43210",
+    website: "https://horizontech.io",
+    portfolio: "https://alexbennett.dev",
+    linkedin: "https://linkedin.com",
+    instagram: "https://instagram.com",
+    facebook: "https://facebook.com",
+    twitter: "https://twitter.com",
+    youtube: "https://youtube.com",
+    businessAddress: "123 Innovation Way, Tech Park, Bangalore, India",
+    googleMapsLocation: "https://maps.google.com/?q=12.9716,77.5946"
+  });
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("happytap_user_profile");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setProfileData(prev => ({
+          ...prev,
+          ...parsed
+        }));
+      }
+    } catch (err) {
+      console.error("Error loading profile configuration:", err);
+    }
+  }, [isPreviewOpen]);
+
   if (!isMounted) {
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", backgroundColor: "#f4f3f8" }}>
@@ -1608,36 +1650,60 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                   <div 
                     className="phone-cover-banner" 
                     style={{ 
-                      background: activeProduct.cardStyle.background || "linear-gradient(135deg, #7c5dfa 0%, #5c3beb 100%)",
-                      borderBottom: activeProduct.cardStyle.border || "none"
+                      backgroundImage: profileData.coverSrc ? `url(${profileData.coverSrc})` : "none",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      background: profileData.coverSrc ? undefined : (activeProduct.cardStyle.background || "linear-gradient(135deg, #7c5dfa 0%, #5c3beb 100%)"),
+                      borderBottom: activeProduct.cardStyle.border || "none",
+                      height: "125px",
+                      position: "relative"
                     }} 
                   />
 
                   {/* Profile Info Header */}
                   <div className="phone-profile-header">
                     <div className="phone-avatar-wrap">
-                      <img
-                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
-                        alt="Profile Avatar"
-                        className="phone-avatar-img"
-                      />
+                      {profileData.avatarSrc ? (
+                        <img
+                          src={profileData.avatarSrc}
+                          alt="Profile Avatar"
+                          className="phone-avatar-img"
+                        />
+                      ) : (
+                        <div className="phone-avatar-img" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)", color: "#ffffff", fontWeight: 700, fontSize: "1.5rem" }}>
+                          {profileData.fullName ? (
+                            profileData.fullName.trim().split(/\s+/).length >= 2
+                              ? (profileData.fullName.trim().split(/\s+/)[0][0] + profileData.fullName.trim().split(/\s+/)[1][0]).toUpperCase()
+                              : profileData.fullName.trim().slice(0, 2).toUpperCase()
+                          ) : "JO"}
+                        </div>
+                      )}
                       <div className="phone-online-indicator" />
                     </div>
-                    <h3 className="phone-profile-name">Alex Bennett</h3>
-                    <p className="phone-profile-title">CEO & Founder</p>
-                    <p className="phone-profile-company">Horizon Technologies</p>
+                    <h3 className="phone-profile-name">{profileData.fullName}</h3>
+                    <p className="phone-profile-title">{profileData.designation}</p>
+                    <p className="phone-profile-company">{profileData.companyName}</p>
+                    {profileData.companyDescription && (
+                      <p className="phone-profile-bio" style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "8px", padding: "0 15px", lineHeight: 1.4 }}>
+                        {profileData.companyDescription}
+                      </p>
+                    )}
                   </div>
 
                   {/* Contact Action Buttons */}
                   <div className="phone-contact-actions">
-                    <a href="tel:+919876543210" className="phone-action-btn phone-action-call">
-                      <Phone size={14} />
-                      <span>Call</span>
-                    </a>
-                    <a href="mailto:alex@horizon.com" className="phone-action-btn phone-action-email">
-                      <Mail size={14} />
-                      <span>Email</span>
-                    </a>
+                    {profileData.mobileNumber && (
+                      <a href={`tel:${profileData.mobileNumber}`} className="phone-action-btn phone-action-call">
+                        <Phone size={14} />
+                        <span>Call</span>
+                      </a>
+                    )}
+                    {profileData.emailAddress && (
+                      <a href={`mailto:${profileData.emailAddress}`} className="phone-action-btn phone-action-email">
+                        <Mail size={14} />
+                        <span>Email</span>
+                      </a>
+                    )}
                     <button onClick={() => showToast("Contact saved successfully!")} className="phone-action-btn phone-action-save">
                       <UserPlus size={14} />
                       <span>Save</span>
@@ -1647,41 +1713,82 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                   {/* Direct Link Cards */}
                   <h4 className="phone-section-title">Direct Links</h4>
                   <div className="phone-profile-links">
-                    <a href="https://horizontech.io" target="_blank" rel="noopener noreferrer" className="phone-link-card">
-                      <Globe size={18} className="phone-link-icon" />
-                      <div className="phone-link-text">
-                        <span className="phone-link-title">Official Website</span>
-                        <span className="phone-link-url">horizontech.io</span>
-                      </div>
-                      <ArrowRight size={14} className="phone-link-arrow" />
-                    </a>
+                    {profileData.website && (
+                      <a href={profileData.website} target="_blank" rel="noopener noreferrer" className="phone-link-card">
+                        <Globe size={18} className="phone-link-icon" />
+                        <div className="phone-link-text">
+                          <span className="phone-link-title">Official Website</span>
+                          <span className="phone-link-url">{profileData.website.replace(/^https?:\/\//, "")}</span>
+                        </div>
+                        <ArrowRight size={14} className="phone-link-arrow" />
+                      </a>
+                    )}
 
-                    <a href="https://alexbennett.dev" target="_blank" rel="noopener noreferrer" className="phone-link-card">
-                      <Briefcase size={18} className="phone-link-icon" />
-                      <div className="phone-link-text">
-                        <span className="phone-link-title">Personal Portfolio</span>
-                        <span className="phone-link-url">alexbennett.dev</span>
-                      </div>
-                      <ArrowRight size={14} className="phone-link-arrow" />
-                    </a>
+                    {profileData.portfolio && (
+                      <a href={profileData.portfolio} target="_blank" rel="noopener noreferrer" className="phone-link-card">
+                        <Briefcase size={18} className="phone-link-icon" />
+                        <div className="phone-link-text">
+                          <span className="phone-link-title">Personal Portfolio</span>
+                          <span className="phone-link-url">{profileData.portfolio.replace(/^https?:\/\//, "")}</span>
+                        </div>
+                        <ArrowRight size={14} className="phone-link-arrow" />
+                      </a>
+                    )}
+
+                    {profileData.whatsAppNumber && (
+                      <a href={`https://wa.me/${profileData.whatsAppNumber.replace(/\s+/g, "").replace(/\+/g, "")}`} target="_blank" rel="noopener noreferrer" className="phone-link-card">
+                        <MessageSquare size={18} className="phone-link-icon" style={{ color: "#25d366" }} />
+                        <div className="phone-link-text">
+                          <span className="phone-link-title">WhatsApp Chat</span>
+                          <span className="phone-link-url">{profileData.whatsAppNumber}</span>
+                        </div>
+                        <ArrowRight size={14} className="phone-link-arrow" />
+                      </a>
+                    )}
+
+                    {profileData.businessAddress && (
+                      <a href={profileData.googleMapsLocation || "#"} target="_blank" rel="noopener noreferrer" className="phone-link-card">
+                        <MapPin size={18} className="phone-link-icon" />
+                        <div className="phone-link-text">
+                          <span className="phone-link-title">Business Location</span>
+                          <span className="phone-link-url" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "220px" }}>
+                            {profileData.businessAddress}
+                          </span>
+                        </div>
+                        <ArrowRight size={14} className="phone-link-arrow" />
+                      </a>
+                    )}
                   </div>
 
                   {/* Social Networks grid */}
                   <h4 className="phone-section-title">Social Networks</h4>
                   <div className="phone-profile-socials">
                     <div className="phone-socials-grid">
-                      <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn">
-                        <Linkedin size={18} />
-                      </a>
-                      <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn">
-                        <Twitter size={18} />
-                      </a>
-                      <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn">
-                        <Github size={18} />
-                      </a>
-                      <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn">
-                        <Instagram size={18} />
-                      </a>
+                      {profileData.linkedin && (
+                        <a href={profileData.linkedin} target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn" aria-label="LinkedIn">
+                          <Linkedin size={18} />
+                        </a>
+                      )}
+                      {profileData.instagram && (
+                        <a href={profileData.instagram} target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn" aria-label="Instagram">
+                          <Instagram size={18} />
+                        </a>
+                      )}
+                      {profileData.facebook && (
+                        <a href={profileData.facebook} target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn" aria-label="Facebook">
+                          <Facebook size={18} />
+                        </a>
+                      )}
+                      {profileData.twitter && (
+                        <a href={profileData.twitter} target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn" aria-label="X (Twitter)">
+                          <Twitter size={18} />
+                        </a>
+                      )}
+                      {profileData.youtube && (
+                        <a href={profileData.youtube} target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn" aria-label="YouTube">
+                          <Youtube size={18} />
+                        </a>
+                      )}
                     </div>
                   </div>
 

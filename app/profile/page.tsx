@@ -33,6 +33,13 @@ import {
   Smartphone,
   Check,
   Palette,
+  Facebook,
+  Youtube,
+  MapPin,
+  Map,
+  MessageSquare,
+  Globe,
+  Briefcase,
 } from "lucide-react";
 import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
 import { ThemeCustomizer, ThemeCustomizerHandle } from "@/components/ThemeCustomizer";
@@ -64,17 +71,55 @@ export default function ProfilePage() {
   const coverInputRef = useRef<HTMLInputElement>(null);
 
   /* Form fields */
-  const [firstName, setFirstName] = useState("John");
-  const [lastName, setLastName] = useState("Doe");
-  const [email, setEmail] = useState("john.doe@example.com");
-  const [phone, setPhone] = useState("+91 98765 43210");
-  const [about, setAbout] = useState("Digital designer and entrepreneur passionate about creating");
-  const [instagram, setInstagram] = useState("@johndoe_design");
-  const [linkedin, setLinkedin] = useState("linkedin.com/in/johndoe");
-  const [twitter, setTwitter] = useState("@johndoe_design");
+  const [fullName, setFullName] = useState("John Doe");
+  const [designation, setDesignation] = useState("Lead Designer");
+  const [companyName, setCompanyName] = useState("HappyTap");
+  const [companyDescription, setCompanyDescription] = useState("Digital designer and entrepreneur passionate about creating connections.");
+  const [mobileNumber, setMobileNumber] = useState("+91 98765 43210");
+  const [emailAddress, setEmailAddress] = useState("john.doe@example.com");
+  const [whatsAppNumber, setWhatsAppNumber] = useState("+91 98765 43210");
+  const [website, setWebsite] = useState("https://happytap.com");
+  const [portfolio, setPortfolio] = useState("https://portfolio.johndoe.com");
+  const [linkedin, setLinkedin] = useState("https://linkedin.com/in/johndoe");
+  const [instagram, setInstagram] = useState("https://instagram.com/johndoe");
+  const [facebook, setFacebook] = useState("https://facebook.com/johndoe");
+  const [twitter, setTwitter] = useState("https://x.com/johndoe");
+  const [youtube, setYoutube] = useState("https://youtube.com/johndoe");
+  const [businessAddress, setBusinessAddress] = useState("123 Innovation Way, Tech Park, Bangalore, India");
+  const [googleMapsLocation, setGoogleMapsLocation] = useState("https://maps.google.com/?q=12.9716,77.5946");
   const [twoFactor, setTwoFactor] = useState(true);
 
   const [saved, setSaved] = useState(false);
+
+  /* Load profile config on mount */
+  React.useEffect(() => {
+    try {
+      const stored = localStorage.getItem("happytap_user_profile");
+      if (stored) {
+        const p = JSON.parse(stored);
+        if (p.fullName !== undefined) setFullName(p.fullName);
+        if (p.designation !== undefined) setDesignation(p.designation);
+        if (p.companyName !== undefined) setCompanyName(p.companyName);
+        if (p.companyDescription !== undefined) setCompanyDescription(p.companyDescription);
+        if (p.avatarSrc !== undefined) setAvatarSrc(p.avatarSrc);
+        if (p.coverSrc !== undefined) setCoverSrc(p.coverSrc);
+        if (p.mobileNumber !== undefined) setMobileNumber(p.mobileNumber);
+        if (p.emailAddress !== undefined) setEmailAddress(p.emailAddress);
+        if (p.whatsAppNumber !== undefined) setWhatsAppNumber(p.whatsAppNumber);
+        if (p.website !== undefined) setWebsite(p.website);
+        if (p.portfolio !== undefined) setPortfolio(p.portfolio);
+        if (p.linkedin !== undefined) setLinkedin(p.linkedin);
+        if (p.instagram !== undefined) setInstagram(p.instagram);
+        if (p.facebook !== undefined) setFacebook(p.facebook);
+        if (p.twitter !== undefined) setTwitter(p.twitter);
+        if (p.youtube !== undefined) setYoutube(p.youtube);
+        if (p.businessAddress !== undefined) setBusinessAddress(p.businessAddress);
+        if (p.googleMapsLocation !== undefined) setGoogleMapsLocation(p.googleMapsLocation);
+      }
+    } catch (err) {
+      console.error("Error loading profile configuration:", err);
+    }
+  }, []);
 
   /* Helpers */
   const handleFileChange = (
@@ -88,8 +133,38 @@ export default function ProfilePage() {
     reader.readAsDataURL(file);
   };
 
+  const getInitials = (name: string) => {
+    if (!name) return "JO";
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return parts[0].slice(0, 2).toUpperCase();
+  };
+
   const handleSave = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
+    const profileData = {
+      fullName,
+      designation,
+      companyName,
+      companyDescription,
+      avatarSrc,
+      coverSrc,
+      mobileNumber,
+      emailAddress,
+      whatsAppNumber,
+      website,
+      portfolio,
+      linkedin,
+      instagram,
+      facebook,
+      twitter,
+      youtube,
+      businessAddress,
+      googleMapsLocation
+    };
+    localStorage.setItem("happytap_user_profile", JSON.stringify(profileData));
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };
@@ -161,12 +236,12 @@ export default function ProfilePage() {
             {avatarSrc ? (
               <img src={avatarSrc} alt="avatar" />
             ) : (
-              <span>JO</span>
+              <span>{getInitials(fullName)}</span>
             )}
           </span>
           <div className="footer-user-info">
-            <span className="footer-username">{firstName} {lastName}</span>
-            <span className="footer-email">{email}</span>
+            <span className="footer-username">{fullName}</span>
+            <span className="footer-email">{emailAddress}</span>
           </div>
           <ChevronDown size={14} className="footer-chevron" aria-hidden />
         </div>
@@ -229,9 +304,7 @@ export default function ProfilePage() {
                         <img src={avatarSrc} alt="avatar" />
                       ) : (
                         <span>
-                          {firstName && lastName
-                            ? (firstName[0] + lastName[0]).toUpperCase()
-                            : "JO"}
+                          {getInitials(fullName)}
                         </span>
                       )}
                     </span>
@@ -283,7 +356,7 @@ export default function ProfilePage() {
                       <img src={avatarSrc} alt="Profile photo" className="profile-avatar-img" />
                     ) : (
                       <span className="profile-avatar-initials">
-                        {firstName && lastName ? (firstName[0] + lastName[0]).toUpperCase() : "JO"}
+                        {getInitials(fullName)}
                       </span>
                     )}
                   </div>
@@ -308,8 +381,8 @@ export default function ProfilePage() {
 
               {/* Profile Information Block below Cover/Avatar */}
               <div className="profile-header-info-container">
-                <h2 className="profile-header-fullname">{firstName} {lastName}</h2>
-                <p className="profile-header-email">{email}</p>
+                <h2 className="profile-header-fullname">{fullName}</h2>
+                <p className="profile-header-email">{emailAddress}</p>
                 <div className="profile-header-badge-row">
                   <span className="profile-header-plan-badge">
                     <Crown size={12} className="plan-badge-icon" aria-hidden />
@@ -353,131 +426,181 @@ export default function ProfilePage() {
 
           {activeTab === "Dashboard" && (
             <div className="profile-settings-grid-wrapper">
-              {/* Row 1: Personal Info & Social Media */}
+              {/* Row 1: Profile Identity & Media */}
               <div className="profile-grid-row">
-                {/* Personal Information */}
+                {/* Profile Identity */}
                 <section className="profile-card">
                   <h2 className="profile-card-title">
                     <User size={16} className="profile-card-icon" aria-hidden />
-                    Personal Information
+                    Profile Identity
                   </h2>
-
+                  <div className="pf-field">
+                    <label htmlFor="pf-fullName">Full Name</label>
+                    <input
+                      id="pf-fullName"
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="e.g. John Doe"
+                      className="pf-input"
+                    />
+                  </div>
                   <div className="pf-row-2">
                     <div className="pf-field">
-                      <label htmlFor="pf-firstName">First Name</label>
+                      <label htmlFor="pf-designation">Designation</label>
                       <input
-                        id="pf-firstName"
+                        id="pf-designation"
                         type="text"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        placeholder="First Name"
+                        value={designation}
+                        onChange={(e) => setDesignation(e.target.value)}
+                        placeholder="e.g. Lead Designer"
                         className="pf-input"
                       />
                     </div>
                     <div className="pf-field">
-                      <label htmlFor="pf-lastName">Last Name</label>
+                      <label htmlFor="pf-companyName">Company Name</label>
                       <input
-                        id="pf-lastName"
+                        id="pf-companyName"
                         type="text"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        placeholder="Last Name"
+                        value={companyName}
+                        onChange={(e) => setCompanyName(e.target.value)}
+                        placeholder="e.g. HappyTap"
                         className="pf-input"
                       />
                     </div>
                   </div>
-
                   <div className="pf-field">
-                    <label htmlFor="pf-email">Email Address</label>
+                    <label htmlFor="pf-companyDescription">Company Description / Bio</label>
+                    <textarea
+                      id="pf-companyDescription"
+                      value={companyDescription}
+                      onChange={(e) => setCompanyDescription(e.target.value)}
+                      placeholder="Write a short description about you or your company..."
+                      rows={3}
+                      className="pf-textarea"
+                    />
+                  </div>
+                </section>
+
+                {/* Profile Media */}
+                <section className="profile-card">
+                  <h2 className="profile-card-title">
+                    <Camera size={16} className="profile-card-icon" aria-hidden />
+                    Profile Media
+                  </h2>
+                  <p className="pf-label">Profile Photo</p>
+                  <button
+                    type="button"
+                    className="pf-upload-zone"
+                    onClick={() => avatarInputRef.current?.click()}
+                    aria-label="Upload profile photo"
+                    style={{ marginBottom: "16px" }}
+                  >
+                    <Upload size={20} className="pf-upload-zone-icon" />
+                    <div className="pf-upload-zone-text">
+                      <span className="pf-upload-zone-highlight">Click to upload photo</span>
+                      <p className="pf-upload-zone-sub">PNG, JPG or WEBP (Square recommended)</p>
+                    </div>
+                  </button>
+                  
+                  <p className="pf-label">Cover Image</p>
+                  <button
+                    type="button"
+                    className="pf-upload-zone"
+                    onClick={() => coverInputRef.current?.click()}
+                    aria-label="Upload cover image"
+                  >
+                    <Upload size={20} className="pf-upload-zone-icon" />
+                    <div className="pf-upload-zone-text">
+                      <span className="pf-upload-zone-highlight">Click to upload cover banner</span>
+                      <p className="pf-upload-zone-sub">Horizontal banner image</p>
+                    </div>
+                  </button>
+                </section>
+              </div>
+
+              {/* Row 2: Contact Details & Direct Links */}
+              <div className="profile-grid-row">
+                {/* Contact Details */}
+                <section className="profile-card">
+                  <h2 className="profile-card-title">
+                    <Phone size={16} className="profile-card-icon" aria-hidden />
+                    Contact Details
+                  </h2>
+                  <div className="pf-field">
+                    <label htmlFor="pf-mobileNumber">Mobile Number</label>
+                    <div className="pf-input-icon-wrap">
+                      <Phone size={15} className="pf-input-icon" aria-hidden />
+                      <input
+                        id="pf-mobileNumber"
+                        type="tel"
+                        value={mobileNumber}
+                        onChange={(e) => setMobileNumber(e.target.value)}
+                        placeholder="+91 98765 43210"
+                        className="pf-input pf-input-padded"
+                      />
+                    </div>
+                  </div>
+                  <div className="pf-field">
+                    <label htmlFor="pf-emailAddress">Email Address</label>
                     <div className="pf-input-icon-wrap">
                       <Mail size={15} className="pf-input-icon" aria-hidden />
                       <input
-                        id="pf-email"
+                        id="pf-emailAddress"
                         type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={emailAddress}
+                        onChange={(e) => setEmailAddress(e.target.value)}
                         placeholder="name@example.com"
                         className="pf-input pf-input-padded"
                       />
                     </div>
                   </div>
-
                   <div className="pf-field">
-                    <label htmlFor="pf-phone">Phone Number</label>
-                    <div className="pf-phone-input-group">
-                      <div className="pf-phone-country-select">
-                        <span className="pf-phone-flag" aria-hidden>IN</span>
-                        <ChevronDown size={12} className="pf-phone-chevron" />
-                      </div>
+                    <label htmlFor="pf-whatsAppNumber">WhatsApp Number</label>
+                    <div className="pf-input-icon-wrap">
+                      <MessageSquare size={15} className="pf-input-icon" aria-hidden />
                       <input
-                        id="pf-phone"
+                        id="pf-whatsAppNumber"
                         type="tel"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        value={whatsAppNumber}
+                        onChange={(e) => setWhatsAppNumber(e.target.value)}
                         placeholder="+91 98765 43210"
-                        className="pf-input"
+                        className="pf-input pf-input-padded"
                       />
                     </div>
-                  </div>
-
-                  <div className="profile-card-action-right">
-                    <button
-                      type="button"
-                      className="btn pf-btn-save"
-                      onClick={() => handleSave()}
-                    >
-                      {saved ? "✓ Saved!" : "Save Changes"}
-                    </button>
                   </div>
                 </section>
 
-                {/* Social Media */}
+                {/* Direct Links */}
                 <section className="profile-card">
                   <h2 className="profile-card-title">
-                    <Instagram size={16} className="profile-card-icon" aria-hidden />
-                    Social Media
+                    <Globe size={16} className="profile-card-icon" aria-hidden />
+                    Direct Links
                   </h2>
-
                   <div className="pf-field">
-                    <label htmlFor="pf-instagram">Instagram ID</label>
+                    <label htmlFor="pf-website">Website URL</label>
                     <div className="pf-input-icon-wrap">
-                      <Instagram size={15} className="pf-input-icon pf-instagram-icon" aria-hidden />
+                      <Globe size={15} className="pf-input-icon" aria-hidden />
                       <input
-                        id="pf-instagram"
-                        type="text"
-                        value={instagram}
-                        onChange={(e) => setInstagram(e.target.value)}
-                        placeholder="@yourusername"
+                        id="pf-website"
+                        type="url"
+                        value={website}
+                        onChange={(e) => setWebsite(e.target.value)}
+                        placeholder="https://example.com"
                         className="pf-input pf-input-padded"
                       />
                     </div>
                   </div>
-
                   <div className="pf-field">
-                    <label htmlFor="pf-linkedin">LinkedIn</label>
+                    <label htmlFor="pf-portfolio">Portfolio URL</label>
                     <div className="pf-input-icon-wrap">
-                      <Linkedin size={15} className="pf-input-icon pf-linkedin-icon" aria-hidden />
+                      <Briefcase size={15} className="pf-input-icon" aria-hidden />
                       <input
-                        id="pf-linkedin"
-                        type="text"
-                        value={linkedin}
-                        onChange={(e) => setLinkedin(e.target.value)}
-                        placeholder="linkedin.com/in/username"
-                        className="pf-input pf-input-padded"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="pf-field">
-                    <label htmlFor="pf-twitter">Twitter</label>
-                    <div className="pf-input-icon-wrap">
-                      <Twitter size={15} className="pf-input-icon pf-twitter-icon" aria-hidden />
-                      <input
-                        id="pf-twitter"
-                        type="text"
-                        value={twitter}
-                        onChange={(e) => setTwitter(e.target.value)}
-                        placeholder="@yourusername"
+                        id="pf-portfolio"
+                        type="url"
+                        value={portfolio}
+                        onChange={(e) => setPortfolio(e.target.value)}
+                        placeholder="https://portfolio.example.com"
                         className="pf-input pf-input-padded"
                       />
                     </div>
@@ -485,76 +608,132 @@ export default function ProfilePage() {
                 </section>
               </div>
 
-              {/* Row 2: Profile Info & Account Settings */}
+              {/* Row 3: Social Networks & Location Details */}
               <div className="profile-grid-row">
-                {/* Profile Information */}
+                {/* Social Networks */}
                 <section className="profile-card">
                   <h2 className="profile-card-title">
-                    <User size={16} className="profile-card-icon" aria-hidden />
-                    Profile Information
+                    <Instagram size={16} className="profile-card-icon" aria-hidden />
+                    Social Networks
                   </h2>
-
-                  <p className="pf-label">Profile Picture</p>
-                  <button
-                    type="button"
-                    className="pf-upload-zone"
-                    onClick={() => avatarInputRef.current?.click()}
-                    aria-label="Upload profile picture"
-                  >
-                    <Upload size={20} className="pf-upload-zone-icon" />
-                    <div className="pf-upload-zone-text">
-                      <span className="pf-upload-zone-highlight">Click to upload</span> or drag and drop
-                      <p className="pf-upload-zone-sub">SVG, PNG, JPG or GIF (max. 800x400px)</p>
+                  <div className="pf-row-2">
+                    <div className="pf-field">
+                      <label htmlFor="pf-linkedin">LinkedIn</label>
+                      <div className="pf-input-icon-wrap">
+                        <Linkedin size={15} className="pf-input-icon pf-linkedin-icon" aria-hidden />
+                        <input
+                          id="pf-linkedin"
+                          type="url"
+                          value={linkedin}
+                          onChange={(e) => setLinkedin(e.target.value)}
+                          placeholder="https://linkedin.com/in/username"
+                          className="pf-input pf-input-padded"
+                        />
+                      </div>
                     </div>
-                  </button>
-
+                    <div className="pf-field">
+                      <label htmlFor="pf-instagram">Instagram</label>
+                      <div className="pf-input-icon-wrap">
+                        <Instagram size={15} className="pf-input-icon pf-instagram-icon" aria-hidden />
+                        <input
+                          id="pf-instagram"
+                          type="url"
+                          value={instagram}
+                          onChange={(e) => setInstagram(e.target.value)}
+                          placeholder="https://instagram.com/username"
+                          className="pf-input pf-input-padded"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="pf-row-2">
+                    <div className="pf-field">
+                      <label htmlFor="pf-facebook">Facebook</label>
+                      <div className="pf-input-icon-wrap">
+                        <Facebook size={15} className="pf-input-icon" style={{ color: "#1877f2" }} aria-hidden />
+                        <input
+                          id="pf-facebook"
+                          type="url"
+                          value={facebook}
+                          onChange={(e) => setFacebook(e.target.value)}
+                          placeholder="https://facebook.com/username"
+                          className="pf-input pf-input-padded"
+                        />
+                      </div>
+                    </div>
+                    <div className="pf-field">
+                      <label htmlFor="pf-twitter">X (Twitter)</label>
+                      <div className="pf-input-icon-wrap">
+                        <Twitter size={15} className="pf-input-icon pf-twitter-icon" aria-hidden />
+                        <input
+                          id="pf-twitter"
+                          type="url"
+                          value={twitter}
+                          onChange={(e) => setTwitter(e.target.value)}
+                          placeholder="https://x.com/username"
+                          className="pf-input pf-input-padded"
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="pf-field">
-                    <label htmlFor="pf-about">Bio</label>
-                    <textarea
-                      id="pf-about"
-                      value={about}
-                      onChange={(e) => setAbout(e.target.value)}
-                      placeholder="Write a short bio..."
-                      rows={4}
-                      className="pf-textarea"
-                    />
+                    <label htmlFor="pf-youtube">YouTube</label>
+                    <div className="pf-input-icon-wrap">
+                      <Youtube size={15} className="pf-input-icon" style={{ color: "#ff0000" }} aria-hidden />
+                      <input
+                        id="pf-youtube"
+                        type="url"
+                        value={youtube}
+                        onChange={(e) => setYoutube(e.target.value)}
+                        placeholder="https://youtube.com/c/channel"
+                        className="pf-input pf-input-padded"
+                      />
+                    </div>
                   </div>
                 </section>
 
-                {/* Account Settings */}
+                {/* Location Details */}
                 <section className="profile-card">
                   <h2 className="profile-card-title">
-                    <Settings size={16} className="profile-card-icon" aria-hidden />
-                    Account Settings
+                    <MapPin size={16} className="profile-card-icon" aria-hidden />
+                    Location Details
                   </h2>
-
                   <div className="pf-field">
-                    <label>Password</label>
-                    <button
-                      type="button"
-                      className="pf-change-pw-btn"
-                    >
-                      <Lock size={15} />
-                      Change Password
-                    </button>
+                    <label htmlFor="pf-businessAddress">Business Address</label>
+                    <textarea
+                      id="pf-businessAddress"
+                      value={businessAddress}
+                      onChange={(e) => setBusinessAddress(e.target.value)}
+                      placeholder="e.g. 123 Innovation Way, Tech Park..."
+                      rows={3}
+                      className="pf-textarea"
+                    />
+                  </div>
+                  <div className="pf-field">
+                    <label htmlFor="pf-googleMapsLocation">Google Maps Link</label>
+                    <div className="pf-input-icon-wrap">
+                      <Map size={15} className="pf-input-icon" aria-hidden />
+                      <input
+                        id="pf-googleMapsLocation"
+                        type="url"
+                        value={googleMapsLocation}
+                        onChange={(e) => setGoogleMapsLocation(e.target.value)}
+                        placeholder="https://maps.google.com/..."
+                        className="pf-input pf-input-padded"
+                      />
+                    </div>
                   </div>
 
-                  <div className="pf-field">
-                    <label>Security</label>
-                    <div className="pf-two-factor-row">
-                      <div className="pf-two-factor-info">
-                        <span className="pf-two-factor-label">Two-Factor Authentication</span>
-                        <p className="pf-two-factor-desc">Secure your account with 2FA</p>
-                      </div>
-                      <button
-                        type="button"
-                        className={`pf-toggle-switch${twoFactor ? " active" : ""}`}
-                        onClick={() => setTwoFactor(!twoFactor)}
-                        aria-label="Toggle two-factor authentication"
-                      >
-                        <span className="toggle-handle" />
-                      </button>
-                    </div>
+                  {/* Actions Section inside card to align properly */}
+                  <div className="profile-card-action-right" style={{ marginTop: "24px" }}>
+                    <button
+                      type="button"
+                      className="btn pf-btn-save"
+                      onClick={() => handleSave()}
+                      style={{ width: "100%", padding: "12px" }}
+                    >
+                      {saved ? "✓ Saved successfully!" : "Save Profile Details"}
+                    </button>
                   </div>
                 </section>
               </div>
@@ -571,9 +750,9 @@ export default function ProfilePage() {
             <div className="profile-theme-tab-wrapper">
               <ThemeCustomizer
                 ref={themeCustomizerRef}
-                firstName={firstName}
-                lastName={lastName}
-                role={about}
+                firstName={fullName.split(" ")[0] || ""}
+                lastName={fullName.split(" ").slice(1).join(" ") || ""}
+                role={designation}
                 onSaveStatus={setSaved}
               />
             </div>

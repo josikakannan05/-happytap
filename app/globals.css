@@ -9978,6 +9978,14 @@ footer {
   margin: 2px 0 0 0;
 }
 
+.phone-profile-bio {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin: 8px 0 0 0;
+  padding: 0 15px;
+  line-height: 1.4;
+}
+
 /* Contact buttons */
 .phone-contact-actions {
   display: flex;
