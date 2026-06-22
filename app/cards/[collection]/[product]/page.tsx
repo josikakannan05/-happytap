@@ -867,7 +867,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
       console.error("Error loading profile configuration:", err);
     }
   }, [isPreviewOpen]);
-
   if (!isMounted) {
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", backgroundColor: "#f4f3f8" }}>
