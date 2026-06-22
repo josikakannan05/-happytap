@@ -5,11 +5,7 @@ import Link from "next/link";
 import {
   LayoutDashboard,
   CreditCard,
-  Grid3x3,
   ShoppingBag,
-  Users,
-  Settings,
-  BarChart3,
   LogOut,
   Bell,
   Search,
@@ -24,8 +20,6 @@ import {
   FileText,
   Layers,
   Zap,
-  Crown,
-  ArrowRight,
   Edit,
 } from "lucide-react";
 
@@ -51,13 +45,11 @@ export default function AdminPage() {
   const [mainImage, setMainImage] = useState<string | null>(null);
   const [frontImage, setFrontImage] = useState<string | null>(null);
   const [backImage, setBackImage] = useState<string | null>(null);
-  const [sideImage, setSideImage] = useState<string | null>(null);
 
   // File Inputs Refs
   const mainInputRef = useRef<HTMLInputElement>(null);
   const frontInputRef = useRef<HTMLInputElement>(null);
   const backInputRef = useRef<HTMLInputElement>(null);
-  const sideInputRef = useRef<HTMLInputElement>(null);
 
   // Toast / Status state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -161,7 +153,7 @@ export default function AdminPage() {
         main: mainImage,
         front: frontImage,
         back: backImage,
-        side: sideImage,
+        side: null,
       },
       cardStyle: {
         background: backgroundStyle,
@@ -233,58 +225,12 @@ export default function AdminPage() {
           </a>
           <a
             href="#"
-            className={`admin-sidebar-link ${activeTab === "Categories" ? "active" : ""}`}
-            onClick={(e) => { e.preventDefault(); setActiveTab("Categories"); }}
-          >
-            <Grid3x3 className="icon" />
-            Categories
-          </a>
-          <a
-            href="#"
             className={`admin-sidebar-link ${activeTab === "Orders" ? "active" : ""}`}
             onClick={(e) => { e.preventDefault(); setActiveTab("Orders"); }}
           >
             <ShoppingBag className="icon" />
             Orders
           </a>
-          <a
-            href="#"
-            className={`admin-sidebar-link ${activeTab === "Users" ? "active" : ""}`}
-            onClick={(e) => { e.preventDefault(); setActiveTab("Users"); }}
-          >
-            <Users className="icon" />
-            Users
-          </a>
-          <a
-            href="#"
-            className={`admin-sidebar-link ${activeTab === "Settings" ? "active" : ""}`}
-            onClick={(e) => { e.preventDefault(); setActiveTab("Settings"); }}
-          >
-            <Settings className="icon" />
-            Settings
-          </a>
-          <a
-            href="#"
-            className={`admin-sidebar-link ${activeTab === "Analytics" ? "active" : ""}`}
-            onClick={(e) => { e.preventDefault(); setActiveTab("Analytics"); }}
-          >
-            <BarChart3 className="icon" />
-            Analytics
-          </a>
-        </div>
-
-        {/* Sidebar Promo Card */}
-        <div className="admin-sidebar-promo">
-          <div className="admin-sidebar-promo-title">
-            <Crown size={13} style={{ fill: "#ffd700", color: "#ffd700" }} />
-            <span>Upgrade to Pro ✦</span>
-          </div>
-          <p className="admin-sidebar-promo-desc">
-            Unlock advanced features, custom branding and analytics.
-          </p>
-          <button type="button" className="admin-sidebar-promo-btn" onClick={() => showToast("Upgrade functionality coming soon!")}>
-            Upgrade Now <ArrowRight size={11} />
-          </button>
         </div>
 
         <div className="admin-sidebar-footer">
@@ -699,56 +645,7 @@ export default function AdminPage() {
                         className="sr-only"
                       />
 
-                      {/* Slot 3: Side */}
-                      <div onClick={() => sideInputRef.current?.click()} className="admin-upload-zone-thumb">
-                        {sideImage ? (
-                          <div className="admin-preview-img-wrapper">
-                            <img src={sideImage} alt="Side preview" className="admin-preview-img" />
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSideImage(null);
-                              }}
-                              className="admin-remove-image-btn"
-                            >
-                              <Trash2 size={10} />
-                            </button>
-                          </div>
-                        ) : (
-                          <>
-                            <span className="admin-thumb-plus">+</span>
-                            <span className="admin-thumb-label">Side</span>
-                          </>
-                        )}
-                      </div>
-                      <input
-                        ref={sideInputRef}
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => handleImageUpload(e, setSideImage)}
-                        className="sr-only"
-                      />
 
-                      {/* Slot 4: Extra 1 */}
-                      <div
-                        onClick={() => showToast("Extra Slot 1 is optional. Please use Front/Back/Side slots.")}
-                        className="admin-upload-zone-thumb"
-                        style={{ cursor: "pointer" }}
-                      >
-                        <span className="admin-thumb-plus" style={{ color: "#a0aec0" }}>+</span>
-                        <span className="admin-thumb-label" style={{ color: "#a0aec0" }}>Extra 1</span>
-                      </div>
-
-                      {/* Slot 5: Extra 2 */}
-                      <div
-                        onClick={() => showToast("Extra Slot 2 is optional. Please use Front/Back/Side slots.")}
-                        className="admin-upload-zone-thumb"
-                        style={{ cursor: "pointer" }}
-                      >
-                        <span className="admin-thumb-plus" style={{ color: "#a0aec0" }}>+</span>
-                        <span className="admin-thumb-label" style={{ color: "#a0aec0" }}>Extra 2</span>
-                      </div>
                     </div>
                   </div>
                 </div>
