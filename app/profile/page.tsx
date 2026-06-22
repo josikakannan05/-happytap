@@ -59,6 +59,10 @@ const sidebarLinks = [
    ───────────────────────────────────────────────── */
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<string>("Dashboard");
+  const [subTab, setSubTab] = useState<"Profile" | "Links" | "Theme" | "Analytics">("Profile");
+  const [profileUrl, setProfileUrl] = useState("happytap.com/profile/johndoe");
+  const [upiId, setUpiId] = useState("pay@happytap");
+  const [selectedTheme, setSelectedTheme] = useState<"purple" | "lavender" | "midnight" | "emerald">("purple");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const themeCustomizerRef = useRef<ThemeCustomizerHandle>(null);
 
@@ -88,7 +92,6 @@ export default function ProfilePage() {
   const [businessAddress, setBusinessAddress] = useState("123 Innovation Way, Tech Park, Bangalore, India");
   const [googleMapsLocation, setGoogleMapsLocation] = useState("https://maps.google.com/?q=12.9716,77.5946");
   const [twoFactor, setTwoFactor] = useState(true);
-
   const [saved, setSaved] = useState(false);
 
   /* Load profile config on mount */
@@ -115,6 +118,9 @@ export default function ProfilePage() {
         if (p.youtube !== undefined) setYoutube(p.youtube);
         if (p.businessAddress !== undefined) setBusinessAddress(p.businessAddress);
         if (p.googleMapsLocation !== undefined) setGoogleMapsLocation(p.googleMapsLocation);
+        if (p.profileUrl !== undefined) setProfileUrl(p.profileUrl);
+        if (p.upiId !== undefined) setUpiId(p.upiId);
+        if (p.selectedTheme !== undefined) setSelectedTheme(p.selectedTheme);
       }
     } catch (err) {
       console.error("Error loading profile configuration:", err);
@@ -162,12 +168,17 @@ export default function ProfilePage() {
       twitter,
       youtube,
       businessAddress,
-      googleMapsLocation
+      googleMapsLocation,
+      profileUrl,
+      upiId,
+      selectedTheme
     };
     localStorage.setItem("happytap_user_profile", JSON.stringify(profileData));
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };
+
+
 
   return (
     <div className="profile-shell">
@@ -213,38 +224,27 @@ export default function ProfilePage() {
           ))}
         </nav>
 
-        {/* Upgrade Card */}
-        <div className="profile-sidebar-upgrade">
-          <div className="upgrade-badge-container">
-            <div className="upgrade-icon-wrap">
-              <Crown size={20} className="crown-icon" />
-            </div>
-          </div>
-          <h3>Upgrade to Pro</h3>
-          <p>Unlock advanced features, custom branding and analytics.</p>
-          <button className="btn profile-upgrade-btn">Upgrade Now</button>
+        {/* Website Theme Card */}
+        <div className="profile-sidebar-theme-card">
+          <h3>HappyTap Website Theme</h3>
+          <p>Customize your digital profile with beautiful HappyTap themes and branding options.</p>
+          <button 
+            type="button" 
+            className="btn profile-sidebar-theme-btn"
+            onClick={() => {
+              setActiveTab("Dashboard");
+              setSubTab("Theme");
+              setSidebarOpen(false);
+            }}
+          >
+            Explore Themes
+          </button>
         </div>
 
         <Link href="#" className="profile-sidebar-help" onClick={() => setSidebarOpen(false)}>
           <HelpCircle className="icon" aria-hidden />
           Help &amp; Support
         </Link>
-
-        {/* User Account footer */}
-        <div className="profile-sidebar-user-footer">
-          <span className="footer-avatar">
-            {avatarSrc ? (
-              <img src={avatarSrc} alt="avatar" />
-            ) : (
-              <span>{getInitials(fullName)}</span>
-            )}
-          </span>
-          <div className="footer-user-info">
-            <span className="footer-username">{fullName}</span>
-            <span className="footer-email">{emailAddress}</span>
-          </div>
-          <ChevronDown size={14} className="footer-chevron" aria-hidden />
-        </div>
       </aside>
 
       {/* ── Main content ── */}
@@ -299,435 +299,439 @@ export default function ProfilePage() {
                     <Bell size={20} />
                   </button>
                   <button className="profile-topbar-user">
-                    <span className="profile-topbar-avatar">
-                      {avatarSrc ? (
-                        <img src={avatarSrc} alt="avatar" />
-                      ) : (
-                        <span>
-                          {getInitials(fullName)}
-                        </span>
-                      )}
-                    </span>
-                  </button>
-                </>
-              )}
-            </div>
-          </header>
-
-          {activeTab === "Dashboard" && (
-            <>
-              {/* Cover Banner Card */}
-              <div className="profile-cover-card">
-                {/* Cover Area */}
-                <div
-                  className="profile-cover-bg"
-                  style={coverSrc ? { backgroundImage: `url(${coverSrc})` } : undefined}
-                  aria-label="Cover photo area"
-                >
-                  {!coverSrc && (
-                    <svg className="cover-wave" viewBox="0 0 900 160" preserveAspectRatio="none" aria-hidden>
-                      <path d="M0,80 C150,140 300,20 450,80 C600,140 750,20 900,80 L900,160 L0,160 Z" fill="rgba(255,255,255,0.18)" />
-                      <path d="M0,100 C180,60 360,140 540,100 C720,60 810,120 900,90 L900,160 L0,160 Z" fill="rgba(255,255,255,0.1)" />
-                    </svg>
-                  )}
-                  <button
-                    type="button"
-                    className="profile-cover-change-btn"
-                    onClick={() => coverInputRef.current?.click()}
-                    aria-label="Change cover photo"
+                    <span className="profile-topbar-avata          {activeTab === "Dashboard" && (
+            <div className="dashboard-split-grid">
+              {/* Left Column: Profile Editor */}
+              <div className="profile-editor-card">
+                {/* Editor Header */}
+                <div className="editor-header">
+                  <div>
+                    <h2 className="editor-title">Profile Editor</h2>
+                    <p className="editor-subtitle">Customize and publish your digital identity</p>
+                  </div>
+                  <button 
+                    type="button" 
+                    className="btn btn-save-publish"
+                    onClick={() => handleSave()}
                   >
-                    <Camera size={14} aria-hidden />
-                    Change Cover
+                    {saved ? "✓ Saved & Published!" : "Save & Publish"}
                   </button>
-                  <input
-                    ref={coverInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="sr-only"
-                    onChange={(e) => handleFileChange(e, setCoverSrc)}
-                    aria-label="Upload cover photo"
-                  />
                 </div>
 
-                {/* Circular overlapping Avatar */}
-                <div className="profile-avatar-wrap">
-                  <div className="profile-avatar-ring">
-                    {avatarSrc ? (
-                      <img src={avatarSrc} alt="Profile photo" className="profile-avatar-img" />
-                    ) : (
-                      <span className="profile-avatar-initials">
-                        {getInitials(fullName)}
-                      </span>
-                    )}
-                  </div>
-                  <button
-                    type="button"
-                    className="profile-avatar-edit-btn"
-                    onClick={() => avatarInputRef.current?.click()}
-                    aria-label="Edit profile photo"
-                  >
-                    <Camera size={12} aria-hidden />
-                  </button>
-                  <input
-                    ref={avatarInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="sr-only"
-                    onChange={(e) => handleFileChange(e, setAvatarSrc)}
-                    aria-label="Upload profile photo"
-                  />
-                </div>
-              </div>
-
-              {/* Profile Information Block below Cover/Avatar */}
-              <div className="profile-header-info-container">
-                <h2 className="profile-header-fullname">{fullName}</h2>
-                <p className="profile-header-email">{emailAddress}</p>
-                <div className="profile-header-badge-row">
-                  <span className="profile-header-plan-badge">
-                    <Crown size={12} className="plan-badge-icon" aria-hidden />
-                    Pro Plan
-                  </span>
-                </div>
-              </div>
-
-              {/* Stats Cards Row */}
-              <div className="profile-stats-row">
-                <div className="summary-stat-box flex-purple">
-                  <div className="stat-icon-wrap stat-purple">
-                    <CreditCard size={18} />
-                  </div>
-                  <div className="stat-text-wrap">
-                    <h3>12</h3>
-                    <p>Total Cards</p>
-                  </div>
-                </div>
-                <div className="summary-stat-box flex-blue">
-                  <div className="stat-icon-wrap stat-blue">
-                    <BarChart3 size={18} />
-                  </div>
-                  <div className="stat-text-wrap">
-                    <h3>2,847</h3>
-                    <p>Profile Views</p>
-                  </div>
-                </div>
-                <div className="summary-stat-box flex-green">
-                  <div className="stat-icon-wrap stat-green">
-                    <Users size={18} />
-                  </div>
-                  <div className="stat-text-wrap">
-                    <h3>38</h3>
-                    <p>Contacts Saved</p>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
-
-          {activeTab === "Dashboard" && (
-            <div className="profile-settings-grid-wrapper">
-              {/* Row 1: Profile Identity & Media */}
-              <div className="profile-grid-row">
-                {/* Profile Identity */}
-                <section className="profile-card">
-                  <h2 className="profile-card-title">
-                    <User size={16} className="profile-card-icon" aria-hidden />
-                    Profile Identity
-                  </h2>
-                  <div className="pf-field">
-                    <label htmlFor="pf-fullName">Full Name</label>
-                    <input
-                      id="pf-fullName"
-                      type="text"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      placeholder="e.g. John Doe"
-                      className="pf-input"
-                    />
-                  </div>
-                  <div className="pf-row-2">
-                    <div className="pf-field">
-                      <label htmlFor="pf-designation">Designation</label>
-                      <input
-                        id="pf-designation"
-                        type="text"
-                        value={designation}
-                        onChange={(e) => setDesignation(e.target.value)}
-                        placeholder="e.g. Lead Designer"
-                        className="pf-input"
-                      />
-                    </div>
-                    <div className="pf-field">
-                      <label htmlFor="pf-companyName">Company Name</label>
-                      <input
-                        id="pf-companyName"
-                        type="text"
-                        value={companyName}
-                        onChange={(e) => setCompanyName(e.target.value)}
-                        placeholder="e.g. HappyTap"
-                        className="pf-input"
-                      />
-                    </div>
-                  </div>
-                  <div className="pf-field">
-                    <label htmlFor="pf-companyDescription">Company Description / Bio</label>
-                    <textarea
-                      id="pf-companyDescription"
-                      value={companyDescription}
-                      onChange={(e) => setCompanyDescription(e.target.value)}
-                      placeholder="Write a short description about you or your company..."
-                      rows={3}
-                      className="pf-textarea"
-                    />
-                  </div>
-                </section>
-
-                {/* Profile Media */}
-                <section className="profile-card">
-                  <h2 className="profile-card-title">
-                    <Camera size={16} className="profile-card-icon" aria-hidden />
-                    Profile Media
-                  </h2>
-                  <p className="pf-label">Profile Photo</p>
-                  <button
-                    type="button"
-                    className="pf-upload-zone"
-                    onClick={() => avatarInputRef.current?.click()}
-                    aria-label="Upload profile photo"
-                    style={{ marginBottom: "16px" }}
-                  >
-                    <Upload size={20} className="pf-upload-zone-icon" />
-                    <div className="pf-upload-zone-text">
-                      <span className="pf-upload-zone-highlight">Click to upload photo</span>
-                      <p className="pf-upload-zone-sub">PNG, JPG or WEBP (Square recommended)</p>
-                    </div>
-                  </button>
-                  
-                  <p className="pf-label">Cover Image</p>
-                  <button
-                    type="button"
-                    className="pf-upload-zone"
-                    onClick={() => coverInputRef.current?.click()}
-                    aria-label="Upload cover image"
-                  >
-                    <Upload size={20} className="pf-upload-zone-icon" />
-                    <div className="pf-upload-zone-text">
-                      <span className="pf-upload-zone-highlight">Click to upload cover banner</span>
-                      <p className="pf-upload-zone-sub">Horizontal banner image</p>
-                    </div>
-                  </button>
-                </section>
-              </div>
-
-              {/* Row 2: Contact Details & Direct Links */}
-              <div className="profile-grid-row">
-                {/* Contact Details */}
-                <section className="profile-card">
-                  <h2 className="profile-card-title">
-                    <Phone size={16} className="profile-card-icon" aria-hidden />
-                    Contact Details
-                  </h2>
-                  <div className="pf-field">
-                    <label htmlFor="pf-mobileNumber">Mobile Number</label>
-                    <div className="pf-input-icon-wrap">
-                      <Phone size={15} className="pf-input-icon" aria-hidden />
-                      <input
-                        id="pf-mobileNumber"
-                        type="tel"
-                        value={mobileNumber}
-                        onChange={(e) => setMobileNumber(e.target.value)}
-                        placeholder="+91 98765 43210"
-                        className="pf-input pf-input-padded"
-                      />
-                    </div>
-                  </div>
-                  <div className="pf-field">
-                    <label htmlFor="pf-emailAddress">Email Address</label>
-                    <div className="pf-input-icon-wrap">
-                      <Mail size={15} className="pf-input-icon" aria-hidden />
-                      <input
-                        id="pf-emailAddress"
-                        type="email"
-                        value={emailAddress}
-                        onChange={(e) => setEmailAddress(e.target.value)}
-                        placeholder="name@example.com"
-                        className="pf-input pf-input-padded"
-                      />
-                    </div>
-                  </div>
-                  <div className="pf-field">
-                    <label htmlFor="pf-whatsAppNumber">WhatsApp Number</label>
-                    <div className="pf-input-icon-wrap">
-                      <MessageSquare size={15} className="pf-input-icon" aria-hidden />
-                      <input
-                        id="pf-whatsAppNumber"
-                        type="tel"
-                        value={whatsAppNumber}
-                        onChange={(e) => setWhatsAppNumber(e.target.value)}
-                        placeholder="+91 98765 43210"
-                        className="pf-input pf-input-padded"
-                      />
-                    </div>
-                  </div>
-                </section>
-
-                {/* Direct Links */}
-                <section className="profile-card">
-                  <h2 className="profile-card-title">
-                    <Globe size={16} className="profile-card-icon" aria-hidden />
-                    Direct Links
-                  </h2>
-                  <div className="pf-field">
-                    <label htmlFor="pf-website">Website URL</label>
-                    <div className="pf-input-icon-wrap">
-                      <Globe size={15} className="pf-input-icon" aria-hidden />
-                      <input
-                        id="pf-website"
-                        type="url"
-                        value={website}
-                        onChange={(e) => setWebsite(e.target.value)}
-                        placeholder="https://example.com"
-                        className="pf-input pf-input-padded"
-                      />
-                    </div>
-                  </div>
-                  <div className="pf-field">
-                    <label htmlFor="pf-portfolio">Portfolio URL</label>
-                    <div className="pf-input-icon-wrap">
-                      <Briefcase size={15} className="pf-input-icon" aria-hidden />
-                      <input
-                        id="pf-portfolio"
-                        type="url"
-                        value={portfolio}
-                        onChange={(e) => setPortfolio(e.target.value)}
-                        placeholder="https://portfolio.example.com"
-                        className="pf-input pf-input-padded"
-                      />
-                    </div>
-                  </div>
-                </section>
-              </div>
-
-              {/* Row 3: Social Networks & Location Details */}
-              <div className="profile-grid-row">
-                {/* Social Networks */}
-                <section className="profile-card">
-                  <h2 className="profile-card-title">
-                    <Instagram size={16} className="profile-card-icon" aria-hidden />
-                    Social Networks
-                  </h2>
-                  <div className="pf-row-2">
-                    <div className="pf-field">
-                      <label htmlFor="pf-linkedin">LinkedIn</label>
-                      <div className="pf-input-icon-wrap">
-                        <Linkedin size={15} className="pf-input-icon pf-linkedin-icon" aria-hidden />
-                        <input
-                          id="pf-linkedin"
-                          type="url"
-                          value={linkedin}
-                          onChange={(e) => setLinkedin(e.target.value)}
-                          placeholder="https://linkedin.com/in/username"
-                          className="pf-input pf-input-padded"
-                        />
-                      </div>
-                    </div>
-                    <div className="pf-field">
-                      <label htmlFor="pf-instagram">Instagram</label>
-                      <div className="pf-input-icon-wrap">
-                        <Instagram size={15} className="pf-input-icon pf-instagram-icon" aria-hidden />
-                        <input
-                          id="pf-instagram"
-                          type="url"
-                          value={instagram}
-                          onChange={(e) => setInstagram(e.target.value)}
-                          placeholder="https://instagram.com/username"
-                          className="pf-input pf-input-padded"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="pf-row-2">
-                    <div className="pf-field">
-                      <label htmlFor="pf-facebook">Facebook</label>
-                      <div className="pf-input-icon-wrap">
-                        <Facebook size={15} className="pf-input-icon" style={{ color: "#1877f2" }} aria-hidden />
-                        <input
-                          id="pf-facebook"
-                          type="url"
-                          value={facebook}
-                          onChange={(e) => setFacebook(e.target.value)}
-                          placeholder="https://facebook.com/username"
-                          className="pf-input pf-input-padded"
-                        />
-                      </div>
-                    </div>
-                    <div className="pf-field">
-                      <label htmlFor="pf-twitter">X (Twitter)</label>
-                      <div className="pf-input-icon-wrap">
-                        <Twitter size={15} className="pf-input-icon pf-twitter-icon" aria-hidden />
-                        <input
-                          id="pf-twitter"
-                          type="url"
-                          value={twitter}
-                          onChange={(e) => setTwitter(e.target.value)}
-                          placeholder="https://x.com/username"
-                          className="pf-input pf-input-padded"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="pf-field">
-                    <label htmlFor="pf-youtube">YouTube</label>
-                    <div className="pf-input-icon-wrap">
-                      <Youtube size={15} className="pf-input-icon" style={{ color: "#ff0000" }} aria-hidden />
-                      <input
-                        id="pf-youtube"
-                        type="url"
-                        value={youtube}
-                        onChange={(e) => setYoutube(e.target.value)}
-                        placeholder="https://youtube.com/c/channel"
-                        className="pf-input pf-input-padded"
-                      />
-                    </div>
-                  </div>
-                </section>
-
-                {/* Location Details */}
-                <section className="profile-card">
-                  <h2 className="profile-card-title">
-                    <MapPin size={16} className="profile-card-icon" aria-hidden />
-                    Location Details
-                  </h2>
-                  <div className="pf-field">
-                    <label htmlFor="pf-businessAddress">Business Address</label>
-                    <textarea
-                      id="pf-businessAddress"
-                      value={businessAddress}
-                      onChange={(e) => setBusinessAddress(e.target.value)}
-                      placeholder="e.g. 123 Innovation Way, Tech Park..."
-                      rows={3}
-                      className="pf-textarea"
-                    />
-                  </div>
-                  <div className="pf-field">
-                    <label htmlFor="pf-googleMapsLocation">Google Maps Link</label>
-                    <div className="pf-input-icon-wrap">
-                      <Map size={15} className="pf-input-icon" aria-hidden />
-                      <input
-                        id="pf-googleMapsLocation"
-                        type="url"
-                        value={googleMapsLocation}
-                        onChange={(e) => setGoogleMapsLocation(e.target.value)}
-                        placeholder="https://maps.google.com/..."
-                        className="pf-input pf-input-padded"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Actions Section inside card to align properly */}
-                  <div className="profile-card-action-right" style={{ marginTop: "24px" }}>
+                {/* Sub-tabs */}
+                <div className="editor-tabs-bar">
+                  {(["Profile", "Links", "Theme", "Analytics"] as const).map((tab) => (
                     <button
+                      key={tab}
                       type="button"
+                      className={`editor-tab-btn ${subTab === tab ? "active" : ""}`}
+                      onClick={() => setSubTab(tab)}
+                    >
+                      {tab}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Tab content */}
+                <div className="editor-tab-content">
+                  {subTab === "Profile" && (
+                    <div className="tab-pane-fade">
+                      {/* Avatar Upload */}
+                      <div className="editor-avatar-section">
+                        <label className="field-label">Profile Image</label>
+                        <div className="editor-avatar-row">
+                          <div className="editor-avatar-preview">
+                            {avatarSrc ? (
+                              <img src={avatarSrc} alt="Avatar" />
+                            ) : (
+                              <span>{getInitials(fullName)}</span>
+                            )}
+                          </div>
+                          <button 
+                            type="button" 
+                            className="btn btn-avatar-upload"
+                            onClick={() => avatarInputRef.current?.click()}
+                          >
+                            Upload Photo
+                          </button>
+                          <input
+                            ref={avatarInputRef}
+                            type="file"
+                            accept="image/*"
+                            className="sr-only"
+                            onChange={(e) => handleFileChange(e, setAvatarSrc)}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Fields */}
+                      <div className="editor-form-group">
+                        <label htmlFor="ed-fullName" className="field-label">Full Name</label>
+                        <input
+                          id="ed-fullName"
+                          type="text"
+                          className="editor-input"
+                          value={fullName}
+                          onChange={(e) => setFullName(e.target.value)}
+                          placeholder="e.g. John Doe"
+                        />
+                      </div>
+
+                      <div className="editor-form-row">
+                        <div className="editor-form-group">
+                          <label htmlFor="ed-designation" className="field-label">Job Title</label>
+                          <input
+                            id="ed-designation"
+                            type="text"
+                            className="editor-input"
+                            value={designation}
+                            onChange={(e) => setDesignation(e.target.value)}
+                            placeholder="e.g. Lead Designer"
+                          />
+                        </div>
+                        <div className="editor-form-group">
+                          <label htmlFor="ed-company" className="field-label">Company</label>
+                          <input
+                            id="ed-company"
+                            type="text"
+                            className="editor-input"
+                            value={companyName}
+                            onChange={(e) => setCompanyName(e.target.value)}
+                            placeholder="e.g. HappyTap"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="editor-form-group">
+                        <label htmlFor="ed-bio" className="field-label">Bio</label>
+                        <textarea
+                          id="ed-bio"
+                          className="editor-textarea"
+                          rows={3}
+                          value={companyDescription}
+                          onChange={(e) => setCompanyDescription(e.target.value)}
+                          placeholder="Short bio about you or your company..."
+                        />
+                      </div>
+
+                      <div className="editor-form-row">
+                        <div className="editor-form-group">
+                          <label htmlFor="ed-email" className="field-label">Email</label>
+                          <input
+                            id="ed-email"
+                            type="email"
+                            className="editor-input"
+                            value={emailAddress}
+                            onChange={(e) => setEmailAddress(e.target.value)}
+                            placeholder="name@company.com"
+                          />
+                        </div>
+                        <div className="editor-form-group">
+                          <label htmlFor="ed-phone" className="field-label">Phone</label>
+                          <input
+                            id="ed-phone"
+                            type="tel"
+                            className="editor-input"
+                            value={mobileNumber}
+                            onChange={(e) => setMobileNumber(e.target.value)}
+                            placeholder="e.g. +91 98765 43210"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="editor-form-group">
+                        <label htmlFor="ed-profileUrl" className="field-label">Profile URL</label>
+                        <input
+                          id="ed-profileUrl"
+                          type="text"
+                          className="editor-input"
+                          value={profileUrl}
+                          onChange={(e) => setProfileUrl(e.target.value)}
+                          placeholder="happytap.com/profile/username"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {subTab === "Links" && (
+                    <div className="tab-pane-fade">
+                      <h4 className="tab-section-title">Direct Buttons / CTA</h4>
+                      
+                      <div className="editor-form-group">
+                        <label htmlFor="ed-whatsapp" className="field-label">WhatsApp Phone Number</label>
+                        <input
+                          id="ed-whatsapp"
+                          type="tel"
+                          className="editor-input"
+                          value={whatsAppNumber}
+                          onChange={(e) => setWhatsAppNumber(e.target.value)}
+                          placeholder="e.g. +91 98765 43210"
+                        />
+                      </div>
+
+                      <div className="editor-form-group">
+                        <label htmlFor="ed-portfolio" className="field-label">Portfolio URL</label>
+                        <input
+                          id="ed-portfolio"
+                          type="url"
+                          className="editor-input"
+                          value={portfolio}
+                          onChange={(e) => setPortfolio(e.target.value)}
+                          placeholder="https://portfolio.johndoe.com"
+                        />
+                      </div>
+
+                      <div className="editor-form-group">
+                        <label htmlFor="ed-upi" className="field-label">UPI ID / VPA (for Pay button)</label>
+                        <input
+                          id="ed-upi"
+                          type="text"
+                          className="editor-input"
+                          value={upiId}
+                          onChange={(e) => setUpiId(e.target.value)}
+                          placeholder="e.g. pay@happytap"
+                        />
+                      </div>
+
+                      <h4 className="tab-section-title" style={{ marginTop: "24px" }}>Social Media Profiles</h4>
+                      
+                      <div className="editor-form-row">
+                        <div className="editor-form-group">
+                          <label htmlFor="ed-linkedin" className="field-label">LinkedIn</label>
+                          <input
+                            id="ed-linkedin"
+                            type="url"
+                            className="editor-input"
+                            value={linkedin}
+                            onChange={(e) => setLinkedin(e.target.value)}
+                            placeholder="https://linkedin.com/in/username"
+                          />
+                        </div>
+                        <div className="editor-form-group">
+                          <label htmlFor="ed-instagram" className="field-label">Instagram</label>
+                          <input
+                            id="ed-instagram"
+                            type="url"
+                            className="editor-input"
+                            value={instagram}
+                            onChange={(e) => setInstagram(e.target.value)}
+                            placeholder="https://instagram.com/username"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="editor-form-row">
+                        <div className="editor-form-group">
+                          <label htmlFor="ed-facebook" className="field-label">Facebook</label>
+                          <input
+                            id="ed-facebook"
+                            type="url"
+                            className="editor-input"
+                            value={facebook}
+                            onChange={(e) => setFacebook(e.target.value)}
+                            placeholder="https://facebook.com/username"
+                          />
+                        </div>
+                        <div className="editor-form-group">
+                          <label htmlFor="ed-twitter" className="field-label">X (Twitter)</label>
+                          <input
+                            id="ed-twitter"
+                            type="url"
+                            className="editor-input"
+                            value={twitter}
+                            onChange={(e) => setTwitter(e.target.value)}
+                            placeholder="https://x.com/username"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {subTab === "Theme" && (
+                    <div className="tab-pane-fade">
+                      <h4 className="tab-section-title">Select Preset Theme</h4>
+                      <p style={{ fontSize: "0.8rem", color: "#64748b", margin: "-8px 0 16px" }}>
+                        Choose a design style to apply to your live digital business card.
+                      </p>
+                      
+                      <div className="presets-grid">
+                        {[
+                          { id: "purple", name: "Classic Violet", primary: "#7c5dfa", bg: "linear-gradient(135deg, #ede9fe 0%, #f5f3ff 100%)" },
+                          { id: "lavender", name: "Lavender Mist", primary: "#a855f7", bg: "linear-gradient(135deg, #fae8ff 0%, #f5f3ff 100%)" },
+                          { id: "midnight", name: "Dark Midnight", primary: "#0f172a", bg: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)" },
+                          { id: "emerald", name: "Emerald Glass", primary: "#10b981", bg: "linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%)" }
+                        ].map((preset) => (
+                          <button
+                            key={preset.id}
+                            type="button"
+                            className={`preset-card ${selectedTheme === preset.id ? "active" : ""}`}
+                            onClick={() => setSelectedTheme(preset.id as any)}
+                          >
+                            <div className="preset-color-indicator" style={{ background: preset.primary }}></div>
+                            <span className="preset-name">{preset.name}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {subTab === "Analytics" && (
+                    <div className="tab-pane-fade">
+                      <h4 className="tab-section-title">Traffic Overview</h4>
+                      
+                      <div className="analytics-mini-grid">
+                        <div className="mini-stat-card">
+                          <span className="stat-label">Total Views</span>
+                          <span className="stat-value">2,847</span>
+                          <span className="stat-change positive">+14.2%</span>
+                        </div>
+                        <div className="mini-stat-card">
+                          <span className="stat-label">Link Clicks</span>
+                          <span className="stat-value">648</span>
+                          <span className="stat-change positive">+8.6%</span>
+                        </div>
+                        <div className="mini-stat-card">
+                          <span className="stat-label">CTR</span>
+                          <span className="stat-value">22.8%</span>
+                          <span className="stat-change negative">-1.2%</span>
+                        </div>
+                      </div>
+
+                      <div className="mini-chart-card">
+                        <h4>Tap Performance (Last 7 Days)</h4>
+                        <div className="mini-chart-placeholder">
+                          {[42, 55, 48, 70, 85, 64, 98].map((val, idx) => (
+                            <div key={idx} className="chart-bar-col">
+                              <div className="chart-bar" style={{ height: `${val}%` }}>
+                                <span className="tooltip">{val} Taps</span>
+                              </div>
+                              <span className="chart-day-label">{["M", "T", "W", "T", "F", "S", "S"][idx]}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Right Column: Live Mobile Preview */}
+              <div className="live-preview-card">
+                <h3 className="preview-card-title">Live Preview</h3>
+                <div className="mobile-mockup-wrap">
+                  <div className="phone-mockup border-thick">
+                    {/* Speaker notch */}
+                    <div className="phone-notch"></div>
+                    
+                    {/* Status Bar */}
+                    <div className="phone-status-bar">
+                      <span>9:41</span>
+                      <div className="phone-status-icons">
+                        <Wifi size={12} style={{ transform: "rotate(90deg)" }} />
+                        <div className="phone-battery"></div>
+                      </div>
+                    </div>
+
+                    {/* Scrollable mockup content */}
+                    <div className={`phone-content theme-${selectedTheme}`}>
+                      {/* Cover Gradient/Image */}
+                      <div 
+                        className="mock-cover-bg"
+                        style={coverSrc ? { backgroundImage: `url(${coverSrc})` } : undefined}
+                      >
+                        {!coverSrc && <div className="mock-cover-overlay"></div>}
+                      </div>
+
+                      {/* Avatar preview */}
+                      <div className="mock-avatar-wrap">
+                        <div className="mock-avatar-ring">
+                          {avatarSrc ? (
+                            <img src={avatarSrc} alt="Avatar" />
+                          ) : (
+                            <span className="mock-avatar-initials">{getInitials(fullName)}</span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Identity Details */}
+                      <div className="mock-identity-block">
+                        <h3 className="mock-name">{fullName || "John Doe"}</h3>
+                        <p className="mock-designation">
+                          {designation || "Lead Designer"} {companyName ? `@ ${companyName}` : ""}
+                        </p>
+                        {companyDescription && <p className="mock-bio">{companyDescription}</p>}
+                      </div>
+
+                      {/* CTA Action Buttons */}
+                      <div className="mock-cta-buttons">
+                        {whatsAppNumber && (
+                          <a 
+                            href={`https://wa.me/${whatsAppNumber.replace(/[^0-9]/g, "")}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="mock-cta-btn whatsapp-btn"
+                          >
+                            <MessageSquare size={16} />
+                            <span>Chat on WhatsApp</span>
+                          </a>
+                        )}
+                        {portfolio && (
+                          <a 
+                            href={portfolio} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="mock-cta-btn portfolio-btn"
+                          >
+                            <Globe size={16} />
+                            <span>View Portfolio</span>
+                          </a>
+                        )}
+                        {upiId && (
+                          <a 
+                            href={`upi://pay?pa=${upiId}`} 
+                            className="mock-cta-btn upi-btn"
+                          >
+                            <CreditCard size={16} />
+                            <span>Pay via UPI</span>
+                          </a>
+                        )}
+                      </div>
+
+                      {/* Social Grid */}
+                      <div className="mock-socials-grid">
+                        {linkedin && (
+                          <a href={linkedin} target="_blank" rel="noopener noreferrer" className="mock-social-icon-btn">
+                            <Linkedin size={18} />
+                          </a>
+                        )}
+                        {instagram && (
+                          <a href={instagram} target="_blank" rel="noopener noreferrer" className="mock-social-icon-btn">
+                            <Instagram size={18} />
+                          </a>
+                        )}
+                        {facebook && (
+                          <a href={facebook} target="_blank" rel="noopener noreferrer" className="mock-social-icon-btn">
+                            <Facebook size={18} />
+                          </a>
+                        )}
+                        {twitter && (
+                          <a href={twitter} target="_blank" rel="noopener noreferrer" className="mock-social-icon-btn">
+                            <Twitter size={18} />
+                          </a>
+                        )}
+                      </div>
+
+                      {/* Branding Footer */}
+                      <div className="mock-branding-footer">
+                        <span>Powered by</span>
+                        <span className="brand-logo">HappyTap</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}"
                       className="btn pf-btn-save"
                       onClick={() => handleSave()}
                       style={{ width: "100%", padding: "12px" }}

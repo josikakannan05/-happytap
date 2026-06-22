@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState, useEffect } from "react";
+import { use, useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
@@ -48,6 +48,8 @@ import {
   MapPin,
   Map,
   MessageSquare,
+  Camera,
+  Upload,
 } from "lucide-react";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
@@ -822,7 +824,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
   const currentCollection = dynamicCollections[collection];
   const activeProduct = currentCollection?.products.find((p) => p.id === product);
 
-  const [activeView, setActiveView] = useState<"front" | "back" | "side">("front");
+  const [activeView, setActiveView] = useState<"front" | "back">("front");
   const [quantity, setQuantity] = useState(1);
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -852,6 +854,16 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
     businessAddress: "123 Innovation Way, Tech Park, Bangalore, India",
     googleMapsLocation: "https://maps.google.com/?q=12.9716,77.5946"
   });
+
+  const modalAvatarInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("happytap_user_profile", JSON.stringify(profileData));
+    } catch (e) {
+      console.error("Error saving profileData:", e);
+    }
+  }, [profileData]);
 
   useEffect(() => {
     try {
@@ -969,18 +981,18 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
     if (isTeamLayout) {
       const Icon = activeProduct.icon || Users;
       return (
-        <div className={`te-card-mockup ${activeProduct.cssClass}`} style={{ width: "100%", height: "100%" }}>
-          <div className="te-card-left">
-            <div className={`te-mock-logo ${isLight ? "light-card-text" : ""}`}>
+        <div className={`te-card-mockup ${activeProduct.cssClass}`} style={{ width: "100%", height: "100%", maxWidth: isThumb ? "100%" : "165px" }}>
+          <div className="te-card-left" style={{ padding: isThumb ? "4px 6px" : "16px" }}>
+            <div className={`te-mock-logo ${isLight ? "light-card-text" : ""}`} style={{ fontSize: isThumb ? "0.45rem" : "" }}>
               H<span className={`te-mock-logo-mark ${logoStyle === "gold" ? "gold-logo" : ""}`}>t</span>
             </div>
             <div className={`te-card-name ${isLight ? "light-card-text" : ""}`} style={{ fontSize: isThumb ? "0.32rem" : "0.52rem" }}>
-              {activeProduct.title}
+              {profileData.fullName || activeProduct.title}
             </div>
           </div>
-          <div className="te-card-right">
+          <div className="te-card-right" style={{ padding: isThumb ? "4px 6px" : "16px" }}>
             <div className={`te-card-icon-wrap ${isLight ? "light-card-text" : ""}`}>
-              <Icon className="icon" style={{ width: isThumb ? "14px" : "24px", height: isThumb ? "14px" : "24px" }} />
+              <Icon className="icon" style={{ width: isThumb ? "12px" : "24px", height: isThumb ? "12px" : "24px" }} />
             </div>
           </div>
         </div>
@@ -999,6 +1011,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
           height: "100%",
           background: activeProduct.cardStyle.background,
           border: activeProduct.cardStyle.border || "1px solid rgba(255, 255, 255, 0.08)",
+          maxWidth: isThumb ? "100%" : "165px",
         }}
       >
         <div className="ec-card-mockup-glare"></div>
@@ -1052,6 +1065,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
         style={{
           background: activeProduct.cardStyle.background,
           border: activeProduct.cardStyle.border || "1px solid rgba(255, 255, 255, 0.08)",
+          width: "100%",
+          height: "100%",
+          maxWidth: isThumb ? "100%" : "165px",
+          padding: isThumb ? "6px 8px" : "16px",
         }}
       >
         <div className="pd-back-top" style={{ padding: isThumb ? "0 2px" : "0 6px" }}>
@@ -1060,8 +1077,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
           </div>
           <Wifi className="icon" style={{ transform: "rotate(90deg)", width: isThumb ? "10px" : "14px", color: isLight ? "rgba(0,0,0,0.6)" : "rgba(255,255,255,0.7)" }} />
         </div>
-        <div className="pd-back-middle">
-          <div className="pd-back-qr" style={{ width: isThumb ? "28px" : "54px", height: isThumb ? "28px" : "54px", borderRadius: isThumb ? "3px" : "6px" }}>
+        <div className="pd-back-middle" style={{ marginTop: isThumb ? "2px" : "14px", gap: isThumb ? "4px" : "14px" }}>
+          <div className="pd-back-qr" style={{ width: isThumb ? "20px" : "54px", height: isThumb ? "20px" : "54px", borderRadius: isThumb ? "3px" : "6px" }}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: "#000", width: "100%", height: "100%" }}>
               <rect x="2" y="2" width="6" height="6" />
               <rect x="16" y="2" width="6" height="6" />
@@ -1071,12 +1088,14 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
           </div>
           {!isThumb && (
             <div className="pd-back-info">
-              <div className={`pd-back-name ${isLight ? "light-card-text" : ""}`}>Alex Bennett</div>
-              <div className={`pd-back-title ${isLight ? "light-card-text" : ""}`}>CEO | Horizon Technologies</div>
+              <div className={`pd-back-name ${isLight ? "light-card-text" : ""}`}>{profileData.fullName || "Alex Bennett"}</div>
+              <div className={`pd-back-title ${isLight ? "light-card-text" : ""}`}>
+                {profileData.designation || "CEO"} | {profileData.companyName || "Horizon Technologies"}
+              </div>
               <div className="pd-back-details">
-                +91 98765 43210 <br />
-                alex@horizon.com <br />
-                Bengaluru, India
+                {profileData.mobileNumber || "+91 98765 43210"} <br />
+                {profileData.emailAddress || "alex@horizon.com"} <br />
+                {profileData.businessAddress || "Bengaluru, India"}
               </div>
             </div>
           )}
@@ -1084,7 +1103,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
         {!isThumb ? (
           <div className="pd-back-bottom">Tap to Connect</div>
         ) : (
-          <div className={`pd-back-name ${isLight ? "light-card-text" : ""}`} style={{ fontSize: "0.36rem", textAlign: "center" }}>Alex Bennett</div>
+          <div className={`pd-back-name ${isLight ? "light-card-text" : ""}`} style={{ fontSize: "0.32rem", textAlign: "center", marginTop: "2px" }}>Alex Bennett</div>
         )}
       </div>
     );
@@ -1112,11 +1131,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
   };
 
   const handleArrowNav = (direction: "left" | "right") => {
-    const views: ("front" | "back" | "side")[] = ["front", "back", "side"];
+    const views: ("front" | "back")[] = ["front", "back"];
     const currentIndex = views.indexOf(activeView);
     let nextIndex = direction === "right" ? currentIndex + 1 : currentIndex - 1;
-    if (nextIndex > 2) nextIndex = 0;
-    if (nextIndex < 0) nextIndex = 2;
+    if (nextIndex > 1) nextIndex = 0;
+    if (nextIndex < 0) nextIndex = 1;
     setActiveView(views[nextIndex]);
   };
 
@@ -1130,14 +1149,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
 
       <main className="product-detail-page">
         <div className="container">
-          {/* Breadcrumbs */}
-          <nav className="pd-breadcrumb" aria-label="Breadcrumb">
-            <Link href="/">Home</Link>
-            <span className="pd-breadcrumb-separator">/</span>
-            <Link href={`/cards/${currentCollection.slug}`}>{currentCollection.name}</Link>
-            <span className="pd-breadcrumb-separator">/</span>
-            <span className="pd-breadcrumb-current">{activeProduct.title}</span>
-          </nav>
+
 
           {/* Product Section Grid */}
           <div className="pd-main-grid">
@@ -1168,7 +1180,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                     >
                       {activeView === "front" && renderFrontCard()}
                       {activeView === "back" && renderBackCard()}
-                      {activeView === "side" && renderSideCard()}
                     </motion.div>
                   </AnimatePresence>
                 </div>
@@ -1202,16 +1213,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                     {renderBackCard(true)}
                   </div>
                   <span className="pd-thumbnail-label">Back Design</span>
-                </div>
-
-                <div
-                  className={`pd-thumbnail-box ${activeView === "side" ? "active" : ""}`}
-                  onClick={() => setActiveView("side")}
-                >
-                  <div style={{ width: "70px", height: "44px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    {renderSideCard(true)}
-                  </div>
-                  <span className="pd-thumbnail-label">Side View</span>
                 </div>
               </div>
             </div>
@@ -1267,23 +1268,14 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
               </div>
 
               {/* Purchase Controls */}
-              <div className="pd-purchase-row">
-                <div className="pd-quantity-selector">
-                  <button className="pd-quantity-btn" onClick={() => handleQtyChange("dec")} aria-label="Decrease quantity">-</button>
-                  <span className="pd-quantity-val">{quantity}</span>
-                  <button className="pd-quantity-btn" onClick={() => handleQtyChange("inc")} aria-label="Increase quantity">+</button>
-                </div>
-
-                <button className="pd-add-to-cart-btn" onClick={() => handleAddToCart(activeProduct.title)}>
-                  <ShoppingCart className="icon icon-sm" />
-                  Add to Cart
-                </button>
-
-                <button type="button" className="pd-preview-profile-btn" onClick={() => setIsPreviewOpen(true)}>
-                  <Eye className="icon icon-sm" />
+              <div className="pd-purchase-row" style={{ display: "flex", gap: "12px", width: "100%" }}>
+                <Link
+                  href="/profile"
+                  className="pd-preview-profile-btn"
+                >
+                  <Eye className="icon" style={{ marginRight: "8px" }} />
                   Preview Profile
-                </button>
-
+                </Link>
                 <button
                   className={`pd-wishlist-btn ${favorites[activeProduct.id] ? "active" : ""}`}
                   onClick={() => toggleFavorite(activeProduct.id, activeProduct.title)}
@@ -1346,14 +1338,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                 </div>
               </div>
 
-              {/* Column 3: Side */}
-              <div className="pd-detail-col">
-                <h3>3. Side View</h3>
-                <p>Ultra-thin premium metallic material edge with refined rounded borders.</p>
-                <div className="pd-detail-card-container" style={{ alignItems: "center" }}>
-                  {renderSideCard()}
-                </div>
-              </div>
+
             </div>
           </section>
 
@@ -1618,183 +1603,398 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
       {/* Profile Preview Modal */}
       <AnimatePresence>
         {isPreviewOpen && (
-          <div className="profile-preview-overlay" onClick={() => setIsPreviewOpen(false)}>
+          <div className="profile-preview-overlay-fs">
             <motion.div
-              className="profile-preview-modal"
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              onClick={(e) => e.stopPropagation()}
+              className="profile-preview-modal-fs"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 30 }}
+              transition={{ duration: 0.25 }}
             >
-              {/* Modal Close Button */}
-              <button className="profile-preview-close" onClick={() => setIsPreviewOpen(false)} aria-label="Close preview">
-                <X size={18} />
-              </button>
+              {/* Modal Header */}
+              <div className="preview-modal-header">
+                <button className="preview-modal-back-btn" onClick={() => setIsPreviewOpen(false)}>
+                  <ArrowLeft size={16} />
+                  <span>Back to Product Details</span>
+                </button>
+                <h2 className="preview-modal-title">Profile Preview Dashboard</h2>
+              </div>
 
-              {/* Mobile Phone Mockup Frame */}
-              <div className="phone-mockup">
-                {/* Status Bar */}
-                <div className="phone-status-bar">
-                  <span>9:41</span>
-                  <div className="phone-status-icons">
-                    <Wifi size={12} style={{ transform: "rotate(90deg)" }} />
-                    <div className="phone-battery" />
+              {/* Grid Content */}
+              <div className="preview-modal-grid">
+                {/* Left Side: Form Editor */}
+                <div className="preview-form-col">
+                  <h3 className="section-title">Edit Profile Information</h3>
+                  
+                  {/* Photo Upload */}
+                  <div className="preview-upload-section">
+                    <label className="form-field label" style={{ fontSize: "0.8rem", fontWeight: "600", color: "#64748b" }}>Profile Picture</label>
+                    <div className="avatar-upload-row">
+                      <div className="avatar-preview-wrap">
+                        {profileData.avatarSrc ? (
+                          <img src={profileData.avatarSrc} alt="Avatar" />
+                        ) : (
+                          <div className="avatar-placeholder">
+                            {profileData.fullName ? profileData.fullName.slice(0, 2).toUpperCase() : "JO"}
+                          </div>
+                        )}
+                      </div>
+                      <button 
+                        type="button" 
+                        className="te-solid-purple-btn"
+                        style={{ padding: "8px 16px", fontSize: "0.8rem", height: "auto" }}
+                        onClick={() => modalAvatarInputRef.current?.click()}
+                      >
+                        Upload Photo
+                      </button>
+                      <input 
+                        ref={modalAvatarInputRef}
+                        type="file" 
+                        accept="image/*" 
+                        style={{ display: "none" }} 
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onload = () => {
+                              setProfileData(prev => ({ ...prev, avatarSrc: reader.result as string }));
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Personal Info fields */}
+                  <div className="form-group-row">
+                    <div className="form-field">
+                      <label htmlFor="preview-fullName">Full Name</label>
+                      <input 
+                        id="preview-fullName"
+                        type="text" 
+                        value={profileData.fullName} 
+                        onChange={(e) => setProfileData(prev => ({ ...prev, fullName: e.target.value }))}
+                        className="preview-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group-row">
+                    <div className="form-field">
+                      <label htmlFor="preview-designation">Designation</label>
+                      <input 
+                        id="preview-designation"
+                        type="text" 
+                        value={profileData.designation} 
+                        onChange={(e) => setProfileData(prev => ({ ...prev, designation: e.target.value }))}
+                        className="preview-input"
+                      />
+                    </div>
+                    <div className="form-field">
+                      <label htmlFor="preview-companyName">Company Name</label>
+                      <input 
+                        id="preview-companyName"
+                        type="text" 
+                        value={profileData.companyName} 
+                        onChange={(e) => setProfileData(prev => ({ ...prev, companyName: e.target.value }))}
+                        className="preview-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group-row">
+                    <div className="form-field">
+                      <label htmlFor="preview-mobileNumber">Phone Number</label>
+                      <input 
+                        id="preview-mobileNumber"
+                        type="text" 
+                        value={profileData.mobileNumber} 
+                        onChange={(e) => setProfileData(prev => ({ ...prev, mobileNumber: e.target.value }))}
+                        className="preview-input"
+                      />
+                    </div>
+                    <div className="form-field">
+                      <label htmlFor="preview-emailAddress">Email Address</label>
+                      <input 
+                        id="preview-emailAddress"
+                        type="text" 
+                        value={profileData.emailAddress} 
+                        onChange={(e) => setProfileData(prev => ({ ...prev, emailAddress: e.target.value }))}
+                        className="preview-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group-row">
+                    <div className="form-field">
+                      <label htmlFor="preview-website">Website URL</label>
+                      <input 
+                        id="preview-website"
+                        type="text" 
+                        value={profileData.website} 
+                        onChange={(e) => setProfileData(prev => ({ ...prev, website: e.target.value }))}
+                        className="preview-input"
+                      />
+                    </div>
+                    <div className="form-field">
+                      <label htmlFor="preview-location">Location Address</label>
+                      <input 
+                        id="preview-location"
+                        type="text" 
+                        value={profileData.businessAddress} 
+                        onChange={(e) => setProfileData(prev => ({ ...prev, businessAddress: e.target.value }))}
+                        className="preview-input"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Social links */}
+                  <h3 className="section-title" style={{ marginTop: "24px" }}>Social Media Links</h3>
+                  <div className="form-group-row">
+                    <div className="form-field">
+                      <label htmlFor="preview-linkedin">LinkedIn URL</label>
+                      <input 
+                        id="preview-linkedin"
+                        type="text" 
+                        value={profileData.linkedin} 
+                        onChange={(e) => setProfileData(prev => ({ ...prev, linkedin: e.target.value }))}
+                        className="preview-input"
+                      />
+                    </div>
+                    <div className="form-field">
+                      <label htmlFor="preview-instagram">Instagram URL</label>
+                      <input 
+                        id="preview-instagram"
+                        type="text" 
+                        value={profileData.instagram} 
+                        onChange={(e) => setProfileData(prev => ({ ...prev, instagram: e.target.value }))}
+                        className="preview-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group-row">
+                    <div className="form-field">
+                      <label htmlFor="preview-facebook">Facebook URL</label>
+                      <input 
+                        id="preview-facebook"
+                        type="text" 
+                        value={profileData.facebook} 
+                        onChange={(e) => setProfileData(prev => ({ ...prev, facebook: e.target.value }))}
+                        className="preview-input"
+                      />
+                    </div>
+                    <div className="form-field">
+                      <label htmlFor="preview-twitter">X (Twitter) URL</label>
+                      <input 
+                        id="preview-twitter"
+                        type="text" 
+                        value={profileData.twitter} 
+                        onChange={(e) => setProfileData(prev => ({ ...prev, twitter: e.target.value }))}
+                        className="preview-input"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                {/* Profile Content Container */}
-                <div className="phone-content">
-                  {/* Cover Banner using the card gradient/background */}
-                  <div 
-                    className="phone-cover-banner" 
-                    style={{ 
-                      backgroundImage: profileData.coverSrc ? `url(${profileData.coverSrc})` : "none",
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      background: profileData.coverSrc ? undefined : (activeProduct.cardStyle.background || "linear-gradient(135deg, #7c5dfa 0%, #5c3beb 100%)"),
-                      borderBottom: activeProduct.cardStyle.border || "none",
-                      height: "125px",
-                      position: "relative"
-                    }} 
-                  />
-
-                  {/* Profile Info Header */}
-                  <div className="phone-profile-header">
-                    <div className="phone-avatar-wrap">
-                      {profileData.avatarSrc ? (
-                        <img
-                          src={profileData.avatarSrc}
-                          alt="Profile Avatar"
-                          className="phone-avatar-img"
-                        />
-                      ) : (
-                        <div className="phone-avatar-img" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)", color: "#ffffff", fontWeight: 700, fontSize: "1.5rem" }}>
-                          {profileData.fullName ? (
-                            profileData.fullName.trim().split(/\s+/).length >= 2
-                              ? (profileData.fullName.trim().split(/\s+/)[0][0] + profileData.fullName.trim().split(/\s+/)[1][0]).toUpperCase()
-                              : profileData.fullName.trim().slice(0, 2).toUpperCase()
-                          ) : "JO"}
-                        </div>
-                      )}
-                      <div className="phone-online-indicator" />
+                {/* Right Side: Live Previews */}
+                <div className="preview-visual-col">
+                  {/* Card Section */}
+                  <div className="preview-card-section">
+                    <div className="preview-card-header">
+                      <h3>Live Card Preview</h3>
+                      <div className="card-toggle-buttons">
+                        <button 
+                          className={`toggle-btn ${activeView === "front" ? "active" : ""}`}
+                          onClick={() => setActiveView("front")}
+                        >
+                          Front
+                        </button>
+                        <button 
+                          className={`toggle-btn ${activeView === "back" ? "active" : ""}`}
+                          onClick={() => setActiveView("back")}
+                        >
+                          Back
+                        </button>
+                      </div>
                     </div>
-                    <h3 className="phone-profile-name">{profileData.fullName}</h3>
-                    <p className="phone-profile-title">{profileData.designation}</p>
-                    <p className="phone-profile-company">{profileData.companyName}</p>
-                    {profileData.companyDescription && (
-                      <p className="phone-profile-bio" style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "8px", padding: "0 15px", lineHeight: 1.4 }}>
-                        {profileData.companyDescription}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Contact Action Buttons */}
-                  <div className="phone-contact-actions">
-                    {profileData.mobileNumber && (
-                      <a href={`tel:${profileData.mobileNumber}`} className="phone-action-btn phone-action-call">
-                        <Phone size={14} />
-                        <span>Call</span>
-                      </a>
-                    )}
-                    {profileData.emailAddress && (
-                      <a href={`mailto:${profileData.emailAddress}`} className="phone-action-btn phone-action-email">
-                        <Mail size={14} />
-                        <span>Email</span>
-                      </a>
-                    )}
-                    <button onClick={() => showToast("Contact saved successfully!")} className="phone-action-btn phone-action-save">
-                      <UserPlus size={14} />
-                      <span>Save</span>
-                    </button>
-                  </div>
-
-                  {/* Direct Link Cards */}
-                  <h4 className="phone-section-title">Direct Links</h4>
-                  <div className="phone-profile-links">
-                    {profileData.website && (
-                      <a href={profileData.website} target="_blank" rel="noopener noreferrer" className="phone-link-card">
-                        <Globe size={18} className="phone-link-icon" />
-                        <div className="phone-link-text">
-                          <span className="phone-link-title">Official Website</span>
-                          <span className="phone-link-url">{profileData.website.replace(/^https?:\/\//, "")}</span>
-                        </div>
-                        <ArrowRight size={14} className="phone-link-arrow" />
-                      </a>
-                    )}
-
-                    {profileData.portfolio && (
-                      <a href={profileData.portfolio} target="_blank" rel="noopener noreferrer" className="phone-link-card">
-                        <Briefcase size={18} className="phone-link-icon" />
-                        <div className="phone-link-text">
-                          <span className="phone-link-title">Personal Portfolio</span>
-                          <span className="phone-link-url">{profileData.portfolio.replace(/^https?:\/\//, "")}</span>
-                        </div>
-                        <ArrowRight size={14} className="phone-link-arrow" />
-                      </a>
-                    )}
-
-                    {profileData.whatsAppNumber && (
-                      <a href={`https://wa.me/${profileData.whatsAppNumber.replace(/\s+/g, "").replace(/\+/g, "")}`} target="_blank" rel="noopener noreferrer" className="phone-link-card">
-                        <MessageSquare size={18} className="phone-link-icon" style={{ color: "#25d366" }} />
-                        <div className="phone-link-text">
-                          <span className="phone-link-title">WhatsApp Chat</span>
-                          <span className="phone-link-url">{profileData.whatsAppNumber}</span>
-                        </div>
-                        <ArrowRight size={14} className="phone-link-arrow" />
-                      </a>
-                    )}
-
-                    {profileData.businessAddress && (
-                      <a href={profileData.googleMapsLocation || "#"} target="_blank" rel="noopener noreferrer" className="phone-link-card">
-                        <MapPin size={18} className="phone-link-icon" />
-                        <div className="phone-link-text">
-                          <span className="phone-link-title">Business Location</span>
-                          <span className="phone-link-url" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "220px" }}>
-                            {profileData.businessAddress}
-                          </span>
-                        </div>
-                        <ArrowRight size={14} className="phone-link-arrow" />
-                      </a>
-                    )}
-                  </div>
-
-                  {/* Social Networks grid */}
-                  <h4 className="phone-section-title">Social Networks</h4>
-                  <div className="phone-profile-socials">
-                    <div className="phone-socials-grid">
-                      {profileData.linkedin && (
-                        <a href={profileData.linkedin} target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn" aria-label="LinkedIn">
-                          <Linkedin size={18} />
-                        </a>
-                      )}
-                      {profileData.instagram && (
-                        <a href={profileData.instagram} target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn" aria-label="Instagram">
-                          <Instagram size={18} />
-                        </a>
-                      )}
-                      {profileData.facebook && (
-                        <a href={profileData.facebook} target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn" aria-label="Facebook">
-                          <Facebook size={18} />
-                        </a>
-                      )}
-                      {profileData.twitter && (
-                        <a href={profileData.twitter} target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn" aria-label="X (Twitter)">
-                          <Twitter size={18} />
-                        </a>
-                      )}
-                      {profileData.youtube && (
-                        <a href={profileData.youtube} target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn" aria-label="YouTube">
-                          <Youtube size={18} />
-                        </a>
-                      )}
+                    
+                    <div className="preview-card-render-area">
+                      {activeView === "front" ? renderFrontCard() : renderBackCard()}
                     </div>
                   </div>
 
-                  {/* HappyTap Brand footer */}
-                  <div className="phone-footer-brand">
-                    <span>Powered by</span>
-                    <span className="phone-footer-brand-logo">HappyTap</span>
+                  {/* Digital Profile Section */}
+                  <div className="preview-profile-section">
+                    <h3>Live Digital Profile Preview</h3>
+                    <div className="phone-mockup-container">
+                      <div className="phone-mockup">
+                        {/* Status Bar */}
+                        <div className="phone-status-bar">
+                          <span>9:41</span>
+                          <div className="phone-status-icons">
+                            <Wifi size={12} style={{ transform: "rotate(90deg)" }} />
+                            <div className="phone-battery" />
+                          </div>
+                        </div>
+
+                        {/* Profile Content Container */}
+                        <div className="phone-content">
+                          {/* Cover Banner using the card gradient/background */}
+                          <div 
+                            className="phone-cover-banner" 
+                            style={{ 
+                              backgroundImage: profileData.coverSrc ? `url(${profileData.coverSrc})` : "none",
+                              backgroundSize: "cover",
+                              backgroundPosition: "center",
+                              background: profileData.coverSrc ? undefined : (activeProduct.cardStyle.background || "linear-gradient(135deg, #7c5dfa 0%, #5c3beb 100%)"),
+                              borderBottom: activeProduct.cardStyle.border || "none",
+                              height: "125px",
+                              position: "relative"
+                            }} 
+                          />
+
+                          {/* Profile Info Header */}
+                          <div className="phone-profile-header">
+                            <div className="phone-avatar-wrap">
+                              {profileData.avatarSrc ? (
+                                <img
+                                  src={profileData.avatarSrc}
+                                  alt="Profile Avatar"
+                                  className="phone-avatar-img"
+                                />
+                              ) : (
+                                <div className="phone-avatar-img" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)", color: "#ffffff", fontWeight: 700, fontSize: "1.5rem" }}>
+                                  {profileData.fullName ? (
+                                    profileData.fullName.trim().split(/\s+/).length >= 2
+                                      ? (profileData.fullName.trim().split(/\s+/)[0][0] + profileData.fullName.trim().split(/\s+/)[1][0]).toUpperCase()
+                                      : profileData.fullName.trim().slice(0, 2).toUpperCase()
+                                  ) : "JO"}
+                                </div>
+                              )}
+                              <div className="phone-online-indicator" />
+                            </div>
+                            <h3 className="phone-profile-name">{profileData.fullName}</h3>
+                            <p className="phone-profile-title">{profileData.designation}</p>
+                            <p className="phone-profile-company">{profileData.companyName}</p>
+                            {profileData.companyDescription && (
+                              <p className="phone-profile-bio" style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "8px", padding: "0 15px", lineHeight: 1.4 }}>
+                                {profileData.companyDescription}
+                              </p>
+                            )}
+                          </div>
+
+                          {/* Contact Action Buttons */}
+                          <div className="phone-contact-actions">
+                            {profileData.mobileNumber && (
+                              <a href={`tel:${profileData.mobileNumber}`} className="phone-action-btn phone-action-call">
+                                <Phone size={14} />
+                                <span>Call</span>
+                              </a>
+                            )}
+                            {profileData.emailAddress && (
+                              <a href={`mailto:${profileData.emailAddress}`} className="phone-action-btn phone-action-email">
+                                <Mail size={14} />
+                                <span>Email</span>
+                              </a>
+                            )}
+                            <button onClick={() => showToast("Contact saved successfully!")} className="phone-action-btn phone-action-save">
+                              <UserPlus size={14} />
+                              <span>Save</span>
+                            </button>
+                          </div>
+
+                          {/* Direct Link Cards */}
+                          <h4 className="phone-section-title">Direct Links</h4>
+                          <div className="phone-profile-links">
+                            {profileData.website && (
+                              <a href={profileData.website} target="_blank" rel="noopener noreferrer" className="phone-link-card">
+                                <Globe size={18} className="phone-link-icon" />
+                                <div className="phone-link-text">
+                                  <span className="phone-link-title">Official Website</span>
+                                  <span className="phone-link-url">{profileData.website.replace(/^https?:\/\//, "")}</span>
+                                </div>
+                                <ArrowRight size={14} className="phone-link-arrow" />
+                              </a>
+                            )}
+
+                            {profileData.portfolio && (
+                              <a href={profileData.portfolio} target="_blank" rel="noopener noreferrer" className="phone-link-card">
+                                <Briefcase size={18} className="phone-link-icon" />
+                                <div className="phone-link-text">
+                                  <span className="phone-link-title">Personal Portfolio</span>
+                                  <span className="phone-link-url">{profileData.portfolio.replace(/^https?:\/\//, "")}</span>
+                                </div>
+                                <ArrowRight size={14} className="phone-link-arrow" />
+                              </a>
+                            )}
+
+                            {profileData.whatsAppNumber && (
+                              <a href={`https://wa.me/${profileData.whatsAppNumber.replace(/\s+/g, "").replace(/\+/g, "")}`} target="_blank" rel="noopener noreferrer" className="phone-link-card">
+                                <MessageSquare size={18} className="phone-link-icon" style={{ color: "#25d366" }} />
+                                <div className="phone-link-text">
+                                  <span className="phone-link-title">WhatsApp Chat</span>
+                                  <span className="phone-link-url">{profileData.whatsAppNumber}</span>
+                                </div>
+                                <ArrowRight size={14} className="phone-link-arrow" />
+                              </a>
+                            )}
+
+                            {profileData.businessAddress && (
+                              <a href={profileData.googleMapsLocation || "#"} target="_blank" rel="noopener noreferrer" className="phone-link-card">
+                                <MapPin size={18} className="phone-link-icon" />
+                                <div className="phone-link-text">
+                                  <span className="phone-link-title">Business Location</span>
+                                  <span className="phone-link-url" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "160px" }}>
+                                    {profileData.businessAddress}
+                                  </span>
+                                </div>
+                                <ArrowRight size={14} className="phone-link-arrow" />
+                              </a>
+                            )}
+                          </div>
+
+                          {/* Social Networks grid */}
+                          <h4 className="phone-section-title">Social Networks</h4>
+                          <div className="phone-profile-socials">
+                            <div className="phone-socials-grid">
+                              {profileData.linkedin && (
+                                <a href={profileData.linkedin} target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn" aria-label="LinkedIn">
+                                  <Linkedin size={18} />
+                                </a>
+                              )}
+                              {profileData.instagram && (
+                                <a href={profileData.instagram} target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn" aria-label="Instagram">
+                                  <Instagram size={18} />
+                                </a>
+                              )}
+                              {profileData.facebook && (
+                                <a href={profileData.facebook} target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn" aria-label="Facebook">
+                                  <Facebook size={18} />
+                                </a>
+                              )}
+                              {profileData.twitter && (
+                                <a href={profileData.twitter} target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn" aria-label="X (Twitter)">
+                                  <Twitter size={18} />
+                                </a>
+                              )}
+                              {profileData.youtube && (
+                                <a href={profileData.youtube} target="_blank" rel="noopener noreferrer" className="phone-social-icon-btn" aria-label="YouTube">
+                                  <Youtube size={18} />
+                                </a>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* HappyTap Brand footer */}
+                          <div className="phone-footer-brand">
+                            <span>Powered by</span>
+                            <span className="phone-footer-brand-logo">HappyTap</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
