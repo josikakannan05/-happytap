@@ -832,6 +832,20 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
   const [authTab, setAuthTab] = useState<"login" | "signup">("login");
   const [user, setUser] = useState<string | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [scrollPos, setScrollPos] = useState(0);
+
+  const openPreview = () => {
+    setScrollPos(window.scrollY);
+    setIsPreviewOpen(true);
+    window.scrollTo({ top: 0, behavior: "instant" });
+  };
+
+  const closePreview = () => {
+    setIsPreviewOpen(false);
+    setTimeout(() => {
+      window.scrollTo({ top: scrollPos, behavior: "instant" });
+    }, 50);
+  };
 
   /* Dynamic User Profile State */
   const [profileData, setProfileData] = useState({
@@ -963,11 +977,13 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
     return {};
   };
 
-  const renderFrontCard = (isThumb = false) => {
+  const renderFrontCard = (size: "thumb" | "normal" | "large" = "normal") => {
+    const isThumb = size === "thumb";
+    const isLarge = size === "large";
     const customImages = (activeProduct as any).images;
     if (customImages?.front) {
       return (
-        <div style={{ width: "100%", height: "100%", position: "relative", borderRadius: isThumb ? "8px" : "20px", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ width: "100%", height: "100%", position: "relative", borderRadius: isThumb ? "8px" : (isLarge ? "30px" : "20px"), overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <img src={customImages.front} alt="Front Design" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
       );
@@ -981,18 +997,18 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
     if (isTeamLayout) {
       const Icon = activeProduct.icon || Users;
       return (
-        <div className={`te-card-mockup ${activeProduct.cssClass}`} style={{ width: "100%", height: "100%", maxWidth: isThumb ? "100%" : "165px" }}>
-          <div className="te-card-left" style={{ padding: isThumb ? "4px 6px" : "16px" }}>
-            <div className={`te-mock-logo ${isLight ? "light-card-text" : ""}`} style={{ fontSize: isThumb ? "0.45rem" : "" }}>
+        <div className={`te-card-mockup ${activeProduct.cssClass}`} style={{ width: "100%", height: "100%", maxWidth: isThumb ? "100%" : (isLarge ? "320px" : "165px") }}>
+          <div className="te-card-left" style={{ padding: isThumb ? "4px 6px" : (isLarge ? "24px" : "16px") }}>
+            <div className={`te-mock-logo ${isLight ? "light-card-text" : ""}`} style={{ fontSize: isThumb ? "0.45rem" : (isLarge ? "1.8rem" : "") }}>
               H<span className={`te-mock-logo-mark ${logoStyle === "gold" ? "gold-logo" : ""}`}>t</span>
             </div>
-            <div className={`te-card-name ${isLight ? "light-card-text" : ""}`} style={{ fontSize: isThumb ? "0.32rem" : "0.52rem" }}>
+            <div className={`te-card-name ${isLight ? "light-card-text" : ""}`} style={{ fontSize: isThumb ? "0.32rem" : (isLarge ? "0.95rem" : "0.52rem") }}>
               {profileData.fullName || activeProduct.title}
             </div>
           </div>
-          <div className="te-card-right" style={{ padding: isThumb ? "4px 6px" : "16px" }}>
+          <div className="te-card-right" style={{ padding: isThumb ? "4px 6px" : (isLarge ? "24px" : "16px") }}>
             <div className={`te-card-icon-wrap ${isLight ? "light-card-text" : ""}`}>
-              <Icon className="icon" style={{ width: isThumb ? "12px" : "24px", height: isThumb ? "12px" : "24px" }} />
+              <Icon className="icon" style={{ width: isThumb ? "12px" : (isLarge ? "48px" : "24px"), height: isThumb ? "12px" : (isLarge ? "48px" : "24px") }} />
             </div>
           </div>
         </div>
@@ -1011,7 +1027,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
           height: "100%",
           background: activeProduct.cardStyle.background,
           border: activeProduct.cardStyle.border || "1px solid rgba(255, 255, 255, 0.08)",
-          maxWidth: isThumb ? "100%" : "165px",
+          maxWidth: isThumb ? "100%" : (isLarge ? "320px" : "165px"),
         }}
       >
         <div className="ec-card-mockup-glare"></div>
@@ -1020,12 +1036,12 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
         {hasExtraLines === "prestige" && <div className="ec-card-prestige-texture" />}
         {hasExtraLines === "titanium" && <div className="ec-card-titanium-texture" />}
         {hasExtraLines === "legacy" && (
-          <div className="ec-card-legacy-crest" style={{ transform: isThumb ? "translate(-50%, -50%) scale(0.6)" : "translate(-50%, -50%)" }}>
-            <Award className="icon" style={{ width: "24px", height: "24px", color: "rgba(212, 175, 55, 0.75)" }} />
+          <div className="ec-card-legacy-crest" style={{ transform: isThumb ? "translate(-50%, -50%) scale(0.6)" : (isLarge ? "translate(-50%, -50%) scale(1.6)" : "translate(-50%, -50%)") }}>
+            <Award className="icon" style={{ width: isLarge ? "48px" : "24px", height: isLarge ? "48px" : "24px", color: "rgba(212, 175, 55, 0.75)" }} />
           </div>
         )}
 
-        <div className={`ec-mock-logo ${isLight ? "light-card-text" : ""}`} style={{ padding: isThumb ? "6px 8px" : "14px" }}>
+        <div className={`ec-mock-logo ${isLight ? "light-card-text" : ""}`} style={{ padding: isThumb ? "6px 8px" : (isLarge ? "24px 28px" : "14px") }}>
           H
           <span
             className={`ec-mock-logo-mark ${logoStyle === "gold" ? "gold-logo" : ""}`}
@@ -1035,23 +1051,25 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
           </span>
         </div>
 
-        <div className="ec-mock-details" style={{ padding: isThumb ? "6px 8px" : "14px" }}>
-          <div className={`ec-mock-brand ${isLight ? "light-card-text" : ""}`} style={{ fontSize: isThumb ? "0.35rem" : "0.5rem" }}>
+        <div className="ec-mock-details" style={{ padding: isThumb ? "6px 8px" : (isLarge ? "24px 28px" : "14px") }}>
+          <div className={`ec-mock-brand ${isLight ? "light-card-text" : ""}`} style={{ fontSize: isThumb ? "0.35rem" : (isLarge ? "0.85rem" : "0.5rem") }}>
             HAPPYTAP
           </div>
           <div className={`ec-mock-chip ${isLight ? "light-card-text" : ""}`}>
-            <Wifi className="icon icon-sm" style={{ transform: "rotate(90deg)", width: isThumb ? "10px" : "14px" }} />
+            <Wifi className="icon icon-sm" style={{ transform: "rotate(90deg)", width: isThumb ? "10px" : (isLarge ? "24px" : "14px"), height: isThumb ? "10px" : (isLarge ? "24px" : "14px") }} />
           </div>
         </div>
       </div>
     );
-  };
+  };;
 
-  const renderBackCard = (isThumb = false) => {
+  const renderBackCard = (size: "thumb" | "normal" | "large" = "normal") => {
+    const isThumb = size === "thumb";
+    const isLarge = size === "large";
     const customImages = (activeProduct as any).images;
     if (customImages?.back) {
       return (
-        <div style={{ width: "100%", height: "100%", position: "relative", borderRadius: isThumb ? "8px" : "20px", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ width: "100%", height: "100%", position: "relative", borderRadius: isThumb ? "8px" : (isLarge ? "30px" : "20px"), overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <img src={customImages.back} alt="Back Design" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
       );
@@ -1067,43 +1085,43 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
           border: activeProduct.cardStyle.border || "1px solid rgba(255, 255, 255, 0.08)",
           width: "100%",
           height: "100%",
-          maxWidth: isThumb ? "100%" : "165px",
-          padding: isThumb ? "6px 8px" : "16px",
+          maxWidth: isThumb ? "100%" : (isLarge ? "320px" : "165px"),
+          padding: isThumb ? "6px 8px" : (isLarge ? "24px 28px" : "16px"),
         }}
       >
-        <div className="pd-back-top" style={{ padding: isThumb ? "0 2px" : "0 6px" }}>
-          <div className={`pd-back-logo ${isLight ? "light-card-text" : ""}`} style={{ fontSize: isThumb ? "0.6rem" : "1rem" }}>
+        <div className="pd-back-top" style={{ padding: isThumb ? "0 2px" : (isLarge ? "0 12px" : "0 6px") }}>
+          <div className={`pd-back-logo ${isLight ? "light-card-text" : ""}`} style={{ fontSize: isThumb ? "0.6rem" : (isLarge ? "1.8rem" : "1rem") }}>
             H<span className={`pd-back-logo-mark ${logoStyle === "gold" ? "gold-logo" : ""}`}>t</span>
           </div>
-          <Wifi className="icon" style={{ transform: "rotate(90deg)", width: isThumb ? "10px" : "14px", color: isLight ? "rgba(0,0,0,0.6)" : "rgba(255,255,255,0.7)" }} />
+          <Wifi className="icon" style={{ transform: "rotate(90deg)", width: isThumb ? "10px" : (isLarge ? "24px" : "14px"), color: isLight ? "rgba(0,0,0,0.6)" : "rgba(255,255,255,0.7)" }} />
         </div>
-        <div className="pd-back-middle" style={{ marginTop: isThumb ? "2px" : "14px", gap: isThumb ? "4px" : "14px" }}>
-          <div className="pd-back-qr" style={{ width: isThumb ? "20px" : "54px", height: isThumb ? "20px" : "54px", borderRadius: isThumb ? "3px" : "6px" }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: "#000", width: "100%", height: "100%" }}>
-              <rect x="2" y="2" width="6" height="6" />
-              <rect x="16" y="2" width="6" height="6" />
-              <rect x="2" y="16" width="6" height="6" />
-              <path d="M16 16h2v2h-2zm4 4h2v2h-2zm-4 4h2v-2h-2zm6-4h-2v-2h2zm-2 2v2h-2v-2zm-6-6h2v2h-2zm2 2h2v2h-2zm-2 2h2v2h-2z" />
-            </svg>
-          </div>
-          {!isThumb && (
+        {!isThumb && (
+          <div className="pd-back-middle" style={{ marginTop: isLarge ? "28px" : "14px", gap: isLarge ? "28px" : "14px" }}>
+            <div className="pd-back-qr" style={{ width: isLarge ? "96px" : "54px", height: isLarge ? "96px" : "54px", borderRadius: isLarge ? "10px" : "6px" }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: "#000", width: "100%", height: "100%" }}>
+                <rect x="2" y="2" width="6" height="6" />
+                <rect x="16" y="2" width="6" height="6" />
+                <rect x="2" y="16" width="6" height="6" />
+                <path d="M16 16h2v2h-2zm4 4h2v2h-2zm-4 4h2v-2h-2zm6-4h-2v-2h2zm-2 2v2h-2v-2zm-6-6h2v2h-2zm2 2h2v2h-2zm-2 2h2v2h-2z" />
+              </svg>
+            </div>
             <div className="pd-back-info">
-              <div className={`pd-back-name ${isLight ? "light-card-text" : ""}`}>{profileData.fullName || "Alex Bennett"}</div>
-              <div className={`pd-back-title ${isLight ? "light-card-text" : ""}`}>
+              <div className={`pd-back-name ${isLight ? "light-card-text" : ""}`} style={{ fontSize: isLarge ? "1.3rem" : "" }}>
+                {profileData.fullName || "Alex Bennett"}
+              </div>
+              <div className={`pd-back-title ${isLight ? "light-card-text" : ""}`} style={{ fontSize: isLarge ? "0.85rem" : "" }}>
                 {profileData.designation || "CEO"} | {profileData.companyName || "Horizon Technologies"}
               </div>
-              <div className="pd-back-details">
+              <div className="pd-back-details" style={{ fontSize: isLarge ? "0.75rem" : "", marginTop: isLarge ? "12px" : "" }}>
                 {profileData.mobileNumber || "+91 98765 43210"} <br />
                 {profileData.emailAddress || "alex@horizon.com"} <br />
                 {profileData.businessAddress || "Bengaluru, India"}
               </div>
             </div>
-          )}
-        </div>
-        {!isThumb ? (
-          <div className="pd-back-bottom">Tap to Connect</div>
-        ) : (
-          <div className={`pd-back-name ${isLight ? "light-card-text" : ""}`} style={{ fontSize: "0.32rem", textAlign: "center", marginTop: "2px" }}>Alex Bennett</div>
+          </div>
+        )}
+        {!isThumb && (
+          <div className="pd-back-bottom" style={{ fontSize: isLarge ? "0.85rem" : "", marginTop: isLarge ? "16px" : "" }}>Tap to Connect</div>
         )}
       </div>
     );
@@ -1200,7 +1218,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                   onClick={() => setActiveView("front")}
                 >
                   <div style={{ width: "70px", height: "44px", transform: "scale(0.8)" }}>
-                    {renderFrontCard(true)}
+                    {renderFrontCard("thumb")}
                   </div>
                   <span className="pd-thumbnail-label">Front Design</span>
                 </div>
@@ -1210,7 +1228,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                   onClick={() => setActiveView("back")}
                 >
                   <div style={{ width: "70px", height: "44px", transform: "scale(0.8)" }}>
-                    {renderBackCard(true)}
+                    {renderBackCard("thumb")}
                   </div>
                   <span className="pd-thumbnail-label">Back Design</span>
                 </div>
@@ -1269,13 +1287,13 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
 
               {/* Purchase Controls */}
               <div className="pd-purchase-row" style={{ display: "flex", gap: "12px", width: "100%" }}>
-                <Link
-                  href="/profile"
+                <button
                   className="pd-preview-profile-btn"
+                  onClick={openPreview}
                 >
                   <Eye className="icon" style={{ marginRight: "8px" }} />
                   Preview Profile
-                </Link>
+                </button>
                 <button
                   className={`pd-wishlist-btn ${favorites[activeProduct.id] ? "active" : ""}`}
                   onClick={() => toggleFavorite(activeProduct.id, activeProduct.title)}
@@ -1613,7 +1631,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
             >
               {/* Modal Header */}
               <div className="preview-modal-header">
-                <button className="preview-modal-back-btn" onClick={() => setIsPreviewOpen(false)}>
+                <button className="preview-modal-back-btn" onClick={closePreview}>
                   <ArrowLeft size={16} />
                   <span>Back to Product Details</span>
                 </button>
@@ -1625,7 +1643,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                 {/* Left Side: Form Editor */}
                 <div className="preview-form-col">
                   <h3 className="section-title">Edit Profile Information</h3>
-                  
+
                   {/* Photo Upload */}
                   <div className="preview-upload-section">
                     <label className="form-field label" style={{ fontSize: "0.8rem", fontWeight: "600", color: "#64748b" }}>Profile Picture</label>
@@ -1639,19 +1657,19 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                           </div>
                         )}
                       </div>
-                      <button 
-                        type="button" 
+                      <button
+                        type="button"
                         className="te-solid-purple-btn"
                         style={{ padding: "8px 16px", fontSize: "0.8rem", height: "auto" }}
                         onClick={() => modalAvatarInputRef.current?.click()}
                       >
                         Upload Photo
                       </button>
-                      <input 
+                      <input
                         ref={modalAvatarInputRef}
-                        type="file" 
-                        accept="image/*" 
-                        style={{ display: "none" }} 
+                        type="file"
+                        accept="image/*"
+                        style={{ display: "none" }}
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           if (file) {
@@ -1670,10 +1688,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                   <div className="form-group-row">
                     <div className="form-field">
                       <label htmlFor="preview-fullName">Full Name</label>
-                      <input 
+                      <input
                         id="preview-fullName"
-                        type="text" 
-                        value={profileData.fullName} 
+                        type="text"
+                        value={profileData.fullName}
                         onChange={(e) => setProfileData(prev => ({ ...prev, fullName: e.target.value }))}
                         className="preview-input"
                       />
@@ -1683,20 +1701,20 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                   <div className="form-group-row">
                     <div className="form-field">
                       <label htmlFor="preview-designation">Designation</label>
-                      <input 
+                      <input
                         id="preview-designation"
-                        type="text" 
-                        value={profileData.designation} 
+                        type="text"
+                        value={profileData.designation}
                         onChange={(e) => setProfileData(prev => ({ ...prev, designation: e.target.value }))}
                         className="preview-input"
                       />
                     </div>
                     <div className="form-field">
                       <label htmlFor="preview-companyName">Company Name</label>
-                      <input 
+                      <input
                         id="preview-companyName"
-                        type="text" 
-                        value={profileData.companyName} 
+                        type="text"
+                        value={profileData.companyName}
                         onChange={(e) => setProfileData(prev => ({ ...prev, companyName: e.target.value }))}
                         className="preview-input"
                       />
@@ -1706,20 +1724,20 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                   <div className="form-group-row">
                     <div className="form-field">
                       <label htmlFor="preview-mobileNumber">Phone Number</label>
-                      <input 
+                      <input
                         id="preview-mobileNumber"
-                        type="text" 
-                        value={profileData.mobileNumber} 
+                        type="text"
+                        value={profileData.mobileNumber}
                         onChange={(e) => setProfileData(prev => ({ ...prev, mobileNumber: e.target.value }))}
                         className="preview-input"
                       />
                     </div>
                     <div className="form-field">
                       <label htmlFor="preview-emailAddress">Email Address</label>
-                      <input 
+                      <input
                         id="preview-emailAddress"
-                        type="text" 
-                        value={profileData.emailAddress} 
+                        type="text"
+                        value={profileData.emailAddress}
                         onChange={(e) => setProfileData(prev => ({ ...prev, emailAddress: e.target.value }))}
                         className="preview-input"
                       />
@@ -1729,20 +1747,20 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                   <div className="form-group-row">
                     <div className="form-field">
                       <label htmlFor="preview-website">Website URL</label>
-                      <input 
+                      <input
                         id="preview-website"
-                        type="text" 
-                        value={profileData.website} 
+                        type="text"
+                        value={profileData.website}
                         onChange={(e) => setProfileData(prev => ({ ...prev, website: e.target.value }))}
                         className="preview-input"
                       />
                     </div>
                     <div className="form-field">
                       <label htmlFor="preview-location">Location Address</label>
-                      <input 
+                      <input
                         id="preview-location"
-                        type="text" 
-                        value={profileData.businessAddress} 
+                        type="text"
+                        value={profileData.businessAddress}
                         onChange={(e) => setProfileData(prev => ({ ...prev, businessAddress: e.target.value }))}
                         className="preview-input"
                       />
@@ -1754,20 +1772,20 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                   <div className="form-group-row">
                     <div className="form-field">
                       <label htmlFor="preview-linkedin">LinkedIn URL</label>
-                      <input 
+                      <input
                         id="preview-linkedin"
-                        type="text" 
-                        value={profileData.linkedin} 
+                        type="text"
+                        value={profileData.linkedin}
                         onChange={(e) => setProfileData(prev => ({ ...prev, linkedin: e.target.value }))}
                         className="preview-input"
                       />
                     </div>
                     <div className="form-field">
                       <label htmlFor="preview-instagram">Instagram URL</label>
-                      <input 
+                      <input
                         id="preview-instagram"
-                        type="text" 
-                        value={profileData.instagram} 
+                        type="text"
+                        value={profileData.instagram}
                         onChange={(e) => setProfileData(prev => ({ ...prev, instagram: e.target.value }))}
                         className="preview-input"
                       />
@@ -1777,20 +1795,20 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                   <div className="form-group-row">
                     <div className="form-field">
                       <label htmlFor="preview-facebook">Facebook URL</label>
-                      <input 
+                      <input
                         id="preview-facebook"
-                        type="text" 
-                        value={profileData.facebook} 
+                        type="text"
+                        value={profileData.facebook}
                         onChange={(e) => setProfileData(prev => ({ ...prev, facebook: e.target.value }))}
                         className="preview-input"
                       />
                     </div>
                     <div className="form-field">
                       <label htmlFor="preview-twitter">X (Twitter) URL</label>
-                      <input 
+                      <input
                         id="preview-twitter"
-                        type="text" 
-                        value={profileData.twitter} 
+                        type="text"
+                        value={profileData.twitter}
                         onChange={(e) => setProfileData(prev => ({ ...prev, twitter: e.target.value }))}
                         className="preview-input"
                       />
@@ -1805,13 +1823,13 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                     <div className="preview-card-header">
                       <h3>Live Card Preview</h3>
                       <div className="card-toggle-buttons">
-                        <button 
+                        <button
                           className={`toggle-btn ${activeView === "front" ? "active" : ""}`}
                           onClick={() => setActiveView("front")}
                         >
                           Front
                         </button>
-                        <button 
+                        <button
                           className={`toggle-btn ${activeView === "back" ? "active" : ""}`}
                           onClick={() => setActiveView("back")}
                         >
@@ -1819,9 +1837,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                         </button>
                       </div>
                     </div>
-                    
+
                     <div className="preview-card-render-area">
-                      {activeView === "front" ? renderFrontCard() : renderBackCard()}
+                      {activeView === "front" ? renderFrontCard("large") : renderBackCard("large")}
                     </div>
                   </div>
 
@@ -1842,17 +1860,17 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                         {/* Profile Content Container */}
                         <div className="phone-content">
                           {/* Cover Banner using the card gradient/background */}
-                          <div 
-                            className="phone-cover-banner" 
-                            style={{ 
+                          <div
+                            className="phone-cover-banner"
+                            style={{
                               backgroundImage: profileData.coverSrc ? `url(${profileData.coverSrc})` : "none",
                               backgroundSize: "cover",
                               backgroundPosition: "center",
                               background: profileData.coverSrc ? undefined : (activeProduct.cardStyle.background || "linear-gradient(135deg, #7c5dfa 0%, #5c3beb 100%)"),
                               borderBottom: activeProduct.cardStyle.border || "none",
-                              height: "125px",
+                              height: "160px",
                               position: "relative"
-                            }} 
+                            }}
                           />
 
                           {/* Profile Info Header */}
@@ -1996,6 +2014,22 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+
+              {/* Bottom CTA Bar */}
+              <div className="preview-modal-cta-bar">
+                <div className="preview-modal-cta-inner">
+                  <div className="preview-modal-cta-left">
+                    <div className="preview-modal-cta-icon"><Sparkles size={20} /></div>
+                    <div>
+                      <div className="preview-modal-cta-title">Ready to build your complete digital profile?</div>
+                      <div className="preview-modal-cta-sub">Claim your custom username, choose premium themes, and connect your systems in the Dashboard.</div>
+                    </div>
+                  </div>
+                  <Link href="/dashboard" className="preview-modal-cta-btn">
+                    Continue to Build Profile <ArrowRight size={16} />
+                  </Link>
                 </div>
               </div>
             </motion.div>

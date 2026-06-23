@@ -40,6 +40,7 @@ import {
   MessageSquare,
   Globe,
   Briefcase,
+  Wifi,
 } from "lucide-react";
 import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
 import { ThemeCustomizer, ThemeCustomizerHandle } from "@/components/ThemeCustomizer";
@@ -299,7 +300,17 @@ export default function ProfilePage() {
                     <Bell size={20} />
                   </button>
                   <button className="profile-topbar-user">
-                    <span className="profile-topbar-avata          {activeTab === "Dashboard" && (
+                    <span className="profile-topbar-avatar">
+                      {avatarSrc ? <img src={avatarSrc} alt="Avatar" /> : getInitials(fullName)}
+                    </span>
+                    <span className="profile-topbar-username">{fullName}</span>
+                  </button>
+                </>
+              )}
+            </div>
+          </header>
+
+          {activeTab === "Dashboard" && (
             <div className="dashboard-split-grid">
               {/* Left Column: Profile Editor */}
               <div className="profile-editor-card">
@@ -729,17 +740,6 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          )}"
-                      className="btn pf-btn-save"
-                      onClick={() => handleSave()}
-                      style={{ width: "100%", padding: "12px" }}
-                    >
-                      {saved ? "✓ Saved successfully!" : "Save Profile Details"}
-                    </button>
-                  </div>
-                </section>
               </div>
             </div>
           )}
