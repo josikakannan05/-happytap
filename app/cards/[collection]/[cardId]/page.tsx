@@ -793,9 +793,9 @@ const collectionsData: Record<string, {
   }
 };
 
-export default function ProductDetailPage({ params }: { params: Promise<{ collection: string; product: string }> }) {
+export default function ProductDetailPage({ params }: { params: Promise<{ collection: string; cardId: string }> }) {
   const resolvedParams = use(params);
-  const { collection, product } = resolvedParams;
+  const { collection, cardId } = resolvedParams;
 
   const [isMounted, setIsMounted] = useState(false);
   const [dynamicCollections, setDynamicCollections] = useState(collectionsData);
@@ -822,7 +822,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
   }, []);
 
   const currentCollection = dynamicCollections[collection];
-  const activeProduct = currentCollection?.products.find((p) => p.id === product);
+  const activeProduct = currentCollection?.products.find((p) => p.id === cardId);
 
   const [activeView, setActiveView] = useState<"front" | "back">("front");
   const [quantity, setQuantity] = useState(1);
@@ -832,20 +832,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
   const [authTab, setAuthTab] = useState<"login" | "signup">("login");
   const [user, setUser] = useState<string | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [scrollPos, setScrollPos] = useState(0);
-
-  const openPreview = () => {
-    setScrollPos(window.scrollY);
-    setIsPreviewOpen(true);
-    window.scrollTo({ top: 0, behavior: "instant" });
-  };
-
-  const closePreview = () => {
-    setIsPreviewOpen(false);
-    setTimeout(() => {
-      window.scrollTo({ top: scrollPos, behavior: "instant" });
-    }, 50);
-  };
 
   /* Dynamic User Profile State */
   const [profileData, setProfileData] = useState({
@@ -922,6 +908,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
     );
   }
 
+  const PREVIEW_CARD_WIDTH = 320;
+  const PREVIEW_CARD_HEIGHT = 200;
+
   const relatedProducts = currentCollection.products
     .filter((p) => p.id !== activeProduct.id)
     .slice(0, 5);
@@ -983,7 +972,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
     const customImages = (activeProduct as any).images;
     if (customImages?.front) {
       return (
-        <div style={{ width: "100%", height: "100%", position: "relative", borderRadius: isThumb ? "8px" : (isLarge ? "30px" : "20px"), overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ width: "100%", height: "100%", minWidth: "100%", minHeight: "100%", position: "relative", borderRadius: isThumb ? "8px" : (isLarge ? "30px" : "20px"), overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <img src={customImages.front} alt="Front Design" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
       );
@@ -997,7 +986,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
     if (isTeamLayout) {
       const Icon = activeProduct.icon || Users;
       return (
-        <div className={`te-card-mockup ${activeProduct.cssClass}`} style={{ width: "100%", height: "100%", maxWidth: isThumb ? "100%" : (isLarge ? "360px" : "240px") }}>
+        <div className={`te-card-mockup ${activeProduct.cssClass}`} style={{ width: "100%", height: "100%", minWidth: "100%", minHeight: "100%" }}>
           <div className="te-card-left" style={{ padding: isThumb ? "4px 6px" : (isLarge ? "24px" : "16px") }}>
             <div className={`te-mock-logo ${isLight ? "light-card-text" : ""}`} style={{ fontSize: isThumb ? "0.45rem" : (isLarge ? "1.8rem" : "") }}>
               H<span className={`te-mock-logo-mark ${logoStyle === "gold" ? "gold-logo" : ""}`}>t</span>
@@ -1025,9 +1014,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
         style={{
           width: "100%",
           height: "100%",
+          minWidth: "100%",
+          minHeight: "100%",
           background: activeProduct.cardStyle.background,
           border: activeProduct.cardStyle.border || "1px solid rgba(255, 255, 255, 0.08)",
-          maxWidth: isThumb ? "100%" : (isLarge ? "360px" : "240px"),
         }}
       >
         <div className="ec-card-mockup-glare"></div>
@@ -1069,7 +1059,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
     const customImages = (activeProduct as any).images;
     if (customImages?.back) {
       return (
-        <div style={{ width: "100%", height: "100%", position: "relative", borderRadius: isThumb ? "8px" : (isLarge ? "30px" : "20px"), overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ width: "100%", height: "100%", minWidth: "100%", minHeight: "100%", position: "relative", borderRadius: isThumb ? "8px" : (isLarge ? "30px" : "20px"), overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <img src={customImages.back} alt="Back Design" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
       );
@@ -1083,26 +1073,22 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
         style={{
           background: activeProduct.cardStyle.background,
           border: activeProduct.cardStyle.border || "1px solid rgba(255, 255, 255, 0.08)",
-          width: isThumb ? "100%" : (isLarge ? "360px" : "240px"),
-          height: isThumb ? "auto" : (isLarge ? "225px" : "150px"),
-          padding: isThumb ? "6px 8px" : (isLarge ? "18px 20px" : "12px"),
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          overflow: "hidden",
-          borderRadius: isThumb ? "8px" : (isLarge ? "20px" : "10px"),
-          position: "relative",
+          width: "100%",
+          height: "100%",
+          minWidth: "100%",
+          minHeight: "100%",
+          padding: isThumb ? "6px 8px" : (isLarge ? "24px 28px" : "16px"),
         }}
       >
-        <div className="pd-back-top" style={{ padding: isThumb ? "0 2px" : (isLarge ? "0 8px" : "0 4px"), display: "flex", justifyContent: "space-between", alignItems: "center", flex: "0 0 auto" }}>
-          <div className={`pd-back-logo ${isLight ? "light-card-text" : ""}`} style={{ fontSize: isThumb ? "0.6rem" : (isLarge ? "1.2rem" : "0.8rem") }}>
+        <div className="pd-back-top" style={{ padding: isThumb ? "0 2px" : (isLarge ? "0 12px" : "0 6px") }}>
+          <div className={`pd-back-logo ${isLight ? "light-card-text" : ""}`} style={{ fontSize: isThumb ? "0.6rem" : (isLarge ? "1.8rem" : "1rem") }}>
             H<span className={`pd-back-logo-mark ${logoStyle === "gold" ? "gold-logo" : ""}`}>t</span>
           </div>
-          <Wifi className="icon" style={{ transform: "rotate(90deg)", width: isThumb ? "10px" : (isLarge ? "18px" : "12px"), height: isThumb ? "10px" : (isLarge ? "18px" : "12px"), color: isLight ? "rgba(0,0,0,0.6)" : "rgba(255,255,255,0.7)" }} />
+          <Wifi className="icon" style={{ transform: "rotate(90deg)", width: isThumb ? "10px" : (isLarge ? "24px" : "14px"), color: isLight ? "rgba(0,0,0,0.6)" : "rgba(255,255,255,0.7)" }} />
         </div>
         {!isThumb && (
-          <div className="pd-back-middle" style={{ marginTop: isLarge ? "8px" : "6px", gap: isLarge ? "12px" : "8px", display: "flex", alignItems: "center", flex: "1 1 auto", minHeight: 0 }}>
-            <div className="pd-back-qr" style={{ width: isLarge ? "60px" : "40px", height: isLarge ? "60px" : "40px", borderRadius: isLarge ? "6px" : "4px", flex: "0 0 auto" }}>
+          <div className="pd-back-middle" style={{ marginTop: isLarge ? "28px" : "14px", gap: isLarge ? "28px" : "14px" }}>
+            <div className="pd-back-qr" style={{ width: isLarge ? "96px" : "54px", height: isLarge ? "96px" : "54px", borderRadius: isLarge ? "10px" : "6px" }}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: "#000", width: "100%", height: "100%" }}>
                 <rect x="2" y="2" width="6" height="6" />
                 <rect x="16" y="2" width="6" height="6" />
@@ -1110,21 +1096,23 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                 <path d="M16 16h2v2h-2zm4 4h2v2h-2zm-4 4h2v-2h-2zm6-4h-2v-2h2zm-2 2v2h-2v-2zm-6-6h2v2h-2zm2 2h2v2h-2zm-2 2h2v2h-2z" />
               </svg>
             </div>
-            <div className="pd-back-info" style={{ flex: "1 1 auto", minWidth: 0 }}>
-              <div className={`pd-back-name ${isLight ? "light-card-text" : ""}`} style={{ fontSize: isLarge ? "0.9rem" : "0.65rem", fontWeight: 600, lineHeight: 1.1 }}>
+            <div className="pd-back-info">
+              <div className={`pd-back-name ${isLight ? "light-card-text" : ""}`} style={{ fontSize: isLarge ? "1.3rem" : "" }}>
                 {profileData.fullName || "Alex Bennett"}
               </div>
-              <div className={`pd-back-title ${isLight ? "light-card-text" : ""}`} style={{ fontSize: isLarge ? "0.7rem" : "0.5rem", lineHeight: 1, marginTop: "2px" }}>
-                {profileData.designation || "CEO"}
+              <div className={`pd-back-title ${isLight ? "light-card-text" : ""}`} style={{ fontSize: isLarge ? "0.85rem" : "" }}>
+                {profileData.designation || "CEO"} | {profileData.companyName || "Horizon Technologies"}
               </div>
-              <div className="pd-back-details" style={{ fontSize: isLarge ? "0.6rem" : "0.45rem", lineHeight: 1.2, marginTop: "2px", display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                {profileData.mobileNumber || "+91 98765 43210"}
+              <div className="pd-back-details" style={{ fontSize: isLarge ? "0.75rem" : "", marginTop: isLarge ? "12px" : "" }}>
+                {profileData.mobileNumber || "+91 98765 43210"} <br />
+                {profileData.emailAddress || "alex@horizon.com"} <br />
+                {profileData.businessAddress || "Bengaluru, India"}
               </div>
             </div>
           </div>
         )}
         {!isThumb && (
-          <div className="pd-back-bottom" style={{ fontSize: isLarge ? "0.6rem" : "0.45rem", flex: "0 0 auto", marginTop: isLarge ? "6px" : "4px", opacity: 0.8 }}>Tap to Connect</div>
+          <div className="pd-back-bottom" style={{ fontSize: isLarge ? "0.85rem" : "", marginTop: isLarge ? "16px" : "" }}>Tap to Connect</div>
         )}
       </div>
     );
@@ -1188,7 +1176,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
 
                 <div
                   className="ec-card-preview-area"
-                  style={{ width: "240px", height: "150px", padding: 0, margin: "0 auto", display: "flex", justifyContent: "center" }}
+                  style={{ width: "320px", height: "200px", padding: 0, margin: 0, display: "flex", justifyContent: "center" }}
                 >
                   <AnimatePresence mode="wait">
                     <motion.div
@@ -1292,7 +1280,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
               <div className="pd-purchase-row" style={{ display: "flex", gap: "12px", width: "100%" }}>
                 <button
                   className="pd-preview-profile-btn"
-                  onClick={openPreview}
+                  onClick={() => setIsPreviewOpen(true)}
                 >
                   <Eye className="icon" style={{ marginRight: "8px" }} />
                   Preview Profile
@@ -1416,7 +1404,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                         style={{
                           width: "100%",
                           height: "100%",
-                          maxWidth: "240px",
+                          maxWidth: "155px",
                           borderRadius: "10px",
                           padding: "10px",
                           display: "flex",
@@ -1447,7 +1435,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
                         style={{
                           width: "100%",
                           height: "100%",
-                          maxWidth: "240px",
+                          maxWidth: "155px",
                           background: rel.cardStyle.background,
                           border: rel.cardStyle.border || "1px solid rgba(255, 255, 255, 0.08)",
                           borderRadius: "10px",
@@ -1634,7 +1622,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
             >
               {/* Modal Header */}
               <div className="preview-modal-header">
-                <button className="preview-modal-back-btn" onClick={closePreview}>
+                <button className="preview-modal-back-btn" onClick={() => setIsPreviewOpen(false)}>
                   <ArrowLeft size={16} />
                   <span>Back to Product Details</span>
                 </button>

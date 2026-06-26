@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   Contact,
   LayoutDashboard,
@@ -61,7 +61,6 @@ const sidebarLinks = [
    ───────────────────────────────────────────────── */
 export default function ProfilePage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<string>("Dashboard");
   const [subTab, setSubTab] = useState<"Profile" | "Links" | "Theme" | "Analytics">("Profile");
   const [profileUrl, setProfileUrl] = useState("happytap.com/profile/johndoe");
@@ -179,15 +178,28 @@ export default function ProfilePage() {
     };
     localStorage.setItem("happytap_user_profile", JSON.stringify(profileData));
     setSaved(true);
-    
-    const productId = searchParams.get("product");
-    if (productId) {
-      setTimeout(() => {
-        router.push(`/cards/minimal-series/${productId}`);
-      }, 1500);
-    } else {
-      setTimeout(() => setSaved(false), 3000);
+
+    // Determine collection and selected card when embedded in a collection dashboard
+    if (typeof window !== "undefined") {
+      const pathParts = window.location.pathname.split("/").filter(Boolean);
+      // Example pathParts: ["cards", "minimal-series", "preview-card", "dashboard"]
+      if (pathParts[0] === "cards" && pathParts.length >= 2) {
+        const collection = pathParts[1];
+        // Try search param first
+        const params = new URLSearchParams(window.location.search);
+        const productParam = params.get("product");
+        const selectedCardId =
+          productParam || localStorage.getItem("selected_card_id") || "minimal-midnight";
+
+        setTimeout(() => {
+          router.push(`/cards/${collection}/${selectedCardId}`);
+        }, 1500);
+        return;
+      }
     }
+
+    // Fallback: just show saved toast briefly
+    setTimeout(() => setSaved(false), 3000);
   };
 
 
@@ -338,20 +350,6 @@ export default function ProfilePage() {
                   >
                     {saved ? "✓ Saved & Published!" : "Save & Publish"}
                   </button>
-                </div>
-
-                {/* Sub-tabs */}
-                <div className="editor-tabs-bar">
-                  {(["Profile", "Links", "Theme", "Analytics"] as const).map((tab) => (
-                    <button
-                      key={tab}
-                      type="button"
-                      className={`editor-tab-btn ${subTab === tab ? "active" : ""}`}
-                      onClick={() => setSubTab(tab)}
-                    >
-                      {tab}
-                    </button>
-                  ))}
                 </div>
 
                 {/* Tab content */}

@@ -31,6 +31,7 @@ import {
   Scale,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AuthModal } from "@/components/AuthModal";
@@ -236,6 +237,7 @@ const benefitsData = [
 ];
 
 export default function TeamEditionPage() {
+  const router = useRouter();
   const [activeFilter, setActiveFilter] = useState<string>("All");
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -580,11 +582,18 @@ export default function TeamEditionPage() {
                       </div>
 
                       {/* View Details Button */}
-                      <Link href={`/cards/team-edition/${product.id}`} style={{ textDecoration: "none", width: "100%" }}>
-                        <button className="te-view-details-btn">
-                          View Details
-                        </button>
-                      </Link>
+                      <button
+                        className="te-view-details-btn"
+                        onClick={() => {
+                          try {
+                            localStorage.setItem("selected_card_id", product.id);
+                            localStorage.setItem("selected_card", JSON.stringify(product));
+                          } catch (err) {}
+                          router.push(`/cards/team-edition/preview-card`);
+                        }}
+                      >
+                        View Details
+                      </button>
 
                     </div>
                   </motion.div>

@@ -68,9 +68,7 @@ export function Navbar({ onLoginClick, user, onLogout }: NavbarProps) {
     { icon: <CreditCard className="icon" aria-hidden />, label: "My Card", href: "#" },
     ...(user?.toLowerCase().includes("admin") ? [
       { icon: <LayoutDashboard className="icon" aria-hidden />, label: "Admin Panel", href: "/admin" }
-    ] : [
-      { icon: <LayoutDashboard className="icon" aria-hidden />, label: "Dashboard", href: "#" }
-    ]),
+    ] : []),
     { icon: <Settings className="icon" aria-hidden />, label: "Settings", href: "#" },
   ];
 

@@ -17,6 +17,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AuthModal } from "@/components/AuthModal";
@@ -216,6 +217,7 @@ const trustItems = [
 ];
 
 export default function ExecutiveCollectionPage() {
+  const router = useRouter();
   const [activeFilter, setActiveFilter] = useState<string>("All");
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -530,11 +532,18 @@ export default function ExecutiveCollectionPage() {
                       </div>
 
                       {/* View Details Button */}
-                      <Link href={`/cards/executive-collection/${product.id}`} style={{ textDecoration: "none", width: "100%" }}>
-                        <button className="ec-view-details-btn">
-                          View Details
-                        </button>
-                      </Link>
+                      <button
+                        className="ec-view-details-btn"
+                        onClick={() => {
+                          try {
+                            localStorage.setItem("selected_card_id", product.id);
+                            localStorage.setItem("selected_card", JSON.stringify(product));
+                          } catch (err) {}
+                          router.push(`/cards/executive-collection/preview-card`);
+                        }}
+                      >
+                        View Details
+                      </button>
 
                     </div>
                   </motion.div>

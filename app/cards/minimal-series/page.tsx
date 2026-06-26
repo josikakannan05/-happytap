@@ -16,6 +16,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AuthModal } from "@/components/AuthModal";
@@ -218,6 +219,7 @@ export default function MinimalSeriesPage() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState<"login" | "signup">("login");
   const [user, setUser] = useState<string | null>(null);
+  const router = useRouter();
 
   const filters = ["All", "Standard", "Premium", "Luxury", "Signature"];
 
@@ -416,11 +418,18 @@ export default function MinimalSeriesPage() {
                       {/* Buy Row */}
                       <div className="ms-product-price-row">
                         <span className="ms-product-price">₹{product.price.toLocaleString()}</span>
-                        <Link href={`/dashboard?product=${product.id}`} style={{ textDecoration: "none" }}>
-                          <button className="ms-product-buy-btn">
-                            View Details
-                          </button>
-                        </Link>
+                        <button
+                          className="ms-product-buy-btn"
+                          onClick={() => {
+                            try {
+                              localStorage.setItem("selected_card_id", product.id);
+                              localStorage.setItem("selected_card", JSON.stringify(product));
+                            } catch (err) {}
+                            router.push(`/cards/minimal-series/preview-card`);
+                          }}
+                        >
+                          View Details
+                        </button>
                       </div>
 
                     </div>
