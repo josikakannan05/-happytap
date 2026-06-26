@@ -416,7 +416,7 @@ export default function MinimalSeriesPage() {
                       {/* Buy Row */}
                       <div className="ms-product-price-row">
                         <span className="ms-product-price">₹{product.price.toLocaleString()}</span>
-                        <Link href={`/cards/minimal-series/${product.id}`} style={{ textDecoration: "none" }}>
+                        <Link href={`/dashboard?product=${product.id}`} style={{ textDecoration: "none" }}>
                           <button className="ms-product-buy-btn">
                             View Details
                           </button>

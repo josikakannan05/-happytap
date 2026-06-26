@@ -5180,22 +5180,22 @@ footer {
 
 /* NFC Card Mockup Container */
 .ms-card-preview-area {
-  width: 100%;
-  aspect-ratio: 1.58 / 1;
+  width: 240px;
+  height: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 0;
-  margin-bottom: 20px;
+  padding: 0;
+  margin: 0 auto 20px;
   position: relative;
   perspective: 800px;
 }
 
 /* Actual NFC Card Mockup */
 .nfc-card-mockup {
-  width: 100%;
-  height: 100%;
-  max-width: 170px;
+  width: 240px;
+  height: 150px;
+  max-width: 240px;
   border-radius: 10px;
   position: relative;
   padding: 14px;
@@ -5886,22 +5886,22 @@ footer {
 
 /* NFC Card Mockup Area */
 .me-card-preview-area {
-  width: 100%;
-  aspect-ratio: 1.58 / 1;
+  width: 240px;
+  height: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 0;
-  margin-bottom: 18px;
+  padding: 0;
+  margin: 0 auto 18px;
   position: relative;
   perspective: 800px;
 }
 
 /* Actual CSS Metal Card Mockup */
 .metal-card-mockup {
-  width: 100%;
-  height: 100%;
-  max-width: 165px;
+  width: 240px;
+  height: 150px;
+  max-width: 240px;
   border-radius: 10px;
   position: relative;
   padding: 14px;
@@ -6618,21 +6618,21 @@ footer {
 
 /* Card Mockup area */
 .ec-card-preview-area {
-  width: 100%;
-  aspect-ratio: 1.58 / 1;
+  width: 240px;
+  height: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 0;
-  margin-bottom: 18px;
+  padding: 0;
+  margin: 0 auto 18px;
   position: relative;
   perspective: 800px;
 }
 
 .ec-card-mockup {
-  width: 100%;
-  height: 100%;
-  max-width: 165px;
+  width: 240px;
+  height: 150px;
+  max-width: 240px;
   border-radius: 10px;
   position: relative;
   padding: 14px;
@@ -7504,21 +7504,21 @@ footer {
 
 /* Card Mockup area */
 .te-card-preview-area {
-  width: 100%;
-  aspect-ratio: 1.58 / 1;
+  width: 240px;
+  height: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 0;
-  margin-bottom: 18px;
+  padding: 0;
+  margin: 0 auto 18px;
   position: relative;
   perspective: 800px;
 }
 
 .te-card-mockup {
-  width: 100%;
-  height: 100%;
-  max-width: 165px;
+  width: 240px;
+  height: 150px;
+  max-width: 240px;
   border-radius: 12px;
   position: relative;
   display: flex;

@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Contact,
   LayoutDashboard,
@@ -59,6 +60,8 @@ const sidebarLinks = [
    Profile page
    ───────────────────────────────────────────────── */
 export default function ProfilePage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<string>("Dashboard");
   const [subTab, setSubTab] = useState<"Profile" | "Links" | "Theme" | "Analytics">("Profile");
   const [profileUrl, setProfileUrl] = useState("happytap.com/profile/johndoe");
@@ -176,7 +179,15 @@ export default function ProfilePage() {
     };
     localStorage.setItem("happytap_user_profile", JSON.stringify(profileData));
     setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    
+    const productId = searchParams.get("product");
+    if (productId) {
+      setTimeout(() => {
+        router.push(`/cards/minimal-series/${productId}`);
+      }, 1500);
+    } else {
+      setTimeout(() => setSaved(false), 3000);
+    }
   };
 
 
