@@ -4313,10 +4313,11 @@ footer {
 
 .profile-topbar-user {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 6px 14px 6px 6px;
-  border-radius: 40px;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 20px;
   background: linear-gradient(145deg, var(--purple), var(--purple-dark));
   border: none;
   cursor: pointer;
@@ -10730,24 +10731,6 @@ footer {
   background: #fff;
   color: #5b45e8;
   border-color: rgba(91, 69, 232, 0.3);
-}
-
-.profile-topbar-user {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  border: 2px solid rgba(91, 69, 232, 0.3);
-  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.profile-topbar-avatar {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #5b45e8;
 }
 
 /* ── Theme page buttons ── */

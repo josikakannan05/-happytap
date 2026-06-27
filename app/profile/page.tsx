@@ -277,7 +277,7 @@ export default function ProfilePage() {
 
           {/* Top bar */}
           <header className="profile-topbar">
-            <div className="profile-topbar-left-wrapper">
+            <div className="profile-topbar-left-wrapper ">
               <button
                 type="button"
                 className="profile-sidebar-toggle"
@@ -317,19 +317,7 @@ export default function ProfilePage() {
                     Save Changes
                   </button>
                 </div>
-              ) : (
-                <>
-                  <button className="profile-notification-btn" aria-label="Notifications">
-                    <Bell size={20} />
-                  </button>
-                  <button className="profile-topbar-user">
-                    <span className="profile-topbar-avatar">
-                      {avatarSrc ? <img src={avatarSrc} alt="Avatar" /> : getInitials(fullName)}
-                    </span>
-                    <span className="profile-topbar-username">{fullName}</span>
-                  </button>
-                </>
-              )}
+              ) : null}
             </div>
           </header>
 
