@@ -1279,11 +1279,16 @@ export default function ProductDetailPage({ params }: { params: Promise<{ collec
               {/* Purchase Controls */}
               <div className="pd-purchase-row" style={{ display: "flex", gap: "12px", width: "100%" }}>
                 <button
-                  className="pd-preview-profile-btn"
-                  onClick={() => setIsPreviewOpen(true)}
+                  className="pd-skip-save-btn"
+                  onClick={() => showToast("Card details saved successfully!")}
                 >
-                  <Eye className="icon" style={{ marginRight: "8px" }} />
-                  Preview Profile
+                  Skip & Save
+                </button>
+                <button
+                  className="pd-buy-now-btn"
+                  onClick={() => showToast("Order initiated! Redirecting to checkout...")}
+                >
+                  Buy Now
                 </button>
                 <button
                   className={`pd-wishlist-btn ${favorites[activeProduct.id] ? "active" : ""}`}

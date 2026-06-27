@@ -13883,3 +13883,97 @@ transition: all 0.2s;
   color: var(--muted);
   margin-top: 8px;
 }
+
+/* Skip & Save + Buy Now Buttons styling on Product Details Page */
+.pd-skip-save-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 22px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #7c5dfa;
+  background: transparent;
+  border: 2px solid #7c5dfa;
+  border-radius: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.22s;
+  white-space: nowrap;
+  flex: 1;
+}
+.pd-skip-save-btn:hover {
+  background: rgba(124, 93, 250, 0.05);
+  transform: translateY(-1px);
+}
+.pd-buy-now-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 22px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #7c5dfa, #5b45e8);
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.22s;
+  box-shadow: 0 4px 16px rgba(91, 69, 232, 0.3);
+  white-space: nowrap;
+  flex: 1;
+}
+.pd-buy-now-btn:hover {
+  box-shadow: 0 8px 24px rgba(91, 69, 232, 0.45);
+  transform: translateY(-1px);
+}
+
+/* Universal Card Preview Size Standardization */
+.te-card-mockup,
+.ec-card-mockup,
+.nfc-card-mockup,
+.metal-card-mockup,
+.preview-card-card-mockup,
+.te-card-back,
+.ec-card-back,
+.me-card-back,
+.nfc-card-back,
+.preview-card-card-mockup-back,
+.card-flip-inner {
+  width: 280px !important;
+  height: 175px !important;
+  max-width: 100% !important;
+  max-height: 175px !important;
+  min-width: 280px !important;
+  min-height: 175px !important;
+  aspect-ratio: 1.6 / 1 !important;
+}
+
+/* Scaling down heights for fluid layouts like related products */
+.ec-product-card .te-card-mockup,
+.ec-product-card .ec-card-mockup,
+.te-product-card .te-card-mockup,
+.ms-product-card .nfc-card-mockup,
+.me-product-card .metal-card-mockup {
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  aspect-ratio: 1.6 / 1 !important;
+}
+
+/* Thumbnail and tiny previews scale-down overrides */
+.pd-thumbnail-box .te-card-mockup,
+.pd-thumbnail-box .ec-card-mockup,
+.pd-thumbnail-box .nfc-card-mockup,
+.pd-thumbnail-box .metal-card-mockup,
+.pd-thumbnail-box .te-card-back,
+.pd-thumbnail-box .ec-card-back,
+.pd-thumbnail-box .me-card-back,
+.pd-thumbnail-box .nfc-card-back {
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  transform: scale(0.25) !important;
+  transform-origin: top left !important;
+}
