@@ -13,6 +13,7 @@ import {
   Settings,
   LogOut,
   ChevronDown,
+  Building2,
 } from "lucide-react";
 import { navLinks } from "@/lib/data";
 
@@ -66,6 +67,7 @@ export function Navbar({ onLoginClick, user, onLogout }: NavbarProps) {
   const dropdownItems = [
     { icon: <User className="icon" aria-hidden />, label: "My Profile", href: "/profile" },
     { icon: <CreditCard className="icon" aria-hidden />, label: "My Card", href: "#" },
+    { icon: <Building2 className="icon" aria-hidden />, label: "Company Dashboard", href: "/company/acme" },
     ...(user?.toLowerCase().includes("admin") ? [
       { icon: <LayoutDashboard className="icon" aria-hidden />, label: "Admin Panel", href: "/admin" }
     ] : []),
