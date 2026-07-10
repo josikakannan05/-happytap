@@ -16,6 +16,7 @@ import {
   Building2,
 } from "lucide-react";
 import { navLinks } from "@/lib/data";
+import { useAuth } from "@/lib/AuthContext";
 
 interface NavbarProps {
   onLoginClick?: () => void;
@@ -24,7 +25,16 @@ interface NavbarProps {
 }
 
 export function Navbar({ onLoginClick, user, onLogout }: NavbarProps) {
+  const { user: authUser, logout: authLogout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  
+  const currentUser = authUser;
+  const handleLogoutClick = () => {
+    if (authLogout) {
+      authLogout();
+    }
+    onLogout?.();
+  };
   const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -57,22 +67,51 @@ export function Navbar({ onLoginClick, user, onLogout }: NavbarProps) {
   }, [dropdownOpen]);
 
   // Capitalise the first letter of the display name
-  const displayName = user
-    ? user.charAt(0).toUpperCase() + user.slice(1)
+  const displayName = currentUser
+    ? `${currentUser.firstName} ${currentUser.lastName}`.trim()
     : "";
 
   // Avatar initials (first two chars)
-  const initials = user ? user.slice(0, 2).toUpperCase() : "";
+  const initials = currentUser
+    ? `${currentUser.firstName[0] || ""}${currentUser.lastName[0] || ""}`.toUpperCase()
+    : "";
 
-  const dropdownItems = [
-    { icon: <User className="icon" aria-hidden />, label: "My Profile", href: "/profile" },
-    { icon: <CreditCard className="icon" aria-hidden />, label: "My Card", href: "#" },
-    { icon: <Building2 className="icon" aria-hidden />, label: "Company Dashboard", href: "/company/acme" },
-    ...(user?.toLowerCase().includes("admin") ? [
-      { icon: <LayoutDashboard className="icon" aria-hidden />, label: "Admin Panel", href: "/admin" }
-    ] : []),
-    { icon: <Settings className="icon" aria-hidden />, label: "Settings", href: "#" },
-  ];
+  const dropdownRole = currentUser
+    ? currentUser.accountType === "company"
+      ? "Company Member"
+      : "HappyTap Member"
+    : "";
+
+  const dropdownItems = currentUser
+    ? [
+        ...(currentUser.accountType === "company"
+          ? [
+              {
+                icon: <Building2 className="icon" aria-hidden />,
+                label: "Company Dashboard",
+                href: `/company/${currentUser.companyName ? currentUser.companyName.toLowerCase().replace(/\s+/g, "-") : "acme"}`,
+              },
+            ]
+          : [
+              {
+                icon: <User className="icon" aria-hidden />,
+                label: "My Profile",
+                href: "/profile",
+              },
+            ]),
+        { icon: <CreditCard className="icon" aria-hidden />, label: "My Card", href: "#" },
+        ...(currentUser.email.toLowerCase().includes("admin")
+          ? [
+              {
+                icon: <LayoutDashboard className="icon" aria-hidden />,
+                label: "Admin Panel",
+                href: "/admin",
+              },
+            ]
+          : []),
+        { icon: <Settings className="icon" aria-hidden />, label: "Settings", href: "#" },
+      ]
+    : [];
 
   return (
     <>
@@ -94,7 +133,7 @@ export function Navbar({ onLoginClick, user, onLogout }: NavbarProps) {
           </div>
 
           <div className="nav-actions">
-            {user ? (
+            {currentUser ? (
               /* ── Logged-in: avatar + dropdown ── */
               <div className="nav-profile-wrap" ref={dropdownRef}>
                 <button
@@ -120,7 +159,7 @@ export function Navbar({ onLoginClick, user, onLogout }: NavbarProps) {
                       <span className="nav-dropdown-avatar">{initials}</span>
                       <div>
                         <p className="nav-dropdown-name">{displayName}</p>
-                        <p className="nav-dropdown-role">HappyTap Member</p>
+                        <p className="nav-dropdown-role">{dropdownRole}</p>
                       </div>
                     </div>
                     <div className="nav-dropdown-divider" />
@@ -142,7 +181,7 @@ export function Navbar({ onLoginClick, user, onLogout }: NavbarProps) {
                       role="menuitem"
                       onClick={() => {
                         setDropdownOpen(false);
-                        onLogout?.();
+                        handleLogoutClick();
                       }}
                       suppressHydrationWarning
                     >
@@ -188,23 +227,29 @@ export function Navbar({ onLoginClick, user, onLogout }: NavbarProps) {
             {link.label}
           </Link>
         ))}
-        {user ? (
+        {currentUser ? (
           <>
-            <a href="#" className="mobile-menu-profile-item" onClick={() => setMenuOpen(false)}>
-              <User className="icon" aria-hidden /> My Profile
-            </a>
+            {currentUser.accountType === "company" ? (
+              <Link
+                href={`/company/${currentUser.companyName ? currentUser.companyName.toLowerCase().replace(/\s+/g, "-") : "acme"}`}
+                className="mobile-menu-profile-item"
+                onClick={() => setMenuOpen(false)}
+              >
+                <Building2 className="icon" aria-hidden /> Company Dashboard
+              </Link>
+            ) : (
+              <Link href="/profile" className="mobile-menu-profile-item" onClick={() => setMenuOpen(false)}>
+                <User className="icon" aria-hidden /> My Profile
+              </Link>
+            )}
             <a href="#" className="mobile-menu-profile-item" onClick={() => setMenuOpen(false)}>
               <CreditCard className="icon" aria-hidden /> My Card
             </a>
-            {user?.toLowerCase().includes("admin") ? (
+            {currentUser.email.toLowerCase().includes("admin") ? (
               <Link href="/admin" className="mobile-menu-profile-item" onClick={() => setMenuOpen(false)}>
                 <LayoutDashboard className="icon" aria-hidden /> Admin Panel
               </Link>
-            ) : (
-              <a href="#" className="mobile-menu-profile-item" onClick={() => setMenuOpen(false)}>
-                <LayoutDashboard className="icon" aria-hidden /> Dashboard
-              </a>
-            )}
+            ) : null}
             <a href="#" className="mobile-menu-profile-item" onClick={() => setMenuOpen(false)}>
               <Settings className="icon" aria-hidden /> Settings
             </a>
@@ -213,7 +258,7 @@ export function Navbar({ onLoginClick, user, onLogout }: NavbarProps) {
               style={{ marginTop: 8 }}
               onClick={() => {
                 setMenuOpen(false);
-                onLogout?.();
+                handleLogoutClick();
               }}
               suppressHydrationWarning
             >

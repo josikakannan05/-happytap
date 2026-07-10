@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
@@ -36,6 +36,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AuthModal } from "@/components/AuthModal";
 import { Reveal } from "@/components/Reveal";
+import { useAuth } from "@/lib/AuthContext";
 
 interface Product {
   id: string;
@@ -53,165 +54,7 @@ interface Product {
   };
 }
 
-const productsData: Product[] = [
-  {
-    id: "team-basic",
-    title: "Team Basic",
-    category: "Team Edition",
-    price: 1499,
-    description: "Black and gold team card designed specifically for small business organization setups.",
-    colorName: "Black & Gold",
-    cssClass: "te-card-basic",
-    icon: Users,
-    cardStyle: {
-      logoStyle: "gold",
-    },
-  },
-  {
-    id: "team-pro",
-    title: "Team Pro",
-    category: "Premium",
-    price: 1999,
-    description: "Deep blue premium team card crafted for high-performance corporate operations groups.",
-    colorName: "Deep Blue Premium",
-    cssClass: "te-card-pro",
-    icon: Zap,
-    cardStyle: {
-      logoStyle: "silver",
-    },
-  },
-  {
-    id: "developers-pack",
-    title: "Developers Pack",
-    category: "Role Based",
-    price: 2499,
-    description: "Dark graphite team card featuring a custom integrated code developer icon engraving.",
-    colorName: "Dark Graphite",
-    cssClass: "te-card-dev",
-    icon: Code,
-    cardStyle: {
-      logoStyle: "silver",
-    },
-  },
-  {
-    id: "design-team",
-    title: "Design Team",
-    category: "Department",
-    price: 2499,
-    description: "Vibrant emerald green team card created specifically for creative agency design teams.",
-    colorName: "Emerald Creative",
-    cssClass: "te-card-design",
-    icon: Palette,
-    cardStyle: {
-      logoStyle: "silver",
-    },
-  },
-  {
-    id: "marketing-team",
-    title: "Marketing Team",
-    category: "Department",
-    price: 2999,
-    description: "Purple branding team card designed for creative marketers and social media teams.",
-    colorName: "Purple Branding",
-    cssClass: "te-card-marketing",
-    icon: Megaphone,
-    cardStyle: {
-      logoStyle: "silver",
-    },
-  },
-  {
-    id: "sales-team",
-    title: "Sales Team",
-    category: "Role Based",
-    price: 2999,
-    description: "Metallic copper team card customized with a growth chart sales icon engraving.",
-    colorName: "Copper Finish",
-    cssClass: "te-card-sales",
-    icon: BarChart3,
-    cardStyle: {
-      logoStyle: "silver",
-    },
-  },
-  {
-    id: "support-team",
-    title: "Support Team",
-    category: "Department",
-    price: 2499,
-    description: "Navy support team card custom-engraved with a dedicated headset symbol for teams.",
-    colorName: "Navy Support",
-    cssClass: "te-card-support",
-    icon: Headset,
-    cardStyle: {
-      logoStyle: "silver",
-    },
-  },
-  {
-    id: "hr-team",
-    title: "HR Team",
-    category: "Premium",
-    price: 2499,
-    description: "Gold-plated pattern team card with an integrated security shield human resources icon.",
-    colorName: "Gold Premium HR",
-    cssClass: "te-card-hr",
-    icon: Shield,
-    cardStyle: {
-      logoStyle: "gold",
-      isLight: true,
-    },
-  },
-  {
-    id: "finance-team",
-    title: "Finance Team",
-    category: "Department",
-    price: 2999,
-    description: "Dark blue corporate team card customized with an asset briefcase icon engraving.",
-    colorName: "Dark Corporate",
-    cssClass: "te-card-finance",
-    icon: Briefcase,
-    cardStyle: {
-      logoStyle: "silver",
-    },
-  },
-  {
-    id: "enterprise-team",
-    title: "Enterprise Team",
-    category: "Enterprise",
-    price: 3499,
-    description: "Gunmetal grey enterprise team card crafted specifically for large-scale corporate organizations.",
-    colorName: "Gunmetal Enterprise",
-    cssClass: "te-card-enterprise",
-    icon: Building2,
-    cardStyle: {
-      logoStyle: "silver",
-    },
-  },
-  {
-    id: "operations-team",
-    title: "Operations Team",
-    category: "Department",
-    price: 2799,
-    description: "Teal operations team card custom-engraved with a modern gears icon design style.",
-    colorName: "Teal Operations",
-    cssClass: "te-card-ops",
-    icon: Settings,
-    cardStyle: {
-      logoStyle: "silver",
-    },
-  },
-  {
-    id: "legal-team",
-    title: "Legal Team",
-    category: "Department",
-    price: 2999,
-    description: "Burgundy legal team card customized with a traditional scales of justice icon.",
-    colorName: "Burgundy Legal",
-    cssClass: "te-card-legal",
-    icon: Scale,
-    cardStyle: {
-      logoStyle: "silver",
-    },
-  },
-];
+const productsData: Product[] = [];
 
 const benefitsData = [
   {
@@ -245,21 +88,67 @@ export default function TeamEditionPage() {
   const [sortBy, setSortBy] = useState("Popular");
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState<"login" | "signup">("login");
-  const [user, setUser] = useState<string | null>(null);
+  const { user, logout } = useAuth();
+  const [cardHolderName, setCardHolderName] = useState("YOUR NAME");
+  const [dynamicProducts, setDynamicProducts] = useState<Product[]>(productsData);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("happytap_user_profile");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.fullName) {
+          setCardHolderName(parsed.fullName.toUpperCase());
+        } else if (parsed.companyName) {
+          setCardHolderName(parsed.companyName.toUpperCase());
+        }
+      } else if (user) {
+        setCardHolderName(`${user.firstName} ${user.lastName}`.toUpperCase());
+      } else {
+        setCardHolderName("YOUR NAME");
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/cards");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.cards) {
+            const themeCustomCards = data.cards.filter((card: any) => card.colorName === "Team Edition").map((card: any) => ({
+              ...card,
+              cssClass: card.cssClass || "te-card-basic",
+              icon: card.icon || Users,
+            }));
+            setDynamicProducts(() => {
+              const updated = [...productsData];
+              themeCustomCards.forEach((card: any) => {
+                const index = updated.findIndex(p => p.id === card.id);
+                if (index > -1) {
+                  updated[index] = card;
+                } else {
+                  updated.push(card);
+                }
+              });
+              return updated;
+            });
+          }
+        }
+      } catch (e) {
+        console.error("Error loading custom cards:", e);
+      }
+    })();
+  }, []);
 
   const filters = ["All", "Department", "Role Based", "Premium", "Enterprise", "Team Edition"];
 
   const openAuth = (tab: "login" | "signup") => {
     setAuthTab(tab);
     setIsAuthOpen(true);
-  };
-
-  const handleAuthSuccess = (name: string) => {
-    setUser(name);
-  };
-
-  const handleLogout = () => {
-    setUser(null);
   };
 
   const toggleFavorite = (id: string, name: string) => {
@@ -289,7 +178,7 @@ export default function TeamEditionPage() {
   };
 
   // Filter products
-  const filteredProducts = productsData.filter((product) => {
+  const filteredProducts = dynamicProducts.filter((product) => {
     if (activeFilter === "All") return true;
     return product.category === activeFilter;
   });
@@ -305,8 +194,8 @@ export default function TeamEditionPage() {
     <>
       <Navbar
         onLoginClick={() => openAuth("login")}
-        user={user}
-        onLogout={handleLogout}
+        user={user ? `${user.firstName} ${user.lastName}` : null}
+        onLogout={logout}
       />
 
       <div className="team-edition-page">
@@ -492,114 +381,139 @@ export default function TeamEditionPage() {
         {/* Product Grid Section */}
         <section className="te-collection-section">
           <div className="container">
-            <div className="te-grid-5">
-              <AnimatePresence mode="popLayout">
-                {sortedProducts.map((product) => (
-                  <motion.div
-                    key={product.id}
-                    layout
-                    initial={{ opacity: 0, y: 25 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.45, ease: "easeOut" }}
-                  >
-                    <div className="te-product-card">
-                      {/* Heart Button */}
-                      <button
-                        className={`te-favorite-btn ${favorites[product.id] ? "active" : ""}`}
-                        onClick={() => toggleFavorite(product.id, product.title)}
-                        aria-label="Add to favorites"
-                      >
-                        <Heart
-                          className="icon"
-                          style={{
-                            fill: favorites[product.id] ? "#ff4757" : "none",
-                            color: favorites[product.id] ? "#ff4757" : "currentColor",
-                          }}
-                        />
-                      </button>
+            {sortedProducts.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "80px 20px", background: "rgba(255, 255, 255, 0.02)", borderRadius: "24px", border: "1px solid rgba(255, 255, 255, 0.05)" }}>
+                <Award className="icon" style={{ width: "48px", height: "48px", color: "rgba(255,255,255,0.2)", marginBottom: "16px", display: "inline-block" }} />
+                <h3 style={{ color: "#FFFFFF", fontSize: "1.2rem", marginBottom: "8px" }}>No Cards Available</h3>
+                <p style={{ color: "#a1a1a6", fontSize: "0.95rem" }}>No custom cards have been added to this collection yet.</p>
+              </div>
+            ) : (
+              <div className="te-grid-5">
+                <AnimatePresence mode="popLayout">
+                  {sortedProducts.map((product) => (
+                    <motion.div
+                      key={product.id}
+                      layout
+                      initial={{ opacity: 0, y: 25 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.45, ease: "easeOut" }}
+                    >
+                      <div className="te-product-card">
+                        {/* Heart Button */}
+                        <button
+                          className={`te-favorite-btn ${favorites[product.id] ? "active" : ""}`}
+                          onClick={() => toggleFavorite(product.id, product.title)}
+                          aria-label="Add to favorites"
+                        >
+                          <Heart
+                            className="icon"
+                            style={{
+                              fill: favorites[product.id] ? "#ff4757" : "none",
+                              color: favorites[product.id] ? "#ff4757" : "currentColor",
+                            }}
+                          />
+                        </button>
 
-                      {/* Card Preview Area */}
-                      <div className="te-card-preview-area">
-                        <div className={`te-card-mockup ${product.cssClass}`}>
-                          <div className="te-card-mockup-glare"></div>
-
-                          {/* Left Half: Logo & Name */}
-                          <div className="te-card-left">
-                            <div
-                              className={`te-mock-logo ${product.cardStyle.isLight ? "light-card-text" : ""
-                                }`}
-                            >
-                              H
-                              <span
-                                className={`te-mock-logo-mark ${product.cardStyle.logoStyle === "gold" ? "gold-logo" : ""
-                                  }`}
-                              >
-                                t
-                              </span>
-                            </div>
-
-                            <div
-                              className={`te-card-name ${product.cardStyle.isLight ? "light-card-text" : ""
-                                }`}
-                            >
-                              {product.title}
-                            </div>
-                          </div>
-
-                          {/* Right Half: Icon */}
-                          <div className="te-card-right">
-                            <div
-                              className={`te-card-icon-wrap ${product.cardStyle.isLight ? "light-card-text" : ""
-                                }`}
-                            >
-                              <product.icon
-                                className="icon"
-                                style={{ width: "24px", height: "24px" }}
+                        {/* Card Preview Area */}
+                        <div className="te-card-preview-area">
+                          {(product as any).images?.front ? (
+                            <div className={`te-card-mockup ${product.cssClass}`} style={{ padding: 0, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              <img
+                                src={(product as any).images.front}
+                                alt={product.title}
+                                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                               />
                             </div>
-                          </div>
-                        </div>
-                      </div>
+                          ) : (
+                            <div className={`te-card-mockup ${product.cssClass}`}>
+                              <div className="te-card-mockup-glare"></div>
 
-                      {/* Card Info Area */}
-                      <div className="te-product-details">
-                        <span
-                          className="ms-product-tag"
-                          style={{
-                            color: "#86868b",
-                            fontSize: "0.75rem",
-                            fontWeight: "600",
-                            textTransform: "uppercase",
-                            letterSpacing: "0.05em",
+                              {/* Left Half: Logo & Name */}
+                              <div className="te-card-left">
+                                <div
+                                  className={`te-mock-logo ${product.cardStyle.isLight ? "light-card-text" : ""
+                                    }`}
+                                >
+                                  H
+                                  <span
+                                    className={`te-mock-logo-mark ${product.cardStyle.logoStyle === "gold" ? "gold-logo" : ""
+                                      }`}
+                                  >
+                                    t
+                                  </span>
+                                </div>
+
+                                <div
+                                  className={`te-card-name ${product.cardStyle.isLight ? "light-card-text" : ""
+                                    }`}
+                                >
+                                  {product.title}
+                                </div>
+                              </div>
+
+                              {/* Right Half: Icon */}
+                              <div className="te-card-right">
+                                <div
+                                  className={`te-card-icon-wrap ${product.cardStyle.isLight ? "light-card-text" : ""
+                                    }`}
+                                >
+                                  {product.icon ? (
+                                    <product.icon
+                                      className="icon"
+                                      style={{ width: "24px", height: "24px" }}
+                                    />
+                                  ) : (
+                                    <Users
+                                      className="icon"
+                                      style={{ width: "24px", height: "24px" }}
+                                    />
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Card Info Area */}
+                        <div className="te-product-details">
+                          <span
+                            className="ms-product-tag"
+                            style={{
+                              color: "#86868b",
+                              fontSize: "0.75rem",
+                              fontWeight: "600",
+                              textTransform: "uppercase",
+                              letterSpacing: "0.05em",
+                            }}
+                          >
+                            {product.category}
+                          </span>
+                          <h3>{product.title}</h3>
+                          <p>{product.description}</p>
+                          <span className="te-product-price">₹{product.price.toLocaleString()}</span>
+                        </div>
+
+                        {/* View Details Button */}
+                        <button
+                          className="te-view-details-btn"
+                          onClick={() => {
+                            try {
+                              localStorage.setItem("selected_card_id", product.id);
+                              localStorage.setItem("selected_card", JSON.stringify(product));
+                            } catch (err) {}
+                            router.push(`/cards/team-edition/preview-card`);
                           }}
                         >
-                          {product.category}
-                        </span>
-                        <h3>{product.title}</h3>
-                        <p>{product.description}</p>
-                        <span className="te-product-price">₹{product.price.toLocaleString()}</span>
+                          View Details
+                        </button>
+
                       </div>
-
-                      {/* View Details Button */}
-                      <button
-                        className="te-view-details-btn"
-                        onClick={() => {
-                          try {
-                            localStorage.setItem("selected_card_id", product.id);
-                            localStorage.setItem("selected_card", JSON.stringify(product));
-                          } catch (err) {}
-                          router.push(`/cards/team-edition/preview-card`);
-                        }}
-                      >
-                        View Details
-                      </button>
-
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            )}
           </div>
         </section>
 
@@ -821,7 +735,6 @@ export default function TeamEditionPage() {
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
         initialTab={authTab}
-        onSuccess={handleAuthSuccess}
       />
     </>
   );

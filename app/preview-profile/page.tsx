@@ -24,26 +24,28 @@ import {
   Sparkles,
 } from "lucide-react";
 
+import { useAuth } from "@/lib/AuthContext";
+
 const DEFAULT: Record<string, string> = {
-  fullName: "John Doe",
-  designation: "Lead Designer",
-  companyName: "HappyTap",
-  companyDescription: "Digital designer and entrepreneur passionate about creating meaningful connections.",
+  fullName: "",
+  designation: "",
+  companyName: "",
+  companyDescription: "",
   avatarSrc: "",
   coverSrc: "",
-  mobileNumber: "+91 98765 43210",
-  emailAddress: "john.doe@happytap.com",
-  whatsAppNumber: "+91 98765 43210",
-  website: "https://happytap.com",
-  portfolio: "https://portfolio.johndoe.com",
-  linkedin: "https://linkedin.com/in/johndoe",
-  instagram: "https://instagram.com/johndoe",
-  facebook: "https://facebook.com/johndoe",
-  twitter: "https://x.com/johndoe",
-  youtube: "https://youtube.com/johndoe",
-  businessAddress: "123 Innovation Way, Tech Park, Bangalore, India",
-  googleMapsLocation: "https://maps.google.com/?q=12.9716,77.5946",
-  profileUrl: "happytap.com/u/johndoe",
+  mobileNumber: "",
+  emailAddress: "",
+  whatsAppNumber: "",
+  website: "",
+  portfolio: "",
+  linkedin: "",
+  instagram: "",
+  facebook: "",
+  twitter: "",
+  youtube: "",
+  businessAddress: "",
+  googleMapsLocation: "",
+  profileUrl: "",
   selectedTheme: "purple",
 };
 
@@ -55,12 +57,13 @@ const THEME_GRADIENT: Record<string, string> = {
 };
 
 const initials = (name: string) => {
-  if (!name) return "JD";
+  if (!name) return "HT";
   const p = name.trim().split(/\s+/);
   return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : p[0].slice(0, 2).toUpperCase();
 };
 
 export default function PreviewProfilePage() {
+  const { user } = useAuth();
   const [p, setP] = useState(DEFAULT);
   const [mounted, setMounted] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -69,9 +72,19 @@ export default function PreviewProfilePage() {
     setMounted(true);
     try {
       const stored = localStorage.getItem("happytap_user_profile");
-      if (stored) setP((prev) => ({ ...prev, ...JSON.parse(stored) }));
+      if (stored) {
+        setP((prev) => ({ ...prev, ...JSON.parse(stored) }));
+      } else if (user) {
+        setP((prev) => ({
+          ...prev,
+          fullName: `${user.firstName} ${user.lastName}`,
+          emailAddress: user.email,
+          companyName: user.companyName || "",
+          profileUrl: `happytap.com/profile/${user.firstName.toLowerCase()}-${user.lastName.toLowerCase()}`,
+        }));
+      }
     } catch (_) {}
-  }, []);
+  }, [user]);
 
   const share = async () => {
     try {

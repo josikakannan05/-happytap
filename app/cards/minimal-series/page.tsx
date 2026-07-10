@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
@@ -21,6 +21,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AuthModal } from "@/components/AuthModal";
 import { Reveal } from "@/components/Reveal";
+import { useAuth } from "@/lib/AuthContext";
 
 interface Product {
   id: string;
@@ -37,156 +38,7 @@ interface Product {
   };
 }
 
-const productsData: Product[] = [
-  {
-    id: "minimal-midnight",
-    title: "Minimal Midnight",
-    category: "Standard",
-    price: 799,
-    description: "Deep charcoal matte finish business card featuring refined reflective silver foil styling details.",
-    colorName: "Midnight Black",
-    cardStyle: {
-      background: "linear-gradient(135deg, #0f0f13 0%, #1a1a24 100%)",
-      logoStyle: "silver",
-    },
-  },
-  {
-    id: "minimal-graphite",
-    title: "Minimal Graphite",
-    category: "Standard",
-    price: 899,
-    description: "Industrial dark grey brushed texture card accented with a polished silver metallic engraving.",
-    colorName: "Graphite Grey",
-    cardStyle: {
-      background: "linear-gradient(135deg, #2c2d30 0%, #1e1f21 100%)",
-      logoStyle: "silver",
-    },
-  },
-  {
-    id: "minimal-carbon",
-    title: "Minimal Carbon",
-    category: "Standard",
-    price: 999,
-    description: "Raw carbon fiber weaving aesthetic card crafted specifically for modern tech industry professionals.",
-    colorName: "Carbon Weave",
-    cardStyle: {
-      background: "linear-gradient(135deg, #151515 0%, #252525 100%)",
-      logoStyle: "white",
-    },
-  },
-  {
-    id: "minimal-titanium",
-    title: "Minimal Titanium",
-    category: "Premium",
-    price: 1199,
-    description: "Space-grade titanium silver satin card reflecting a beautiful and clean metallic luster.",
-    colorName: "Satin Titanium",
-    cardStyle: {
-      background: "linear-gradient(135deg, #8e8e93 0%, #d1d1d6 50%, #8e8e93 100%)",
-      logoStyle: "white",
-      isLight: true,
-    },
-  },
-  {
-    id: "minimal-eclipse",
-    title: "Minimal Eclipse",
-    category: "Premium",
-    price: 1299,
-    description: "Mystical deep purple gradient card reflecting the subtle hues of celestial twilight shadows.",
-    colorName: "Eclipse Purple",
-    cardStyle: {
-      background: "linear-gradient(135deg, #1d0f39 0%, #0d061a 100%)",
-      logoStyle: "rose",
-    },
-  },
-  {
-    id: "minimal-aurora",
-    title: "Minimal Aurora",
-    category: "Premium",
-    price: 1399,
-    description: "Vibrant iridescent green and blue color gradient card depicting the natural northern lights.",
-    colorName: "Aurora Green/Blue",
-    cardStyle: {
-      background: "linear-gradient(135deg, #0575e6 0%, #00f260 100%)",
-      logoStyle: "white",
-    },
-  },
-  {
-    id: "minimal-rose-gold",
-    title: "Minimal Rose Gold",
-    category: "Luxury",
-    price: 1499,
-    description: "Warm pink-gold satin finish card featuring beautiful reflective copper-rose highlights and accents.",
-    colorName: "Rose Gold",
-    cardStyle: {
-      background: "linear-gradient(135deg, #e5b2a5 0%, #f7dcd5 50%, #d89687 100%)",
-      logoStyle: "rose",
-      isLight: true,
-    },
-  },
-  {
-    id: "minimal-platinum",
-    title: "Minimal Platinum",
-    category: "Luxury",
-    price: 1699,
-    description: "Radiant high-polished platinum silver card detailed with a matching chrome logo emblem.",
-    colorName: "Platinum Chrome",
-    cardStyle: {
-      background: "linear-gradient(135deg, #e5e5e9 0%, #ffffff 50%, #d1d1d6 100%)",
-      logoStyle: "silver",
-      isLight: true,
-    },
-  },
-  {
-    id: "minimal-executive",
-    title: "Minimal Executive",
-    category: "Luxury",
-    price: 1999,
-    description: "Deep navy blue executive card beautifully highlighted with a 24k polished gold accent.",
-    colorName: "Executive Navy & Gold",
-    cardStyle: {
-      background: "linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%)",
-      logoStyle: "gold",
-    },
-  },
-  {
-    id: "minimal-signature",
-    title: "Minimal Signature",
-    category: "Signature",
-    price: 2499,
-    description: "Matte obsidian card styled with a premium gold trim border and monogram.",
-    colorName: "Velvet Obsidian & Gold",
-    cardStyle: {
-      background: "linear-gradient(135deg, #141414 0%, #2a2a2a 100%)",
-      logoStyle: "gold",
-      border: "1px solid #ffd700",
-    },
-  },
-  {
-    id: "minimal-forest",
-    title: "Minimal Forest",
-    category: "Standard",
-    price: 899,
-    description: "Sleek deep forest green matte shell card featuring a clean minimalist professional layout.",
-    colorName: "Forest Green",
-    cardStyle: {
-      background: "linear-gradient(135deg, #13221b 0%, #08120d 100%)",
-      logoStyle: "silver",
-    },
-  },
-  {
-    id: "minimal-horizon",
-    title: "Minimal Horizon",
-    category: "Premium",
-    price: 1299,
-    description: "Sleek dark twilight sunset gradient card capturing the smooth hues of the horizon.",
-    colorName: "Horizon Sunset",
-    cardStyle: {
-      background: "linear-gradient(135deg, #1f1c2c 0%, #928dab 100%)",
-      logoStyle: "white",
-    },
-  },
-];
+const productsData: Product[] = [];
 
 const trustItems = [
   {
@@ -218,22 +70,64 @@ export default function MinimalSeriesPage() {
   const [emailInput, setEmailInput] = useState("");
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState<"login" | "signup">("login");
-  const [user, setUser] = useState<string | null>(null);
+  const { user, logout } = useAuth();
   const router = useRouter();
+  const [cardHolderName, setCardHolderName] = useState("YOUR NAME");
+  const [dynamicProducts, setDynamicProducts] = useState<Product[]>(productsData);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("happytap_user_profile");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.fullName) {
+          setCardHolderName(parsed.fullName.toUpperCase());
+        } else if (parsed.companyName) {
+          setCardHolderName(parsed.companyName.toUpperCase());
+        }
+      } else if (user) {
+        setCardHolderName(`${user.firstName} ${user.lastName}`.toUpperCase());
+      } else {
+        setCardHolderName("YOUR NAME");
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/cards");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.cards) {
+            const themeCustomCards = data.cards.filter((card: any) => card.colorName === "Minimal Series");
+            setDynamicProducts(() => {
+              const updated = [...productsData];
+              themeCustomCards.forEach((card: any) => {
+                const index = updated.findIndex(p => p.id === card.id);
+                if (index > -1) {
+                  updated[index] = card;
+                } else {
+                  updated.push(card);
+                }
+              });
+              return updated;
+            });
+          }
+        }
+      } catch (e) {
+        console.error("Error loading custom cards:", e);
+      }
+    })();
+  }, []);
 
   const filters = ["All", "Standard", "Premium", "Luxury", "Signature"];
 
   const openAuth = (tab: "login" | "signup") => {
     setAuthTab(tab);
     setIsAuthOpen(true);
-  };
-
-  const handleAuthSuccess = (name: string) => {
-    setUser(name);
-  };
-
-  const handleLogout = () => {
-    setUser(null);
   };
 
   const toggleFavorite = (id: string, name: string) => {
@@ -262,7 +156,7 @@ export default function MinimalSeriesPage() {
     }, 3000);
   };
 
-  const filteredProducts = productsData.filter((product) => {
+  const filteredProducts = dynamicProducts.filter((product) => {
     if (activeFilter === "All") return true;
     return product.category === activeFilter;
   });
@@ -271,8 +165,8 @@ export default function MinimalSeriesPage() {
     <>
       <Navbar
         onLoginClick={() => openAuth("login")}
-        user={user}
-        onLogout={handleLogout}
+        user={user ? `${user.firstName} ${user.lastName}` : null}
+        onLogout={logout}
       />
 
       <div className="minimal-series-page ms-gradient-bg">
@@ -290,29 +184,35 @@ export default function MinimalSeriesPage() {
             <div className="ms-hero-grid">
               <div className="ms-hero-content">
                 <Reveal>
-                  <span className="ms-badge">
-                    <Sparkles className="icon icon-sm" style={{ marginRight: "4px" }} />
-                    Minimal Collection
-                  </span>
-                </Reveal>
-                <Reveal delay={100}>
-                  <h1>
-                    The Minimal <br />
-                    <span className="highlight">Series</span>
-                  </h1>
+                  <span className="ms-badge">Premium NFC Cards</span>
                 </Reveal>
                 <Reveal delay={200}>
-                  <p className="ms-hero-subtitle">
-                    Elegant simplicity engineered for the modern professional.
-                    Instantly share your contact details, social links, and portfolio with a single, contactless tap.
-                  </p>
+                  <h1 className="ms-title">The Minimal Series</h1>
                 </Reveal>
                 <Reveal delay={300}>
-                  <div className="hero-actions" style={{ justifyContent: "flex-start" }}>
-                    <a href="#collection" className="btn">
-                      Explore Cards
-                      <ArrowRight className="icon" />
-                    </a>
+                  <p className="ms-lead">
+                    Elegant simplicity engineered for the modern professional. Instantly share your contact details, social links, and portfolio with a single, contactless tap.
+                  </p>
+                </Reveal>
+
+                <Reveal delay={450}>
+                  <div className="me-features-list" style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginTop: "24px" }}>
+                    <span className="me-feature-tag" style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.78rem", fontWeight: "600", padding: "6px 14px", borderRadius: "100px", border: "1px solid rgba(255, 255, 255, 0.08)", background: "rgba(255, 255, 255, 0.03)", color: "#a1a1a6" }}>
+                      <Wifi className="icon icon-sm" />
+                      NFC Enabled
+                    </span>
+                    <span className="me-feature-tag" style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.78rem", fontWeight: "600", padding: "6px 14px", borderRadius: "100px", border: "1px solid rgba(255, 255, 255, 0.08)", background: "rgba(255, 255, 255, 0.03)", color: "#a1a1a6" }}>
+                      <Sparkles className="icon icon-sm" />
+                      Instant Sharing
+                    </span>
+                    <span className="me-feature-tag" style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.78rem", fontWeight: "600", padding: "6px 14px", borderRadius: "100px", border: "1px solid rgba(255, 255, 255, 0.08)", background: "rgba(255, 255, 255, 0.03)", color: "#a1a1a6" }}>
+                      <ShieldCheck className="icon icon-sm" />
+                      No App Required
+                    </span>
+                    <span className="me-feature-tag" style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.78rem", fontWeight: "600", padding: "6px 14px", borderRadius: "100px", border: "1px solid rgba(255, 255, 255, 0.08)", background: "rgba(255, 255, 255, 0.03)", color: "#a1a1a6" }}>
+                      <Award className="icon icon-sm" />
+                      Works Everywhere
+                    </span>
                   </div>
                 </Reveal>
               </div>
@@ -330,20 +230,22 @@ export default function MinimalSeriesPage() {
           </div>
         </section>
 
-        {/* Dynamic Filters Section */}
-        <section className="ms-filters-section" id="collection">
+        {/* Pill Filters */}
+        <section style={{ padding: "0 0 20px" }}>
           <div className="container">
             <Reveal>
-              <div className="ms-filters-container">
-                {filters.map((filter) => (
-                  <button
-                    key={filter}
-                    className={`ms-filter-pill ${activeFilter === filter ? "active" : ""}`}
-                    onClick={() => setActiveFilter(filter)}
-                  >
-                    {filter}
-                  </button>
-                ))}
+              <div className="ms-filters-bar">
+                <div className="ms-filters-pills">
+                  {filters.map((filter) => (
+                    <button
+                      key={filter}
+                      className={`ms-filter-pill ${activeFilter === filter ? "active" : ""}`}
+                      onClick={() => setActiveFilter(filter)}
+                    >
+                      {filter}
+                    </button>
+                  ))}
+                </div>
               </div>
             </Reveal>
           </div>
@@ -352,104 +254,121 @@ export default function MinimalSeriesPage() {
         {/* Product Collection Grid */}
         <section className="ms-collection-section">
           <div className="container">
-            <div className="ms-grid-5">
-              <AnimatePresence mode="popLayout">
-                {filteredProducts.map((product, idx) => (
-                  <motion.div
-                    key={product.id}
-                    layout
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.45, ease: "easeOut" }}
-                  >
-                    <div className="ms-product-card">
-                      {/* Heart Button */}
-                      <button
-                        className={`ms-favorite-btn ${favorites[product.id] ? "active" : ""}`}
-                        onClick={() => toggleFavorite(product.id, product.title)}
-                        aria-label="Add to favorites"
-                      >
-                        <Heart className="icon" style={{ fill: favorites[product.id] ? "#ff4757" : "none" }} />
-                      </button>
-
-                      {/* Card Preview Graphic Area */}
-                      <div className="ms-card-preview-area">
-                        <div
-                          className="nfc-card-mockup"
-                          style={{
-                            background: product.cardStyle.background,
-                            border: product.cardStyle.border || "1px solid rgba(255, 255, 255, 0.08)",
-                          }}
+            {filteredProducts.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "80px 20px", background: "rgba(255, 255, 255, 0.02)", borderRadius: "24px", border: "1px solid rgba(255, 255, 255, 0.05)" }}>
+                <Award className="icon" style={{ width: "48px", height: "48px", color: "rgba(255,255,255,0.2)", marginBottom: "16px", display: "inline-block" }} />
+                <h3 style={{ color: "#FFFFFF", fontSize: "1.2rem", marginBottom: "8px" }}>No Cards Available</h3>
+                <p style={{ color: "#a1a1a6", fontSize: "0.95rem" }}>No custom cards have been added to this collection yet.</p>
+              </div>
+            ) : (
+              <div className="ms-grid-5">
+                <AnimatePresence mode="popLayout">
+                  {filteredProducts.map((product) => (
+                    <motion.div
+                      key={product.id}
+                      layout
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.45, ease: "easeOut" }}
+                    >
+                      <div className="ms-product-card">
+                        {/* Heart Button */}
+                        <button
+                          className={`ms-favorite-btn ${favorites[product.id] ? "active" : ""}`}
+                          onClick={() => toggleFavorite(product.id, product.title)}
+                          aria-label="Add to favorites"
                         >
-                          <div className="nfc-card-mockup-glare"></div>
+                          <Heart className="icon" style={{ fill: favorites[product.id] ? "#ff4757" : "none" }} />
+                        </button>
 
-                          <div
-                            className={`nfc-mock-logo ${product.cardStyle.isLight ? "light-card-text" : ""
-                              }`}
+                        {/* Card Preview Graphic Area */}
+                        <div className="ms-card-preview-area">
+                          {(product as any).images?.front ? (
+                            <div className="nfc-card-mockup" style={{ padding: 0, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              <img
+                                src={(product as any).images.front}
+                                alt={product.title}
+                                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                              />
+                            </div>
+                          ) : (
+                            <div
+                              className="nfc-card-mockup"
+                              style={{
+                                background: product.cardStyle.background,
+                                border: product.cardStyle.border || "1px solid rgba(255, 255, 255, 0.08)",
+                              }}
+                            >
+                              <div className="nfc-card-mockup-glare"></div>
+
+                              <div
+                                className={`nfc-mock-logo ${product.cardStyle.isLight ? "light-card-text" : ""
+                                  }`}
+                              >
+                                H<span className={`nfc-mock-logo-mark ${product.cardStyle.logoStyle === "gold" ? "gold-logo" : ""}`}>t</span>
+                              </div>
+
+                              <div className="nfc-mock-details">
+                                <div
+                                  className={`nfc-mock-brand ${product.cardStyle.isLight ? "light-card-text" : ""
+                                    }`}
+                                >
+                                  {cardHolderName}
+                                </div>
+                                <div
+                                  className={`nfc-mock-chip ${product.cardStyle.isLight ? "light-card-text" : ""
+                                    }`}
+                                >
+                                  <Wifi className="icon icon-sm" style={{ transform: "rotate(90deg)" }} />
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Card Info Area */}
+                        <div className="ms-product-details">
+                          <span className="ms-product-tag">{product.category}</span>
+                          <h3>{product.title}</h3>
+                          <p>{product.description}</p>
+                        </div>
+
+                        {/* Buy Row */}
+                        <div className="ms-product-price-row">
+                          <span className="ms-product-price">₹{product.price.toLocaleString()}</span>
+                          <button
+                            className="ms-product-buy-btn"
+                            onClick={() => handleAddToCart(product.title)}
                           >
-                            H<span className={`nfc-mock-logo-mark ${product.cardStyle.logoStyle === "gold" ? "gold-logo" : ""}`}>t</span>
-                          </div>
+                            Add to Cart
+                          </button>
+                        </div>
 
-                          <div className="nfc-mock-details">
-                            <div
-                              className={`nfc-mock-brand ${product.cardStyle.isLight ? "light-card-text" : ""
-                                }`}
-                            >
-                              HAPPYTAP
-                            </div>
-                            <div
-                              className={`nfc-mock-chip ${product.cardStyle.isLight ? "light-card-text" : ""
-                                }`}
-                            >
-                              <Wifi className="icon icon-sm" style={{ transform: "rotate(90deg)" }} />
-                            </div>
-                          </div>
+                        {/* Bottom Link for Detailed Page */}
+                        <div className="ms-product-view-link">
+                          <Link href={`/cards/minimal-series/${product.id}`} className="view-link-btn">
+                            View Details
+                            <ArrowRight className="icon icon-xs" />
+                          </Link>
                         </div>
                       </div>
-
-                      {/* Card Info Area */}
-                      <div className="ms-product-details">
-                        <span className="ms-product-tag">{product.category}</span>
-                        <h3>{product.title}</h3>
-                        <p>{product.description}</p>
-                      </div>
-
-                      {/* Buy Row */}
-                      <div className="ms-product-price-row">
-                        <span className="ms-product-price">₹{product.price.toLocaleString()}</span>
-                        <button
-                          className="ms-product-buy-btn"
-                          onClick={() => {
-                            try {
-                              localStorage.setItem("selected_card_id", product.id);
-                              localStorage.setItem("selected_card", JSON.stringify(product));
-                            } catch (err) {}
-                            router.push(`/cards/minimal-series/preview-card`);
-                          }}
-                        >
-                          View Details
-                        </button>
-                      </div>
-
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            )}
           </div>
         </section>
 
-        {/* Trust Section */}
+        {/* Quality Features List */}
         <section className="ms-trust-section">
           <div className="container">
             <div className="ms-trust-grid">
               {trustItems.map((item, idx) => (
-                <Reveal key={item.title} delay={idx * 80}>
+                <Reveal key={item.title} delay={idx * 150}>
                   <div className="ms-trust-card">
-                    <div className="ms-trust-icon-box">
-                      <item.icon className="icon" />
-                    </div>
+                    <item.icon className="icon" />
                     <h3>{item.title}</h3>
                     <p>{item.description}</p>
                   </div>
@@ -458,133 +377,11 @@ export default function MinimalSeriesPage() {
             </div>
           </div>
         </section>
-
-        {/* Split CTA Section */}
-        <section className="cta-new" style={{ padding: "80px 0" }}>
-          <div className="container">
-            <Reveal>
-              <div className="cta-new-card" style={{ minHeight: "380px" }}>
-                <div className="cta-bg-glow"></div>
-                <div className="cta-bg-grid"></div>
-                <div className="cta-bg-lines"></div>
-
-                {/* Left Card Visual */}
-                <div className="cta-left-visual">
-                  <div className="cta-ring-base">
-                    <div className="ring-1"></div>
-                    <div className="ring-2"></div>
-                    <div className="ring-3"></div>
-                  </div>
-                  <div
-                    className="floating-card-left"
-                    style={{
-                      background: "linear-gradient(135deg, #0f0f13 0%, #1a1a24 100%)",
-                      border: "1px solid rgba(255, 255, 255, 0.12)",
-                    }}
-                  >
-                    <div className="fc-inner">
-                      <div className="fc-logo-wrap">
-                        <span className="fc-logo" style={{ color: "#FFFFFF" }}>Ht</span>
-                        <Wifi className="fc-wifi" style={{ color: "rgba(255, 255, 255, 0.6)" }} />
-                      </div>
-                      <div className="fc-brand" style={{ color: "#FFFFFF" }}>HAPPYTAP</div>
-                      <div className="fc-slogan" style={{ color: "#5b45e8" }}>MINIMAL SERIES</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Center Content */}
-                <div className="cta-center-text" style={{ maxWidth: "560px" }}>
-                  <span className="cta-badge-new">PREMIUM MATERIALS</span>
-                  <h2>Ready to Upgrade Your Networking?</h2>
-                  <p>
-                    Step into the digital age with our Minimal Series. Touch to connect, manage from your phone, and build relationships smoothly.
-                  </p>
-                  <button onClick={() => openAuth("signup")} className="btn cta-btn-primary" style={{ padding: "0 32px" }}>
-                    Get Started Now
-                    <ArrowRight className="icon" />
-                  </button>
-                </div>
-
-                {/* Right Visual (Iridescent Aurora card floating) */}
-                <div className="cta-right-visual">
-                  <div className="cta-ring-base right-ring">
-                    <div className="ring-1"></div>
-                    <div className="ring-2"></div>
-                    <div className="ring-3"></div>
-                  </div>
-                  <div
-                    className="floating-card-left"
-                    style={{
-                      background: "linear-gradient(135deg, #0575e6 0%, #00f260 100%)",
-                      border: "1px solid rgba(255, 255, 255, 0.15)",
-                      transform: "rotateY(-20deg) rotateX(15deg) rotateZ(5deg) translateY(-20px)",
-                      animation: "float-right 6s ease-in-out infinite",
-                    }}
-                  >
-                    <div className="fc-inner">
-                      <div className="fc-logo-wrap">
-                        <span className="fc-logo" style={{ color: "#FFFFFF" }}>Ht</span>
-                        <Wifi className="fc-wifi" style={{ color: "rgba(255, 255, 255, 0.8)" }} />
-                      </div>
-                      <div className="fc-brand" style={{ color: "#FFFFFF" }}>HAPPYTAP</div>
-                      <div className="fc-slogan" style={{ color: "#FFFFFF" }}>AURORA</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
-          </div>
-        </section>
-
-        {/* Newsletter Section */}
-        <section className="ms-newsletter-section">
-          <div className="container">
-            <div className="ms-newsletter-container">
-              <div className="ms-newsletter-content">
-                <Reveal>
-                  <span className="ms-badge" style={{ marginBottom: "16px" }}>Newsletter</span>
-                </Reveal>
-                <Reveal delay={100}>
-                  <h2>Join the Future of Networking</h2>
-                </Reveal>
-                <Reveal delay={200}>
-                  <p>
-                    Subscribe to our newsletter for exclusive launches, networking tips, and member-only events. No spam, only premium insights.
-                  </p>
-                </Reveal>
-              </div>
-
-              <Reveal delay={300}>
-                <div className="ms-newsletter-card">
-                  <form onSubmit={handleNewsletterSubmit} className="ms-newsletter-form">
-                    <label htmlFor="newsletter-email">Email Address</label>
-                    <div className="ms-newsletter-input-group">
-                      <input
-                        type="email"
-                        id="newsletter-email"
-                        placeholder="Enter your email"
-                        className="ms-newsletter-input"
-                        value={emailInput}
-                        onChange={(e) => setEmailInput(e.target.value)}
-                        required
-                      />
-                      <button type="submit" className="ms-newsletter-submit-btn">
-                        Subscribe
-                        <Mail className="icon icon-sm" />
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </Reveal>
-            </div>
-          </div>
-        </section>
       </div>
 
       <Footer />
 
-      {/* Floating Success Notification (Toast) */}
+      {/* Floating Toast */}
       <AnimatePresence>
         {toastMessage && (
           <motion.div
@@ -605,7 +402,6 @@ export default function MinimalSeriesPage() {
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
         initialTab={authTab}
-        onSuccess={handleAuthSuccess}
       />
     </>
   );

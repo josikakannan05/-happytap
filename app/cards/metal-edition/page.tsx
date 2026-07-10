@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
@@ -22,6 +22,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AuthModal } from "@/components/AuthModal";
 import { Reveal } from "@/components/Reveal";
+import { useAuth } from "@/lib/AuthContext";
 
 interface Product {
   id: string;
@@ -39,158 +40,6 @@ interface Product {
 }
 
 const productsData: Product[] = [
-  {
-    id: "metal-bronze",
-    title: "Metal Bronze",
-    category: "Standard",
-    price: 1999,
-    description: "Raw brushed bronze metal card featuring warm rustic copper undertones for networking.",
-    colorName: "Bronze Finish",
-    cardStyle: {
-      background: "linear-gradient(135deg, #a76b43 0%, #834f2b 100%)",
-      logoStyle: "gold",
-    },
-  },
-  {
-    id: "metal-copper",
-    title: "Metal Copper",
-    category: "Standard",
-    price: 2199,
-    description: "Satin metallic copper metal card emitting a brilliant and warm rose-amber luxury glow.",
-    colorName: "Copper Glow",
-    cardStyle: {
-      background: "linear-gradient(135deg, #c5796d 0%, #eebd89 100%)",
-      logoStyle: "rose",
-    },
-  },
-  {
-    id: "metal-titanium",
-    title: "Metal Titanium",
-    category: "Premium",
-    price: 2499,
-    description: "Space-grade brushed titanium silver metal card displaying a modern and sleek industrial look.",
-    colorName: "Titanium Silver",
-    cardStyle: {
-      background: "linear-gradient(135deg, #8e8e93 0%, #c7c7cc 50%, #8e8e93 100%)",
-      logoStyle: "silver",
-      isLight: true,
-    },
-  },
-  {
-    id: "metal-graphite",
-    title: "Metal Graphite",
-    category: "Premium",
-    price: 2699,
-    description: "Deep gunmetal charcoal brushed metal card enhanced with subtle premium laser engraved lines.",
-    colorName: "Graphite Charcoal",
-    cardStyle: {
-      background: "linear-gradient(135deg, #2a2a2e 0%, #151517 100%)",
-      logoStyle: "silver",
-    },
-  },
-  {
-    id: "metal-rose-gold",
-    title: "Metal Rose Gold",
-    category: "Premium",
-    price: 2999,
-    description: "Luxurious brushed rose-gold metal card reflecting a warm satin luster and elegant finish.",
-    colorName: "Rose Gold",
-    cardStyle: {
-      background: "linear-gradient(135deg, #d49a89 0%, #f3d4cc 50%, #b87b6a 100%)",
-      logoStyle: "rose",
-      isLight: true,
-    },
-  },
-  {
-    id: "metal-silver",
-    title: "Metal Silver",
-    category: "Luxury",
-    price: 3299,
-    description: "Brilliant brushed silver metal card showcasing high-reflectivity chrome highlights for business leaders.",
-    colorName: "Sliver Chrome",
-    cardStyle: {
-      background: "linear-gradient(135deg, #d1d1d6 0%, #f2f2f7 50%, #c7c7cc 100%)",
-      logoStyle: "silver",
-      isLight: true,
-    },
-  },
-  {
-    id: "metal-platinum",
-    title: "Metal Platinum",
-    category: "Luxury",
-    price: 3499,
-    description: "Deep luster platinum chrome metal card reflecting high luxury wealth and prestige status.",
-    colorName: "Platinum Mirror",
-    cardStyle: {
-      background: "linear-gradient(135deg, #e5e5ea 0%, #ffffff 50%, #aeaeB2 100%)",
-      logoStyle: "white",
-      isLight: true,
-    },
-  },
-  {
-    id: "metal-executive",
-    title: "Metal Executive",
-    category: "Luxury",
-    price: 3999,
-    description: "Midnight black metal card trimmed with a polished executive 24k gold border.",
-    colorName: "Obsidian Gold Trim",
-    cardStyle: {
-      background: "linear-gradient(135deg, #121212 0%, #222222 100%)",
-      logoStyle: "gold",
-      border: "1px solid #ffd700",
-    },
-  },
-  {
-    id: "metal-signature",
-    title: "Metal Signature",
-    category: "Signature",
-    price: 4499,
-    description: "Mirror-finish gold plated metal card engraved with an exclusive signature initials pattern.",
-    colorName: "24K Gold Plated",
-    cardStyle: {
-      background: "linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%)",
-      logoStyle: "gold",
-      isLight: true,
-    },
-  },
-  {
-    id: "metal-black-luxury",
-    title: "Metal Black Luxury",
-    category: "Signature",
-    price: 4999,
-    description: "Obsidian matte black metal card detailed with double-anodized laser engraving lines.",
-    colorName: "Matte Black",
-    cardStyle: {
-      background: "linear-gradient(135deg, #050505 0%, #1a1a1a 100%)",
-      logoStyle: "white",
-    },
-  },
-  {
-    id: "metal-brass",
-    title: "Metal Brass",
-    category: "Standard",
-    price: 2099,
-    description: "Brushed brass yellow metal card representing classic longevity and premium digital connectivity.",
-    colorName: "Brushed Brass",
-    cardStyle: {
-      background: "linear-gradient(135deg, #b58d3d 0%, #e5c060 50%, #a0782a 100%)",
-      logoStyle: "gold",
-      isLight: true,
-    },
-  },
-  {
-    id: "metal-obsidian",
-    title: "Metal Obsidian",
-    category: "Signature",
-    price: 4799,
-    description: "Mirror polished high-gloss obsidian black metal card styled with a gold monogram emblem.",
-    colorName: "Obsidian Mirror",
-    cardStyle: {
-      background: "linear-gradient(135deg, #101010 0%, #000000 100%)",
-      logoStyle: "gold",
-      border: "1px solid rgba(255, 215, 0, 0.3)",
-    },
-  },
 ];
 
 const trustItems = [
@@ -225,21 +74,63 @@ export default function MetalEditionPage() {
   const [sortBy, setSortBy] = useState("Popular");
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState<"login" | "signup">("login");
-  const [user, setUser] = useState<string | null>(null);
+  const { user, logout } = useAuth();
+  const [cardHolderName, setCardHolderName] = useState("YOUR NAME");
+  const [dynamicProducts, setDynamicProducts] = useState<Product[]>(productsData);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("happytap_user_profile");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.fullName) {
+          setCardHolderName(parsed.fullName.toUpperCase());
+        } else if (parsed.companyName) {
+          setCardHolderName(parsed.companyName.toUpperCase());
+        }
+      } else if (user) {
+        setCardHolderName(`${user.firstName} ${user.lastName}`.toUpperCase());
+      } else {
+        setCardHolderName("YOUR NAME");
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/cards");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.cards) {
+            const themeCustomCards = data.cards.filter((card: any) => card.colorName === "Metal Edition");
+            setDynamicProducts(() => {
+              const updated = [...productsData];
+              themeCustomCards.forEach((card: any) => {
+                const index = updated.findIndex(p => p.id === card.id);
+                if (index > -1) {
+                  updated[index] = card;
+                } else {
+                  updated.push(card);
+                }
+              });
+              return updated;
+            });
+          }
+        }
+      } catch (e) {
+        console.error("Error loading custom cards:", e);
+      }
+    })();
+  }, []);
 
   const filters = ["All", "Standard", "Premium", "Luxury", "Signature"];
 
   const openAuth = (tab: "login" | "signup") => {
     setAuthTab(tab);
     setIsAuthOpen(true);
-  };
-
-  const handleAuthSuccess = (name: string) => {
-    setUser(name);
-  };
-
-  const handleLogout = () => {
-    setUser(null);
   };
 
   const toggleFavorite = (id: string, name: string) => {
@@ -269,7 +160,7 @@ export default function MetalEditionPage() {
   };
 
   // Filter products
-  const filteredProducts = productsData.filter((product) => {
+  const filteredProducts = dynamicProducts.filter((product) => {
     if (activeFilter === "All") return true;
     return product.category === activeFilter;
   });
@@ -286,8 +177,8 @@ export default function MetalEditionPage() {
     <>
       <Navbar
         onLoginClick={() => openAuth("login")}
-        user={user}
-        onLogout={handleLogout}
+        user={user ? `${user.firstName} ${user.lastName}` : null}
+        onLogout={logout}
       />
 
       <div className="metal-edition-page">
@@ -402,89 +293,107 @@ export default function MetalEditionPage() {
         {/* Product Grid Section */}
         <section className="me-collection-section">
           <div className="container">
-            <div className="me-grid-5">
-              <AnimatePresence mode="popLayout">
-                {sortedProducts.map((product, idx) => (
-                  <motion.div
-                    key={product.id}
-                    layout
-                    initial={{ opacity: 0, y: 25 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.45, ease: "easeOut" }}
-                  >
-                    <div className="me-product-card">
-                      {/* Heart Button */}
-                      <button
-                        className={`me-favorite-btn ${favorites[product.id] ? "active" : ""}`}
-                        onClick={() => toggleFavorite(product.id, product.title)}
-                        aria-label="Add to favorites"
-                      >
-                        <Heart className="icon" style={{ fill: favorites[product.id] ? "#ff4757" : "none" }} />
-                      </button>
+            {sortedProducts.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "80px 20px", background: "rgba(255, 255, 255, 0.02)", borderRadius: "24px", border: "1px solid rgba(255, 255, 255, 0.05)" }}>
+                <Award className="icon" style={{ width: "48px", height: "48px", color: "rgba(255,255,255,0.2)", marginBottom: "16px", display: "inline-block" }} />
+                <h3 style={{ color: "#FFFFFF", fontSize: "1.2rem", marginBottom: "8px" }}>No Cards Available</h3>
+                <p style={{ color: "#a1a1a6", fontSize: "0.95rem" }}>No custom cards have been added to this collection yet.</p>
+              </div>
+            ) : (
+              <div className="me-grid-5">
+                <AnimatePresence mode="popLayout">
+                  {sortedProducts.map((product, idx) => (
+                    <motion.div
+                      key={product.id}
+                      layout
+                      initial={{ opacity: 0, y: 25 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.45, ease: "easeOut" }}
+                    >
+                      <div className="me-product-card">
+                        {/* Heart Button */}
+                        <button
+                          className={`me-favorite-btn ${favorites[product.id] ? "active" : ""}`}
+                          onClick={() => toggleFavorite(product.id, product.title)}
+                          aria-label="Add to favorites"
+                        >
+                          <Heart className="icon" style={{ fill: favorites[product.id] ? "#ff4757" : "none" }} />
+                        </button>
 
-                      {/* Card Preview Area */}
-                      <div className="me-card-preview-area">
-                        <div
-                          className="metal-card-mockup"
-                          style={{
-                            background: product.cardStyle.background,
-                            border: product.cardStyle.border || "1px solid rgba(255, 255, 255, 0.08)",
+                        {/* Card Preview Area */}
+                        <div className="me-card-preview-area">
+                          {(product as any).images?.front ? (
+                            <div className="metal-card-mockup" style={{ padding: 0, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              <img
+                                src={(product as any).images.front}
+                                alt={product.title}
+                                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                              />
+                            </div>
+                          ) : (
+                            <div
+                              className="metal-card-mockup"
+                              style={{
+                                background: product.cardStyle.background,
+                                border: product.cardStyle.border || "1px solid rgba(255, 255, 255, 0.08)",
+                              }}
+                            >
+                              <div className="metal-card-mockup-glare"></div>
+
+                              <div
+                                className={`metal-mock-logo ${product.cardStyle.isLight ? "light-card-text" : ""
+                                  }`}
+                              >
+                                H<span className={`metal-mock-logo-mark ${product.cardStyle.logoStyle === "gold" ? "gold-logo" : ""}`}>t</span>
+                              </div>
+
+                              <div className="metal-mock-details">
+                                <div
+                                  className={`metal-mock-brand ${product.cardStyle.isLight ? "light-card-text" : ""
+                                    }`}
+                                >
+                                  {cardHolderName}
+                                </div>
+                                <div
+                                  className={`metal-mock-chip ${product.cardStyle.isLight ? "light-card-text" : ""
+                                    }`}
+                                >
+                                  <Wifi className="icon icon-sm" style={{ transform: "rotate(90deg)" }} />
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Card Info Area */}
+                        <div className="me-product-details">
+                          <span className="ms-product-tag" style={{ color: "#86868b" }}>{product.category}</span>
+                          <h3>{product.title}</h3>
+                          <p>{product.description}</p>
+                          <span className="me-product-price">₹{product.price.toLocaleString()}</span>
+                        </div>
+
+                        {/* View Details Button */}
+                        <button
+                          className="me-view-details-btn"
+                          onClick={() => {
+                            try {
+                              localStorage.setItem("selected_card_id", product.id);
+                              localStorage.setItem("selected_card", JSON.stringify(product));
+                            } catch (err) {}
+                            router.push(`/cards/metal-edition/preview-card`);
                           }}
                         >
-                          <div className="metal-card-mockup-glare"></div>
+                          View Details
+                        </button>
 
-                          <div
-                            className={`metal-mock-logo ${product.cardStyle.isLight ? "light-card-text" : ""
-                              }`}
-                          >
-                            H<span className={`metal-mock-logo-mark ${product.cardStyle.logoStyle === "gold" ? "gold-logo" : ""}`}>t</span>
-                          </div>
-
-                          <div className="metal-mock-details">
-                            <div
-                              className={`metal-mock-brand ${product.cardStyle.isLight ? "light-card-text" : ""
-                                }`}
-                            >
-                              HAPPYTAP
-                            </div>
-                            <div
-                              className={`metal-mock-chip ${product.cardStyle.isLight ? "light-card-text" : ""
-                                }`}
-                            >
-                              <Wifi className="icon icon-sm" style={{ transform: "rotate(90deg)" }} />
-                            </div>
-                          </div>
-                        </div>
                       </div>
-
-                      {/* Card Info Area */}
-                      <div className="me-product-details">
-                        <span className="ms-product-tag" style={{ color: "#86868b" }}>{product.category}</span>
-                        <h3>{product.title}</h3>
-                        <p>{product.description}</p>
-                        <span className="me-product-price">₹{product.price.toLocaleString()}</span>
-                      </div>
-
-                      {/* View Details Button */}
-                      <button
-                        className="me-view-details-btn"
-                        onClick={() => {
-                          try {
-                            localStorage.setItem("selected_card_id", product.id);
-                            localStorage.setItem("selected_card", JSON.stringify(product));
-                          } catch (err) {}
-                          router.push(`/cards/metal-edition/preview-card`);
-                        }}
-                      >
-                        View Details
-                      </button>
-
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            )}
           </div>
         </section>
 
@@ -590,7 +499,6 @@ export default function MetalEditionPage() {
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
         initialTab={authTab}
-        onSuccess={handleAuthSuccess}
       />
     </>
   );

@@ -17,7 +17,10 @@ import {
   Zap,
   Users,
   Contact,
+  Building2,
 } from "lucide-react";
+import { useAuth } from "@/lib/AuthContext";
+import { useRouter } from "next/navigation";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -27,7 +30,11 @@ interface AuthModalProps {
 }
 
 export function AuthModal({ isOpen, onClose, initialTab = "login", onSuccess }: AuthModalProps) {
+  const { sendOtp, verifyOtp, signup, login } = useAuth();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"login" | "signup">(initialTab);
+  const [accountType, setAccountType] = useState<"individual" | "company">("individual");
+  const [companyName, setCompanyName] = useState("");
   const [signupStep, setSignupStep] = useState<1 | 2 | 3>(1);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -110,6 +117,8 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", onSuccess }: 
     setOtp(Array(6).fill(""));
     setSignupPassword("");
     setConfirmPassword("");
+    setAccountType("individual");
+    setCompanyName("");
     setErrors({});
     setSignupStep(1);
     setShowPassword(false);
@@ -122,7 +131,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", onSuccess }: 
   };
 
   // Step 1: Signup validation (Names and Email)
-  const handleSignupStep1 = (e: React.FormEvent) => {
+  const handleSignupStep1 = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: Record<string, string> = {};
 
@@ -142,15 +151,18 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", onSuccess }: 
     setErrors({});
     setIsSubmitting(true);
 
-    // Simulate sending OTP
-    setTimeout(() => {
-      setIsSubmitting(false);
+    const res = await sendOtp(signupEmail);
+    setIsSubmitting(false);
+
+    if (res.success) {
       setSignupStep(2);
       // Auto focus first OTP input after DOM updates
       setTimeout(() => {
         otpRefs.current[0]?.focus();
       }, 50);
-    }, 1200);
+    } else {
+      setErrors({ signupEmail: res.error || "Failed to send OTP code" });
+    }
   };
 
   // Step 2: OTP inputs handlers
@@ -195,7 +207,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", onSuccess }: 
     }
   };
 
-  const handleSignupStep2 = (e: React.FormEvent) => {
+  const handleSignupStep2 = async (e: React.FormEvent) => {
     e.preventDefault();
     const fullOtp = otp.join("");
 
@@ -207,17 +219,24 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", onSuccess }: 
     setErrors({});
     setIsSubmitting(true);
 
-    // Simulate OTP verification
-    setTimeout(() => {
-      setIsSubmitting(false);
+    const res = await verifyOtp(signupEmail, fullOtp);
+    setIsSubmitting(false);
+
+    if (res.success) {
       setSignupStep(3);
-    }, 1000);
+    } else {
+      setErrors({ otp: res.error || "Invalid OTP code" });
+    }
   };
 
   // Step 3: Password validation & Signup completion
-  const handleSignupStep3 = (e: React.FormEvent) => {
+  const handleSignupStep3 = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: Record<string, string> = {};
+
+    if (accountType === "company" && !companyName.trim()) {
+      newErrors.companyName = "Company name is required";
+    }
 
     if (!signupPassword) {
       newErrors.signupPassword = "Password is required";
@@ -237,21 +256,38 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", onSuccess }: 
     setErrors({});
     setIsSubmitting(true);
 
-    // Simulate registration
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSuccessMessage("Account created successfully! Tap to start networking.");
-      const displayName = firstName || signupEmail.split("@")[0];
-      onSuccess?.(displayName);
+    const res = await signup({
+      firstName,
+      lastName,
+      email: signupEmail,
+      password: signupPassword,
+      accountType,
+      companyName: accountType === "company" ? companyName.trim() : undefined,
+    });
+    setIsSubmitting(false);
+
+    if (res.success && res.user) {
+      const u = res.user;
+      setSuccessMessage("Account created successfully! Redirecting...");
+      onSuccess?.(firstName || signupEmail.split("@")[0]);
       setTimeout(() => {
         onClose();
         resetForm();
+        console.log("[REDIRECT DEBUG] u:", u);
+        if (u.accountType === "company" && u.companyName) {
+          const compUrl = u.companyName.toLowerCase().replace(/\s+/g, "-");
+          router.push(`/company/${encodeURIComponent(compUrl)}`);
+        } else {
+          router.push("/profile");
+        }
       }, 2000);
-    }, 1500);
+    } else {
+      setErrors({ signupPassword: res.error || "Failed to create account" });
+    }
   };
 
   // Login Validation & Submit
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: Record<string, string> = {};
 
@@ -275,18 +311,26 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", onSuccess }: 
     setErrors({});
     setIsSubmitting(true);
 
-    // Simulate login
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSuccessMessage("Welcome back! Loading your profile...");
-      // Derive display name from email (part before @)
-      const displayName = email.split("@")[0];
-      onSuccess?.(displayName);
+    const res = await login({ email, password });
+    setIsSubmitting(false);
+
+    if (res.success && res.user) {
+      const u = res.user;
+      setSuccessMessage("Welcome back! Loading your workspace...");
+      onSuccess?.(u.firstName || email.split("@")[0]);
       setTimeout(() => {
         onClose();
         resetForm();
+        if (u.accountType === "company" && u.companyName) {
+          const compUrl = u.companyName.toLowerCase().replace(/\s+/g, "-");
+          router.push(`/company/${encodeURIComponent(compUrl)}`);
+        } else {
+          router.push("/profile");
+        }
       }, 2000);
-    }, 1500);
+    } else {
+      setErrors({ form: res.error || "Invalid email or password" });
+    }
   };
 
   if (!shouldRender) return null;
@@ -442,6 +486,13 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", onSuccess }: 
                         </span>
                       )}
                     </div>
+
+                    {errors.form && (
+                      <div className="error-message" style={{ marginBottom: "15px", display: "flex", alignItems: "center", gap: "5px" }}>
+                        <AlertCircle size={14} className="error-icon" />
+                        <span>{errors.form}</span>
+                      </div>
+                    )}
 
                     <button
                       type="submit"
@@ -684,6 +735,86 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", onSuccess }: 
                     {/* STEP 3: Setup Password */}
                     {signupStep === 3 && (
                       <form onSubmit={handleSignupStep3} className="auth-form animate-slide-in">
+                        {/* Account Type Selection */}
+                        <div className="input-group">
+                          <label>Account Type</label>
+                          <div className="account-type-selector" style={{ display: "flex", gap: "10px", marginTop: "5px" }}>
+                            <button
+                              type="button"
+                              className={`account-type-btn ${accountType === "individual" ? "active" : ""}`}
+                              onClick={() => {
+                                setAccountType("individual");
+                                setErrors(prev => ({ ...prev, companyName: "" }));
+                              }}
+                              style={{
+                                flex: 1,
+                                padding: "12px",
+                                borderRadius: "8px",
+                                border: accountType === "individual" ? "2px solid #6366f1" : "1px solid rgba(255, 255, 255, 0.1)",
+                                background: accountType === "individual" ? "rgba(99, 102, 241, 0.1)" : "rgba(255, 255, 255, 0.03)",
+                                color: "#fff",
+                                cursor: "pointer",
+                                transition: "all 0.2s ease",
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                gap: "4px"
+                              }}
+                            >
+                              <strong style={{ fontSize: "0.95rem" }}>Individual</strong>
+                              <span style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)" }}>For personal profile</span>
+                            </button>
+                            <button
+                              type="button"
+                              className={`account-type-btn ${accountType === "company" ? "active" : ""}`}
+                              onClick={() => setAccountType("company")}
+                              style={{
+                                flex: 1,
+                                padding: "12px",
+                                borderRadius: "8px",
+                                border: accountType === "company" ? "2px solid #6366f1" : "1px solid rgba(255, 255, 255, 0.1)",
+                                background: accountType === "company" ? "rgba(99, 102, 241, 0.1)" : "rgba(255, 255, 255, 0.03)",
+                                color: "#fff",
+                                cursor: "pointer",
+                                transition: "all 0.2s ease",
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                gap: "4px"
+                              }}
+                            >
+                              <strong style={{ fontSize: "0.95rem" }}>Company</strong>
+                              <span style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.6)" }}>For company workspaces</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Company Name Input */}
+                        {accountType === "company" && (
+                          <div className="input-group animate-slide-in">
+                            <label htmlFor="signup-company-name">Company Name</label>
+                            <div className={`input-wrapper ${errors.companyName ? "has-error" : ""}`}>
+                              <Building2 className="input-icon" size={18} />
+                              <input
+                                type="text"
+                                id="signup-company-name"
+                                placeholder="e.g. Acme Corp"
+                                value={companyName}
+                                onChange={(e) => setCompanyName(e.target.value)}
+                                disabled={isSubmitting}
+                                className="input-field"
+                                suppressHydrationWarning
+                              />
+                            </div>
+                            {errors.companyName && (
+                              <span className="error-message">
+                                <AlertCircle size={12} className="error-icon" />
+                                {errors.companyName}
+                              </span>
+                            )}
+                          </div>
+                        )}
+
                         <div className="input-group">
                           <div className={`input-wrapper ${errors.signupPassword ? "has-error" : ""}`}>
                             <Lock className="input-icon" size={18} />

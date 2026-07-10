@@ -1,8 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { Navbar } from "@/components/Navbar";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useAuth } from "@/lib/AuthContext";
 import {
   ArrowRight,
   Building2,
@@ -26,26 +28,47 @@ export function CompanyDashboard({
   companyName = "Acme Company",
   companyUrl = "company/acme",
 }: CompanyDashboardProps) {
+  const { user, loading } = useAuth();
+  const router = useRouter();
   const params = useParams<{ companyUrl?: string }>();
+
+  useEffect(() => {
+    if (!loading && (!user || user.accountType !== "company")) {
+      router.push("/");
+    }
+  }, [user, loading, router]);
+
   const resolvedCompanyName = useMemo(() => {
     if (typeof params?.companyUrl === "string" && params.companyUrl) {
       return decodeURIComponent(params.companyUrl).replace(/-/g, " ");
     }
-    return companyName;
-  }, [companyName, params?.companyUrl]);
+    return user?.companyName || companyName;
+  }, [companyName, params?.companyUrl, user?.companyName]);
 
   const resolvedCompanyUrl = useMemo(() => {
     if (typeof params?.companyUrl === "string" && params.companyUrl) {
       return `company/${params.companyUrl}`;
     }
+    if (user?.companyName) {
+      return `company/${user.companyName.toLowerCase().replace(/\s+/g, "-")}`;
+    }
     return companyUrl;
-  }, [companyUrl, params?.companyUrl]);
+  }, [companyUrl, params?.companyUrl, user?.companyName]);
 
-  const [employees, setEmployees] = useState([
-    { id: 1, name: "Ava Patel", role: "Product Designer", status: "Active" },
-    { id: 2, name: "Dev Menon", role: "Operations Lead", status: "Pending" },
-    { id: 3, name: "Nina Rao", role: "Marketing Head", status: "Active" },
-  ]);
+  const [employees, setEmployees] = useState<{ id: number; name: string; role: string; status: string }[]>([]);
+
+  useEffect(() => {
+    if (user) {
+      setEmployees([
+        {
+          id: 1,
+          name: `${user.firstName} ${user.lastName}`,
+          role: "Workspace Owner & Administrator",
+          status: "Active",
+        },
+      ]);
+    }
+  }, [user]);
   const [search, setSearch] = useState("");
   const [uploadMessage, setUploadMessage] = useState(
     "Upload a CSV or Excel file to add employees in bulk."
@@ -74,8 +97,29 @@ export function CompanyDashboard({
     setUploadMessage("A new employee profile has been added to the queue.");
   };
 
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: "#0a0a0f", color: "#fff", fontFamily: "sans-serif" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
+          <div style={{ width: "30px", height: "30px", border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "#6366f1", borderRadius: "50%", animation: "spin 1s linear infinite" }}></div>
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          <span>Loading company workspace...</span>
+        </div>
+        </div>
+      </>
+    );
+  }
+
+  if (!user || user.accountType !== "company") {
+    return null;
+  }
+
   return (
-    <div className="company-dashboard-shell">
+    <div>
+      <Navbar />
+      <div className="company-dashboard-shell" style={{ paddingTop: 80 }}>
       <div className="company-dashboard-hero">
         <div>
           <div className="company-dashboard-pill">
@@ -206,10 +250,10 @@ export function CompanyDashboard({
               <span className={`company-dashboard-status ${employee.status.toLowerCase()}`}>
                 <CheckCircle2 size={14} /> {employee.status}
               </span>
-              <button type="button" className="company-dashboard-link-btn">
+              <Link href={`${resolvedCompanyUrl}/profile`} className="company-dashboard-link-btn">
                 Manage
                 <ChevronRight size={16} />
-              </button>
+              </Link>
             </div>
           ))}
         </div>
@@ -224,6 +268,7 @@ export function CompanyDashboard({
           <Users size={16} /> Invite team
         </button>
       </section>
+      </div>
     </div>
   );
 }

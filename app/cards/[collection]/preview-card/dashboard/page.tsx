@@ -15,13 +15,13 @@ export default function DashboardPage() {
     // Save profile to localStorage
     try {
       const profileData = {
-        fullName: localStorage.getItem("happytap_fullName") || "John Doe",
-        designation: localStorage.getItem("happytap_designation") || "Lead Designer",
-        companyName: localStorage.getItem("happytap_companyName") || "HappyTap",
-        mobileNumber: localStorage.getItem("happytap_mobileNumber") || "+91 98765 43210",
-        emailAddress: localStorage.getItem("happytap_emailAddress") || "john.doe@example.com",
-        companyDescription: localStorage.getItem("happytap_companyDescription") || "Digital designer",
-        businessAddress: localStorage.getItem("happytap_businessAddress") || "123 Innovation Way",
+        fullName: localStorage.getItem("happytap_fullName") || "",
+        designation: localStorage.getItem("happytap_designation") || "",
+        companyName: localStorage.getItem("happytap_companyName") || "",
+        mobileNumber: localStorage.getItem("happytap_mobileNumber") || "",
+        emailAddress: localStorage.getItem("happytap_emailAddress") || "",
+        companyDescription: localStorage.getItem("happytap_companyDescription") || "",
+        businessAddress: localStorage.getItem("happytap_businessAddress") || "",
       };
       localStorage.setItem("happytap_user_profile", JSON.stringify(profileData));
     } catch (err) {

@@ -7,21 +7,24 @@ import {
   ArrowLeft,
 } from "lucide-react";
 
+import { useAuth } from "@/lib/AuthContext";
+
 /* ─────────────────────────────────────────────────
    Preview Card Page
    ───────────────────────────────────────────────── */
 export default function PreviewCardPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
   
   // Form state
-  const [fullName, setFullName] = useState("John Doe");
-  const [designation, setDesignation] = useState("Lead Designer");
-  const [companyName, setCompanyName] = useState("HappyTap");
-  const [mobileNumber, setMobileNumber] = useState("+91 98765 43210");
-  const [emailAddress, setEmailAddress] = useState("john.doe@example.com");
-  const [companyDescription, setCompanyDescription] = useState("Digital designer and entrepreneur");
-  const [businessAddress, setBusinessAddress] = useState("123 Innovation Way, Tech Park, Bangalore");
+  const [fullName, setFullName] = useState("");
+  const [designation, setDesignation] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [emailAddress, setEmailAddress] = useState("");
+  const [companyDescription, setCompanyDescription] = useState("");
+  const [businessAddress, setBusinessAddress] = useState("");
   const [selectedTheme, setSelectedTheme] = useState<"purple" | "lavender" | "midnight" | "emerald">("purple");
   const [isCardFlipped, setIsCardFlipped] = useState(false);
 
@@ -40,11 +43,15 @@ export default function PreviewCardPage() {
         if (p.companyDescription) setCompanyDescription(p.companyDescription);
         if (p.businessAddress) setBusinessAddress(p.businessAddress);
         if (p.selectedTheme) setSelectedTheme(p.selectedTheme);
+      } else if (user) {
+        setFullName(`${user.firstName} ${user.lastName}`);
+        setEmailAddress(user.email);
+        if (user.companyName) setCompanyName(user.companyName);
       }
     } catch (err) {
       console.error("Error loading profile:", err);
     }
-  }, []);
+  }, [user]);
 
   if (!mounted) return null;
 

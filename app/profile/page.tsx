@@ -45,6 +45,8 @@ import {
 } from "lucide-react";
 import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
 import { ThemeCustomizer, ThemeCustomizerHandle } from "@/components/ThemeCustomizer";
+import { useAuth } from "@/lib/AuthContext";
+import { Navbar } from "@/components/Navbar";
 
 /* ─────────────────────────────────────────────────
    Sidebar navigation items
@@ -61,6 +63,7 @@ const sidebarLinks = [
    ───────────────────────────────────────────────── */
 export default function ProfilePage() {
   const router = useRouter();
+  const { user, loading } = useAuth();
   const [activeTab, setActiveTab] = useState<string>("Dashboard");
   const [subTab, setSubTab] = useState<"Profile" | "Links" | "Theme" | "Analytics">("Profile");
   const [profileUrl, setProfileUrl] = useState("happytap.com/profile/johndoe");
@@ -78,24 +81,53 @@ export default function ProfilePage() {
   const coverInputRef = useRef<HTMLInputElement>(null);
 
   /* Form fields */
-  const [fullName, setFullName] = useState("John Doe");
-  const [designation, setDesignation] = useState("Lead Designer");
-  const [companyName, setCompanyName] = useState("HappyTap");
-  const [companyDescription, setCompanyDescription] = useState("Digital designer and entrepreneur passionate about creating connections.");
-  const [mobileNumber, setMobileNumber] = useState("+91 98765 43210");
-  const [emailAddress, setEmailAddress] = useState("john.doe@example.com");
-  const [whatsAppNumber, setWhatsAppNumber] = useState("+91 98765 43210");
-  const [website, setWebsite] = useState("https://happytap.com");
-  const [portfolio, setPortfolio] = useState("https://portfolio.johndoe.com");
-  const [linkedin, setLinkedin] = useState("https://linkedin.com/in/johndoe");
-  const [instagram, setInstagram] = useState("https://instagram.com/johndoe");
-  const [facebook, setFacebook] = useState("https://facebook.com/johndoe");
-  const [twitter, setTwitter] = useState("https://x.com/johndoe");
-  const [youtube, setYoutube] = useState("https://youtube.com/johndoe");
-  const [businessAddress, setBusinessAddress] = useState("123 Innovation Way, Tech Park, Bangalore, India");
-  const [googleMapsLocation, setGoogleMapsLocation] = useState("https://maps.google.com/?q=12.9716,77.5946");
+  const [fullName, setFullName] = useState("");
+  const [designation, setDesignation] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [companyDescription, setCompanyDescription] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [emailAddress, setEmailAddress] = useState("");
+  const [whatsAppNumber, setWhatsAppNumber] = useState("");
+  const [website, setWebsite] = useState("");
+  const [portfolio, setPortfolio] = useState("");
+  const [linkedin, setLinkedin] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [facebook, setFacebook] = useState("");
+  const [twitter, setTwitter] = useState("");
+  const [youtube, setYoutube] = useState("");
+  const [businessAddress, setBusinessAddress] = useState("");
+  const [googleMapsLocation, setGoogleMapsLocation] = useState("");
   const [twoFactor, setTwoFactor] = useState(true);
   const [saved, setSaved] = useState(false);
+
+  // Redirect if not logged in
+  React.useEffect(() => {
+    if (!loading && !user) {
+      router.push("/");
+    }
+  }, [user, loading, router]);
+
+  // If the logged-in user is a company account, send them to the company workspace
+  React.useEffect(() => {
+    if (!loading && user && user.accountType === "company") {
+      const compUrl = user.companyName
+        ? user.companyName.toLowerCase().replace(/\s+/g, "-")
+        : `${user.firstName}-${user.lastName}`.toLowerCase();
+      router.push(`/company/${encodeURIComponent(compUrl)}`);
+    }
+  }, [user, loading, router]);
+
+  // Sync state with fetched user details (only if empty)
+  React.useEffect(() => {
+    if (user) {
+      setFullName((prev) => prev || `${user.firstName} ${user.lastName}`);
+      setEmailAddress((prev) => prev || user.email);
+      setProfileUrl((prev) => prev || `happytap.com/profile/${user.firstName.toLowerCase()}-${user.lastName.toLowerCase()}`);
+      if (user.companyName) {
+        setCompanyName((prev) => prev || user.companyName || "");
+      }
+    }
+  }, [user]);
 
   /* Load profile config on mount */
   React.useEffect(() => {
@@ -129,6 +161,22 @@ export default function ProfilePage() {
       console.error("Error loading profile configuration:", err);
     }
   }, []);
+
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: "#0a0a0f", color: "#fff", fontFamily: "sans-serif" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
+          <div style={{ width: "30px", height: "30px", border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "#6366f1", borderRadius: "50%", animation: "spin 1s linear infinite" }}></div>
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          <span>Loading workspace...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
 
   /* Helpers */
   const handleFileChange = (
@@ -205,7 +253,9 @@ export default function ProfilePage() {
 
 
   return (
-    <div className="profile-shell">
+    <div>
+      <Navbar />
+      <div className="profile-shell" style={{ paddingTop: 80 }}>
       {/* ── Sidebar overlay for mobile ── */}
       {sidebarOpen && (
         <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
@@ -259,7 +309,7 @@ export default function ProfilePage() {
               setActiveTab("Dashboard");
               setSubTab("Theme");
               setSidebarOpen(false);
-            }}
+              }}
           >
             Explore Themes
           </button>
@@ -778,6 +828,7 @@ export default function ProfilePage() {
           )}
         </div>
       </main>
+    </div>
     </div>
   );
 }

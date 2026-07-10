@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
@@ -22,6 +22,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AuthModal } from "@/components/AuthModal";
 import { Reveal } from "@/components/Reveal";
+import { useAuth } from "@/lib/AuthContext";
 
 interface Product {
   id: string;
@@ -40,157 +41,6 @@ interface Product {
 }
 
 const productsData: Product[] = [
-  {
-    id: "executive-classic",
-    title: "Executive Classic",
-    category: "Standard",
-    price: 3999,
-    description: "Midnight black executive card decorated with a premium radial gold wave accent pattern.",
-    colorName: "Gold Wave Accent",
-    cssClass: "ec-card-classic",
-    cardStyle: {
-      logoStyle: "gold",
-    },
-  },
-  {
-    id: "executive-graphite",
-    title: "Executive Graphite",
-    category: "Standard",
-    price: 4499,
-    description: "Geometric matte textured executive card built on a deep charcoal graphite background.",
-    colorName: "Graphite Charcoal",
-    cssClass: "ec-card-graphite",
-    cardStyle: {
-      logoStyle: "silver",
-    },
-    hasExtraLines: "graphite",
-  },
-  {
-    id: "executive-rose-gold",
-    title: "Executive Rose Gold",
-    category: "Premium",
-    price: 4999,
-    description: "Brushed metal finish executive card reflecting a warm rose-gold premium metallic luster.",
-    colorName: "Rose Gold Finish",
-    cssClass: "ec-card-rosegold",
-    cardStyle: {
-      logoStyle: "rose",
-      isLight: true,
-    },
-  },
-  {
-    id: "executive-prestige",
-    title: "Executive Prestige",
-    category: "Premium",
-    price: 5499,
-    description: "Elegant diamond quilt patterned executive card engraved into a premium matte black body.",
-    colorName: "Midnight Prestige",
-    cssClass: "ec-card-prestige",
-    cardStyle: {
-      logoStyle: "gold",
-    },
-    hasExtraLines: "prestige",
-  },
-  {
-    id: "executive-titanium",
-    title: "Executive Titanium",
-    category: "Luxury",
-    price: 5999,
-    description: "Hexagon textured executive card finished with a satin titanium silver metal coat.",
-    colorName: "Titanium Hexagon",
-    cssClass: "ec-card-titanium",
-    cardStyle: {
-      logoStyle: "silver",
-      isLight: true,
-    },
-    hasExtraLines: "titanium",
-  },
-  {
-    id: "executive-elite",
-    title: "Executive Elite",
-    category: "Luxury",
-    price: 6999,
-    description: "Elite deep charcoal executive card detailed with stunning diagonal gold accent lines.",
-    colorName: "Elite Diagonal Gold",
-    cssClass: "ec-card-elite",
-    cardStyle: {
-      logoStyle: "gold",
-    },
-  },
-  {
-    id: "executive-chairman",
-    title: "Executive Chairman",
-    category: "Executive",
-    price: 7499,
-    description: "Mahogany wood veneer executive card combined with a sleek rose-gold accent border.",
-    colorName: "Mahogany & Gold",
-    cssClass: "ec-card-chairman",
-    cardStyle: {
-      logoStyle: "gold",
-      isLight: true,
-    },
-  },
-  {
-    id: "executive-black-label",
-    title: "Executive Black Label",
-    category: "Executive",
-    price: 7999,
-    description: "Obsidian matte executive card featuring premium horizontal micro-textures for boardroom presence.",
-    colorName: "Obsidian Black",
-    cssClass: "ec-card-blacklabel",
-    cardStyle: {
-      logoStyle: "white",
-    },
-  },
-  {
-    id: "executive-signature",
-    title: "Executive Signature",
-    category: "Signature",
-    price: 8999,
-    description: "Minimalist executive card defined by double 24k polished gold borders and logo.",
-    colorName: "Double Gold Border",
-    cssClass: "ec-card-signature",
-    cardStyle: {
-      logoStyle: "gold",
-    },
-  },
-  {
-    id: "executive-legacy",
-    title: "Executive Legacy",
-    category: "Signature",
-    price: 9999,
-    description: "Flagship royal emblem executive card designed to reflect heritage and prestigious authority.",
-    colorName: "Royal Emblem",
-    cssClass: "ec-card-legacy",
-    cardStyle: {
-      logoStyle: "gold",
-    },
-    hasExtraLines: "legacy",
-  },
-  {
-    id: "executive-royal",
-    title: "Executive Royal",
-    category: "Premium",
-    price: 5299,
-    description: "Royal blue leatherette textured executive card styled with a luxury gold monogram.",
-    colorName: "Royal Blue & Gold",
-    cssClass: "ec-card-royal",
-    cardStyle: {
-      logoStyle: "gold",
-    },
-  },
-  {
-    id: "executive-monarch",
-    title: "Executive Monarch",
-    category: "Signature",
-    price: 9499,
-    description: "Imperial purple matte executive card accented by high-reflection gold curves and details.",
-    colorName: "Imperial Purple & Gold",
-    cssClass: "ec-card-monarch",
-    cardStyle: {
-      logoStyle: "gold",
-    },
-  },
 ];
 
 const trustItems = [
@@ -225,21 +75,63 @@ export default function ExecutiveCollectionPage() {
   const [sortBy, setSortBy] = useState("Popular");
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState<"login" | "signup">("login");
-  const [user, setUser] = useState<string | null>(null);
+  const { user, logout } = useAuth();
+  const [cardHolderName, setCardHolderName] = useState("YOUR NAME");
+  const [dynamicProducts, setDynamicProducts] = useState<Product[]>(productsData);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("happytap_user_profile");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.fullName) {
+          setCardHolderName(parsed.fullName.toUpperCase());
+        } else if (parsed.companyName) {
+          setCardHolderName(parsed.companyName.toUpperCase());
+        }
+      } else if (user) {
+        setCardHolderName(`${user.firstName} ${user.lastName}`.toUpperCase());
+      } else {
+        setCardHolderName("YOUR NAME");
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/cards");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.cards) {
+            const themeCustomCards = data.cards.filter((card: any) => card.colorName === "Executive Collection");
+            setDynamicProducts(() => {
+              const updated = [...productsData];
+              themeCustomCards.forEach((card: any) => {
+                const index = updated.findIndex(p => p.id === card.id);
+                if (index > -1) {
+                  updated[index] = card;
+                } else {
+                  updated.push(card);
+                }
+              });
+              return updated;
+            });
+          }
+        }
+      } catch (e) {
+        console.error("Error loading custom cards:", e);
+      }
+    })();
+  }, []);
 
   const filters = ["All", "Standard", "Premium", "Luxury", "Signature", "Executive"];
 
   const openAuth = (tab: "login" | "signup") => {
     setAuthTab(tab);
     setIsAuthOpen(true);
-  };
-
-  const handleAuthSuccess = (name: string) => {
-    setUser(name);
-  };
-
-  const handleLogout = () => {
-    setUser(null);
   };
 
   const toggleFavorite = (id: string, name: string) => {
@@ -269,7 +161,7 @@ export default function ExecutiveCollectionPage() {
   };
 
   // Filter products
-  const filteredProducts = productsData.filter((product) => {
+  const filteredProducts = dynamicProducts.filter((product) => {
     if (activeFilter === "All") return true;
     return product.category === activeFilter;
   });
@@ -297,8 +189,8 @@ export default function ExecutiveCollectionPage() {
     <>
       <Navbar
         onLoginClick={() => openAuth("login")}
-        user={user}
-        onLogout={handleLogout}
+        user={user ? `${user.firstName} ${user.lastName}` : null}
+        onLogout={logout}
       />
 
       <div className="executive-collection-page">
@@ -425,131 +317,149 @@ export default function ExecutiveCollectionPage() {
         {/* Product Grid Section */}
         <section className="ec-collection-section">
           <div className="container">
-            <div className="ec-grid-5">
-              <AnimatePresence mode="popLayout">
-                {sortedProducts.map((product) => (
-                  <motion.div
-                    key={product.id}
-                    layout
-                    initial={{ opacity: 0, y: 25 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.45, ease: "easeOut" }}
-                  >
-                    <div className="ec-product-card">
-                      {/* Heart Button */}
-                      <button
-                        className={`ec-favorite-btn ${favorites[product.id] ? "active" : ""}`}
-                        onClick={() => toggleFavorite(product.id, product.title)}
-                        aria-label="Add to favorites"
-                      >
-                        <Heart
-                          className="icon"
-                          style={{
-                            fill: favorites[product.id] ? "#ff4757" : "none",
-                            color: favorites[product.id] ? "#ff4757" : "currentColor",
-                          }}
-                        />
-                      </button>
+            {sortedProducts.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "80px 20px", background: "rgba(255, 255, 255, 0.02)", borderRadius: "24px", border: "1px solid rgba(255, 255, 255, 0.05)" }}>
+                <Award className="icon" style={{ width: "48px", height: "48px", color: "rgba(255,255,255,0.2)", marginBottom: "16px", display: "inline-block" }} />
+                <h3 style={{ color: "#FFFFFF", fontSize: "1.2rem", marginBottom: "8px" }}>No Cards Available</h3>
+                <p style={{ color: "#a1a1a6", fontSize: "0.95rem" }}>No custom cards have been added to this collection yet.</p>
+              </div>
+            ) : (
+              <div className="ec-grid-5">
+                <AnimatePresence mode="popLayout">
+                  {sortedProducts.map((product) => (
+                    <motion.div
+                      key={product.id}
+                      layout
+                      initial={{ opacity: 0, y: 25 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.45, ease: "easeOut" }}
+                    >
+                      <div className="ec-product-card">
+                        {/* Heart Button */}
+                        <button
+                          className={`ec-favorite-btn ${favorites[product.id] ? "active" : ""}`}
+                          onClick={() => toggleFavorite(product.id, product.title)}
+                          aria-label="Add to favorites"
+                        >
+                          <Heart
+                            className="icon"
+                            style={{
+                              fill: favorites[product.id] ? "#ff4757" : "none",
+                              color: favorites[product.id] ? "#ff4757" : "currentColor",
+                            }}
+                          />
+                        </button>
 
-                      {/* Card Preview Area */}
-                      <div className="ec-card-preview-area">
-                        <div
-                          className={`ec-card-mockup ${product.cssClass}`}
-                          style={{
-                            border: product.cardStyle.border || "1px solid rgba(255, 255, 255, 0.08)",
+                        {/* Card Preview Area */}
+                        <div className="ec-card-preview-area">
+                          {(product as any).images?.front ? (
+                            <div className={`ec-card-mockup ${product.cssClass}`} style={{ padding: 0, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              <img
+                                src={(product as any).images.front}
+                                alt={product.title}
+                                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                              />
+                            </div>
+                          ) : (
+                            <div
+                              className={`ec-card-mockup ${product.cssClass}`}
+                              style={{
+                                border: product.cardStyle.border || "1px solid rgba(255, 255, 255, 0.08)",
+                              }}
+                            >
+                              <div className="ec-card-mockup-glare"></div>
+
+                              {/* Extra textures needed for specific designs */}
+                              {product.hasExtraLines === "graphite" && (
+                                <div className="ec-card-graphite-lines" />
+                              )}
+                              {product.hasExtraLines === "prestige" && (
+                                <div className="ec-card-prestige-texture" />
+                              )}
+                              {product.hasExtraLines === "titanium" && (
+                                <div className="ec-card-titanium-texture" />
+                              )}
+                              {product.hasExtraLines === "legacy" && (
+                                <div className="ec-card-legacy-crest">
+                                  <Award
+                                    className="icon"
+                                    style={{
+                                      width: "26px",
+                                      height: "26px",
+                                      color: "rgba(212, 175, 55, 0.75)",
+                                    }}
+                                  />
+                                </div>
+                              )}
+
+                              {/* Logo mark */}
+                              <div
+                                className={`ec-mock-logo ${product.cardStyle.isLight ? "light-card-text" : ""
+                                  }`}
+                              >
+                                H
+                                <span
+                                  className={`ec-mock-logo-mark ${product.cardStyle.logoStyle === "gold" ? "gold-logo" : ""
+                                    }`}
+                                  style={getLogoMarkStyle(product.cardStyle.logoStyle)}
+                                >
+                                  t
+                                </span>
+                              </div>
+
+                              {/* Branding Details */}
+                              <div className="ec-mock-details">
+                                <div
+                                  className={`ec-mock-brand ${product.cardStyle.isLight ? "light-card-text" : ""
+                                    }`}
+                                >
+                                  {cardHolderName}
+                                </div>
+                                <div
+                                  className={`ec-mock-chip ${product.cardStyle.isLight ? "light-card-text" : ""
+                                    }`}
+                                >
+                                  <Wifi
+                                    className="icon icon-sm"
+                                    style={{ transform: "rotate(90deg)" }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Card Info Area */}
+                        <div className="ec-product-details">
+                          <span className="ms-product-tag" style={{ color: "#86868b", fontSize: "0.75rem", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                            {product.category}
+                          </span>
+                          <h3>{product.title}</h3>
+                          <p>{product.description}</p>
+                          <span className="ec-product-price">₹{product.price.toLocaleString()}</span>
+                        </div>
+
+                        {/* View Details Button */}
+                        <button
+                          className="ec-view-details-btn"
+                          onClick={() => {
+                            try {
+                              localStorage.setItem("selected_card_id", product.id);
+                              localStorage.setItem("selected_card", JSON.stringify(product));
+                            } catch (err) {}
+                            router.push(`/cards/executive-collection/preview-card`);
                           }}
                         >
-                          <div className="ec-card-mockup-glare"></div>
+                          View Details
+                        </button>
 
-                          {/* Extra textures needed for specific designs */}
-                          {product.hasExtraLines === "graphite" && (
-                            <div className="ec-card-graphite-lines" />
-                          )}
-                          {product.hasExtraLines === "prestige" && (
-                            <div className="ec-card-prestige-texture" />
-                          )}
-                          {product.hasExtraLines === "titanium" && (
-                            <div className="ec-card-titanium-texture" />
-                          )}
-                          {product.hasExtraLines === "legacy" && (
-                            <div className="ec-card-legacy-crest">
-                              <Award
-                                className="icon"
-                                style={{
-                                  width: "26px",
-                                  height: "26px",
-                                  color: "rgba(212, 175, 55, 0.75)",
-                                }}
-                              />
-                            </div>
-                          )}
-
-                          {/* Logo mark */}
-                          <div
-                            className={`ec-mock-logo ${product.cardStyle.isLight ? "light-card-text" : ""
-                              }`}
-                          >
-                            H
-                            <span
-                              className={`ec-mock-logo-mark ${product.cardStyle.logoStyle === "gold" ? "gold-logo" : ""
-                                }`}
-                              style={getLogoMarkStyle(product.cardStyle.logoStyle)}
-                            >
-                              t
-                            </span>
-                          </div>
-
-                          {/* Branding Details */}
-                          <div className="ec-mock-details">
-                            <div
-                              className={`ec-mock-brand ${product.cardStyle.isLight ? "light-card-text" : ""
-                                }`}
-                            >
-                              HAPPYTAP
-                            </div>
-                            <div
-                              className={`ec-mock-chip ${product.cardStyle.isLight ? "light-card-text" : ""
-                                }`}
-                            >
-                              <Wifi
-                                className="icon icon-sm"
-                                style={{ transform: "rotate(90deg)" }}
-                              />
-                            </div>
-                          </div>
-                        </div>
                       </div>
-
-                      {/* Card Info Area */}
-                      <div className="ec-product-details">
-                        <span className="ms-product-tag" style={{ color: "#86868b", fontSize: "0.75rem", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                          {product.category}
-                        </span>
-                        <h3>{product.title}</h3>
-                        <p>{product.description}</p>
-                        <span className="ec-product-price">₹{product.price.toLocaleString()}</span>
-                      </div>
-
-                      {/* View Details Button */}
-                      <button
-                        className="ec-view-details-btn"
-                        onClick={() => {
-                          try {
-                            localStorage.setItem("selected_card_id", product.id);
-                            localStorage.setItem("selected_card", JSON.stringify(product));
-                          } catch (err) {}
-                          router.push(`/cards/executive-collection/preview-card`);
-                        }}
-                      >
-                        View Details
-                      </button>
-
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            )}
           </div>
         </section>
 
@@ -675,7 +585,6 @@ export default function ExecutiveCollectionPage() {
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
         initialTab={authTab}
-        onSuccess={handleAuthSuccess}
       />
     </>
   );

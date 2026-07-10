@@ -40,20 +40,24 @@ export default function AdminPage() {
   const [instantSharing, setInstantSharing] = useState(true);
   const [noAppRequired, setNoAppRequired] = useState(true);
   const [worksEverywhere, setWorksEverywhere] = useState(true);
-
+ 
   // Uploaded Images (Base64)
-  const [mainImage, setMainImage] = useState<string | null>(null);
   const [frontImage, setFrontImage] = useState<string | null>(null);
   const [backImage, setBackImage] = useState<string | null>(null);
 
   // File Inputs Refs
-  const mainInputRef = useRef<HTMLInputElement>(null);
   const frontInputRef = useRef<HTMLInputElement>(null);
   const backInputRef = useRef<HTMLInputElement>(null);
 
   // Toast / Status state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+
+  // CRUD / Card List States
+  const [cards, setCards] = useState<any[]>([]);
+  const [loadingCards, setLoadingCards] = useState(false);
+  const [editingCardId, setEditingCardId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Helper for word counts
   const getWordCount = (text: string) => {
@@ -92,6 +96,85 @@ export default function AdminPage() {
     }, 3000);
   };
 
+  const fetchCards = async () => {
+    setLoadingCards(true);
+    try {
+      const res = await fetch("/api/cards");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.cards) {
+          setCards(data.cards);
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching cards:", err);
+    } finally {
+      setLoadingCards(false);
+    }
+  };
+
+  React.useEffect(() => {
+    if (activeTab === "Card List") {
+      fetchCards();
+    }
+  }, [activeTab]);
+
+  const resetForm = () => {
+    setCardName("");
+    setTheme("Minimal Series");
+    setPrice("");
+    setShortDescription("");
+    setFullDescription("");
+    setRatingValue("");
+    setReviewsCount("");
+    setNfcEnabled(true);
+    setInstantSharing(true);
+    setNoAppRequired(true);
+    setWorksEverywhere(true);
+    setFrontImage(null);
+    setBackImage(null);
+    setEditingCardId(null);
+  };
+
+  const handleDeleteCard = async (id: string, title: string) => {
+    if (!window.confirm(`Are you sure you want to delete the card "${title}"?`)) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/cards?id=${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        showToast("Card deleted successfully!");
+        fetchCards();
+      } else {
+        const data = await res.json();
+        showToast(data.error || "Failed to delete card.");
+      }
+    } catch (err) {
+      console.error("Error deleting card:", err);
+      showToast("Error connecting to server.");
+    }
+  };
+
+  const handleStartEdit = (card: any) => {
+    setEditingCardId(card.id);
+    setCardName(card.title || "");
+    setTheme(card.colorName || "Minimal Series");
+    setPrice(card.price ? card.price.toString() : "");
+    setShortDescription(card.shortDescription || "");
+    setFullDescription(card.description || "");
+    setRatingValue(card.rating ? card.rating.toString() : "");
+    setReviewsCount(card.reviewsCount ? card.reviewsCount.toString() : "");
+    setNfcEnabled(card.features?.nfcEnabled ?? true);
+    setInstantSharing(card.features?.instantSharing ?? true);
+    setNoAppRequired(card.features?.noAppRequired ?? true);
+    setWorksEverywhere(card.features?.worksEverywhere ?? true);
+    setFrontImage(card.images?.front || null);
+    setBackImage(card.images?.back || null);
+    setActiveTab("Cards");
+  };
+
   const handleSaveCard = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -106,7 +189,7 @@ export default function AdminPage() {
 
     setIsSaving(true);
 
-    const cardId = cardName
+    const cardId = editingCardId || cardName
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "");
@@ -150,7 +233,7 @@ export default function AdminPage() {
         worksEverywhere,
       },
       images: {
-        main: mainImage,
+        main: null,
         front: frontImage,
         back: backImage,
         side: null,
@@ -164,22 +247,29 @@ export default function AdminPage() {
       isTeamLayout: theme === "Team Edition",
     };
 
-    setTimeout(() => {
+    (async () => {
       try {
-        const storedCards = JSON.parse(localStorage.getItem("happytap_custom_cards") || "[]");
-        const filtered = storedCards.filter((c: any) => c.id !== cardId);
-        const updated = [...filtered, cardProduct];
-        localStorage.setItem("happytap_custom_cards", JSON.stringify(updated));
+        const response = await fetch("/api/cards", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(cardProduct),
+        });
 
-        showToast("✓ Card saved successfully! Redirecting...");
-        setTimeout(() => {
-          window.location.href = `/cards/${themeSlug}/${cardId}`;
-        }, 1500);
+        if (!response.ok) {
+          throw new Error("Failed to save card to database");
+        }
+
+        showToast(editingCardId ? "✓ Card updated successfully!" : "✓ Card saved successfully!");
+        resetForm();
+        setActiveTab("Card List");
+        setIsSaving(false);
       } catch (err) {
-        showToast("Failed to save card. Storage might be full.");
+        showToast("Failed to save card to database.");
         setIsSaving(false);
       }
-    }, 1000);
+    })();
   };
 
   return (
@@ -218,10 +308,27 @@ export default function AdminPage() {
           <a
             href="#"
             className={`admin-sidebar-link ${activeTab === "Cards" ? "active" : ""}`}
-            onClick={(e) => { e.preventDefault(); setActiveTab("Cards"); }}
+            onClick={(e) => {
+              e.preventDefault();
+              if (editingCardId) {
+                resetForm();
+              }
+              setActiveTab("Cards");
+            }}
           >
             <CreditCard className="icon" />
-            Cards
+            {editingCardId ? "Edit Card" : "Add Card"}
+          </a>
+          <a
+            href="#"
+            className={`admin-sidebar-link ${activeTab === "Card List" ? "active" : ""}`}
+            onClick={(e) => {
+              e.preventDefault();
+              setActiveTab("Card List");
+            }}
+          >
+            <Layers className="icon" />
+            Card List
           </a>
           <a
             href="#"
@@ -254,13 +361,20 @@ export default function AdminPage() {
             <div className="admin-breadcrumb" aria-label="Breadcrumb">
               <Link href="#">Cards</Link>
               <span className="admin-breadcrumb-separator">&gt;</span>
-              <span style={{ color: "#0f172a" }}>Add New Card</span>
+              <span style={{ color: "#0f172a" }}>
+                {activeTab === "Card List" ? "Cards Database" : editingCardId ? "Edit Card" : "Add New Card"}
+              </span>
             </div>
             <h1 className="admin-page-title">
-              Add New Card <span style={{ color: "var(--admin-purple)" }}>✨</span>
+              {activeTab === "Card List" ? "Cards Database" : editingCardId ? "Edit Card" : "Add New Card"} <span style={{ color: "var(--admin-purple)" }}>✨</span>
             </h1>
             <p className="admin-page-sub">
-              Create a new card with all details. All fields are required unless marked optional.
+              {activeTab === "Card List" 
+                ? "Browse, edit, view, and delete custom cards from MongoDB." 
+                : editingCardId 
+                ? `Update details for card ID: ${editingCardId}`
+                : "Create a new card with all details. All fields are required unless marked optional."
+              }
             </p>
           </div>
 
@@ -271,6 +385,8 @@ export default function AdminPage() {
                 type="text"
                 placeholder="Search cards..."
                 className="admin-search-input"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
 
@@ -292,7 +408,149 @@ export default function AdminPage() {
         </header>
 
         {/* Content Container */}
-        {activeTab === "Cards" ? (
+        {activeTab === "Card List" ? (
+          <div className="admin-container" style={{ display: "block" }}>
+            <div className="admin-card" style={{ width: "100%" }}>
+              <div className="admin-card-header-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "12px" }}>
+                <div>
+                  <h3 className="admin-card-title" style={{ margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
+                    <Layers size={18} style={{ color: "var(--admin-purple)" }} />
+                    Database Cards List
+                  </h3>
+                  <span className="admin-card-subtitle" style={{ marginTop: "4px" }}>
+                    Manage and edit custom cards stored in MongoDB.
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    resetForm();
+                    setActiveTab("Cards");
+                  }}
+                  className="admin-btn-save"
+                  style={{ padding: "10px 18px", fontSize: "0.85rem" }}
+                >
+                  + Add New Card
+                </button>
+              </div>
+
+              {loadingCards ? (
+                <div style={{ textAlign: "center", padding: "64px 24px" }}>
+                  <div className="admin-loading-spinner" style={{ display: "inline-block", width: "28px", height: "28px", border: "3px solid rgba(91, 69, 232, 0.1)", borderTopColor: "var(--admin-purple)", borderRadius: "50%", animation: "spin 1s infinite linear" }}></div>
+                  <p style={{ color: "#64748b", marginTop: "16px", fontSize: "0.9rem", fontWeight: 500 }}>Loading cards from database...</p>
+                </div>
+              ) : (
+                <div className="admin-table-container">
+                  <div className="admin-table-scroll">
+                    <table className="admin-table">
+                      <thead>
+                        <tr>
+                          <th>Image</th>
+                          <th>Card Name</th>
+                          <th>Collection</th>
+                          <th>Price</th>
+                          <th>Features</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {cards.filter(c => c.title.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 ? (
+                          <tr>
+                            <td colSpan={6}>
+                              <div className="admin-empty-state">
+                                <h3>No Cards Found</h3>
+                                <p>No cards match your search query or exist in the database.</p>
+                              </div>
+                            </td>
+                          </tr>
+                        ) : (
+                          cards
+                            .filter(c => c.title.toLowerCase().includes(searchQuery.toLowerCase()))
+                            .map((card) => {
+                              const themeSlug = card.colorName.toLowerCase().replace(/\s+/g, "-");
+                              const badgeClass =
+                                card.colorName === "Minimal Series"
+                                  ? "admin-badge-minimal"
+                                  : card.colorName === "Metal Edition"
+                                  ? "admin-badge-metal"
+                                  : card.colorName === "Executive Collection"
+                                  ? "admin-badge-exec"
+                                  : "admin-badge-team";
+
+                              return (
+                                <tr key={card.id}>
+                                  <td>
+                                    {card.images?.front ? (
+                                      <img
+                                        src={card.images.front}
+                                        alt={card.title}
+                                        className="admin-table-thumb"
+                                      />
+                                    ) : (
+                                      <div className="admin-table-fallback-thumb">No Front</div>
+                                    )}
+                                  </td>
+                                  <td style={{ fontWeight: 600 }}>{card.title}</td>
+                                  <td>
+                                    <span className={`admin-theme-badge ${badgeClass}`}>
+                                      {card.colorName}
+                                    </span>
+                                  </td>
+                                  <td style={{ fontWeight: 700 }}>₹{card.price.toLocaleString()}</td>
+                                  <td>
+                                    <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                                      {card.features?.nfcEnabled && (
+                                        <span style={{ fontSize: "0.7rem", background: "#f1f5f9", padding: "2px 6px", borderRadius: "4px", color: "#475569", fontWeight: 600 }}>NFC</span>
+                                      )}
+                                      {card.features?.instantSharing && (
+                                        <span style={{ fontSize: "0.7rem", background: "#f1f5f9", padding: "2px 6px", borderRadius: "4px", color: "#475569", fontWeight: 600 }}>Sharing</span>
+                                      )}
+                                      {card.isTeamLayout && (
+                                        <span style={{ fontSize: "0.7rem", background: "#ecfdf5", padding: "2px 6px", borderRadius: "4px", color: "#047857", fontWeight: 600 }}>Team Layout</span>
+                                      )}
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div className="admin-table-actions">
+                                      <a
+                                        href={`/cards/${themeSlug}/${card.id}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="admin-action-btn admin-btn-read"
+                                        title="View Live Card"
+                                      >
+                                        View Details
+                                      </a>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleStartEdit(card)}
+                                        className="admin-action-btn admin-btn-update"
+                                        title="Edit Card"
+                                      >
+                                        Edit
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleDeleteCard(card.id, card.title)}
+                                        className="admin-action-btn admin-btn-delete-row"
+                                        title="Delete Card"
+                                      >
+                                        Delete
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : activeTab === "Cards" ? (
           <form onSubmit={handleSaveCard} className="admin-container">
             {/* Grid Row 1 (4 Columns) */}
             <div className="admin-form-grid-row-1">
@@ -536,58 +794,18 @@ export default function AdminPage() {
                 </h3>
                 <span className="admin-card-subtitle">Upload all images for the card</span>
 
-                <div className="admin-images-grid">
-                  {/* Main Image Slot */}
-                  <div className="admin-field">
-                    <span className="admin-upload-label">Main Card Image</span>
-                    <div
-                      onClick={() => mainInputRef.current?.click()}
-                      className="admin-upload-zone-main"
-                    >
-                      {mainImage ? (
-                        <div className="admin-preview-img-wrapper">
-                          <img src={mainImage} alt="Main Card preview" className="admin-preview-img-contain" />
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setMainImage(null);
-                            }}
-                            className="admin-remove-image-btn"
-                          >
-                            <Trash2 size={12} />
-                          </button>
-                        </div>
-                      ) : (
-                        <>
-                          <div className="admin-upload-icon-wrap">
-                            <Upload size={20} />
-                          </div>
-                          <span className="admin-upload-text">
-                            <span className="admin-upload-text-highlight">Drag & drop or click to upload</span>
-                          </span>
-                          <span className="admin-upload-subtext">PNG, JPG or WEBP (Max. 5MB)</span>
-                        </>
-                      )}
-                    </div>
-                    <input
-                      ref={mainInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handleImageUpload(e, setMainImage)}
-                      className="sr-only"
-                    />
-                  </div>
-
-                  {/* Previews Row: 5 square slots */}
-                  <div className="admin-field">
-                    <span className="admin-upload-label">Alternative Views</span>
-                    <div className="admin-images-row">
+                               <div className="admin-field">
+                    <span className="admin-upload-label">Card Views (Front & Back)</span>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginTop: "8px" }}>
                       {/* Slot 1: Front */}
-                      <div onClick={() => frontInputRef.current?.click()} className="admin-upload-zone-thumb">
+                      <div
+                        onClick={() => frontInputRef.current?.click()}
+                        className="admin-upload-zone-main"
+                        style={{ aspectRatio: "1.58 / 1", padding: "20px 12px", height: "auto" }}
+                      >
                         {frontImage ? (
-                          <div className="admin-preview-img-wrapper">
-                            <img src={frontImage} alt="Front preview" className="admin-preview-img" />
+                          <div className="admin-preview-img-wrapper" style={{ width: "100%", height: "100%", position: "relative" }}>
+                            <img src={frontImage} alt="Front preview" className="admin-preview-img-contain" style={{ borderRadius: "12px", width: "100%", height: "100%", objectFit: "cover" }} />
                             <button
                               type="button"
                               onClick={(e) => {
@@ -595,14 +813,22 @@ export default function AdminPage() {
                                 setFrontImage(null);
                               }}
                               className="admin-remove-image-btn"
+                              style={{ width: "24px", height: "24px", borderRadius: "50%" }}
                             >
-                              <Trash2 size={10} />
+                              <Trash2 size={12} />
                             </button>
                           </div>
                         ) : (
                           <>
-                            <span className="admin-thumb-plus">+</span>
-                            <span className="admin-thumb-label">Front</span>
+                            <div className="admin-upload-icon-wrap" style={{ width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              <Upload size={16} />
+                            </div>
+                            <span className="admin-upload-text" style={{ fontSize: "0.85rem", fontWeight: 700, marginTop: "6px" }}>
+                              Upload Front View
+                            </span>
+                            <span className="admin-upload-subtext" style={{ fontSize: "0.7rem" }}>
+                              PNG or JPG (Max. 5MB)
+                            </span>
                           </>
                         )}
                       </div>
@@ -615,10 +841,14 @@ export default function AdminPage() {
                       />
 
                       {/* Slot 2: Back */}
-                      <div onClick={() => backInputRef.current?.click()} className="admin-upload-zone-thumb">
+                      <div
+                        onClick={() => backInputRef.current?.click()}
+                        className="admin-upload-zone-main"
+                        style={{ aspectRatio: "1.58 / 1", padding: "20px 12px", height: "auto" }}
+                      >
                         {backImage ? (
-                          <div className="admin-preview-img-wrapper">
-                            <img src={backImage} alt="Back preview" className="admin-preview-img" />
+                          <div className="admin-preview-img-wrapper" style={{ width: "100%", height: "100%", position: "relative" }}>
+                            <img src={backImage} alt="Back preview" className="admin-preview-img-contain" style={{ borderRadius: "12px", width: "100%", height: "100%", objectFit: "cover" }} />
                             <button
                               type="button"
                               onClick={(e) => {
@@ -626,14 +856,22 @@ export default function AdminPage() {
                                 setBackImage(null);
                               }}
                               className="admin-remove-image-btn"
+                              style={{ width: "24px", height: "24px", borderRadius: "50%" }}
                             >
-                              <Trash2 size={10} />
+                              <Trash2 size={12} />
                             </button>
                           </div>
                         ) : (
                           <>
-                            <span className="admin-thumb-plus">+</span>
-                            <span className="admin-thumb-label">Back</span>
+                            <div className="admin-upload-icon-wrap" style={{ width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              <Upload size={16} />
+                            </div>
+                            <span className="admin-upload-text" style={{ fontSize: "0.85rem", fontWeight: 700, marginTop: "6px" }}>
+                              Upload Back View
+                            </span>
+                            <span className="admin-upload-subtext" style={{ fontSize: "0.7rem" }}>
+                              PNG or JPG (Max. 5MB)
+                            </span>
                           </>
                         )}
                       </div>
@@ -644,12 +882,9 @@ export default function AdminPage() {
                         onChange={(e) => handleImageUpload(e, setBackImage)}
                         className="sr-only"
                       />
-
-
                     </div>
                   </div>
                 </div>
-              </div>
 
               {/* Card 6: Live Preview */}
               <div className="admin-card">
